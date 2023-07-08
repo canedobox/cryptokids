@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Header from "./components/Header";
 import CONTRACT_ABI from "./abis/CryptoKidsPOC.json";
-import ParentSignUp from "./components/ParentSignUp";
+import ParentSignUp from "./pages/ParentSignUp";
+import Parent from "./pages/Parent";
+import Child from "./pages/Child";
 
 function App() {
   /***** VARIABLES *****/
@@ -13,9 +15,11 @@ function App() {
   // Account
   const [account, setAccount] = useState(null);
   const [accountType, setAccountType] = useState("");
+  const [accountBalance, setAccountBalance] = useState("");
   // Contract
   const [contract, setContract] = useState(null);
   const [tokenSymbol, setTokenSymbol] = useState(null);
+  const [tokenDecimals, setTokenDecimals] = useState(null);
   // Utils
   const [isLoading, setIsLoading] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -106,6 +110,12 @@ function App() {
     });
     setTokenSymbol(tempTokenSymbol);
 
+    // Get token decimals.
+    let tempTokenDecimals = await tempContract.decimals().catch((error) => {
+      setErrorMessage(error.message);
+    });
+    setTokenDecimals(tempTokenDecimals);
+
     // Get account type.
     let tempAccountType = await tempContract.getAccountType().catch((error) => {
       setErrorMessage(error.message);
@@ -128,7 +138,7 @@ function App() {
     setErrorMessage(null);
 
     // Check if user is a parent.
-    if (contract && accountType === "Parent") {
+    if (contract && account && accountType === "Parent") {
       // Get user's family group.
       let tempFamilyGroup = await contract.getFamilyGroup().catch((error) => {
         setErrorMessage(error.message);
@@ -148,7 +158,7 @@ function App() {
       organizeRewards(tempRewards);
     }
     // Check if user is a child.
-    else if (contract && accountType === "Child") {
+    else if (contract && account && accountType === "Child") {
       // Get user's tasks.
       let tempTasks = await contract.getTasks(account).catch((error) => {
         setErrorMessage(error.message);
@@ -159,6 +169,13 @@ function App() {
         setErrorMessage(error.message);
       });
       organizeRewards(tempRewards);
+      // Get user's accountBalance.
+      let tempAccountBalance = await contract
+        .balanceOf(account)
+        .catch((error) => {
+          setErrorMessage(error.message);
+        });
+      setAccountBalance(etherToNumber(tempAccountBalance));
     }
 
     // Stop loading
@@ -168,13 +185,13 @@ function App() {
   /**
    * Organize tasks into different categories based on their status:
    * approved, completed, expired, or open.
-   * @param tasks_ - An array of tasks.
+   * @param tasks - An array of tasks.
    */
-  const organizeTasks = (tasks_) => {
+  const organizeTasks = (tasks) => {
     // Set tasks counter.
-    setTasksCounter(tasks_.length);
+    setTasksCounter(tasks.length);
     // Loop through tasks.
-    tasks_.map((task) => {
+    tasks.map((task) => {
       // Check if task was approved.
       if (task.approved) {
         setApprovedTasks((prevState) => [...prevState, task]);
@@ -201,13 +218,13 @@ function App() {
   /**
    * Organize rewards into different categories based on their status:
    * approved, redeemed, purchased, or open.
-   * @param rewards_ - An array of rewards.
+   * @param rewards - An array of rewards.
    */
-  const organizeRewards = (rewards_) => {
+  const organizeRewards = (rewards) => {
     // Set rewards counter.
-    setRewardsCounter(rewards_.length);
+    setRewardsCounter(rewards.length);
     // Loop through rewards.
-    rewards_.map((reward) => {
+    rewards.map((reward) => {
       // Check if reward was approved.
       if (reward.approved) {
         setApprovedRewards((prevState) => [...prevState, reward]);
@@ -232,6 +249,8 @@ function App() {
    * Reset all data related to family groups, tasks, and rewards.
    */
   const resetData = () => {
+    // Account
+    setAccountBalance("");
     // Family group
     setFamilyGroup([]);
     // Tasks
@@ -256,11 +275,31 @@ function App() {
   }, [account]);
 
   /**
-   * Listen for changes to `accountType`.
+   * Listen for changes to `accountType` and `accountBalance`.
    */
   useEffect(() => {
     getData();
   }, [accountType]);
+
+  /*****************/
+  /***** UTILS *****/
+  /*****************/
+
+  const numberToEther = (number) => {
+    if (tokenDecimals) {
+      return ethers.utils
+        .parseUnits(number.toString(), tokenDecimals)
+        .toString();
+    }
+  };
+
+  const etherToNumber = (number) => {
+    if (tokenDecimals) {
+      return parseFloat(
+        ethers.utils.formatUnits(number.toString(), tokenDecimals).toString()
+      );
+    }
+  };
 
   return (
     <div className="font-montserrat text-slate-800">
@@ -279,23 +318,49 @@ function App() {
             {isLoading && (
               <div className="font-bold text-center">Loading...</div>
             )}
-            {!isLoading && accountType === "Not registered" && (
+            {!isLoading && account && accountType === "Not registered" && (
               <ParentSignUp
                 contract={contract}
                 setErrorMessage={setErrorMessage}
               />
             )}
-            {!isLoading && accountType && (
-              <div className="flex flex-col gap-4 break-words">
-                <span>Token symbol: {tokenSymbol}</span>
-                <span>Account connected: {account}</span>
-                <span>Account type: {accountType}</span>
-                <span>Family group: {familyGroup.toString()}</span>
-                <span>Tasks counter: {tasksCounter}</span>
-                <span>Open tasks: {openTasks.toString()}</span>
-                <span>Rewards counter:{rewardsCounter}</span>
-                <span>Open rewards: {openRewards.toString()}</span>
-              </div>
+            {!isLoading && account && accountType === "Parent" && (
+              <Parent
+                contract={contract}
+                tokenSymbol={tokenSymbol}
+                setErrorMessage={setErrorMessage}
+                utils={{ numberToEther, etherToNumber }}
+                familyGroup={familyGroup}
+                tasksCounter={tasksCounter}
+                openTasks={openTasks}
+                completedTasks={completedTasks}
+                approvedTasks={approvedTasks}
+                expiredTasks={expiredTasks}
+                rewardsCounter={rewardsCounter}
+                openRewards={openRewards}
+                purchasedRewards={purchasedRewards}
+                redeemedRewards={redeemedRewards}
+                approvedRewards={approvedRewards}
+              />
+            )}
+            {!isLoading && account && accountType === "Child" && (
+              <Child
+                contract={contract}
+                tokenSymbol={tokenSymbol}
+                accountBalance={accountBalance}
+                setErrorMessage={setErrorMessage}
+                utils={{ numberToEther, etherToNumber }}
+                tasksCounter={tasksCounter}
+                openTasks={openTasks}
+                completedTasks={completedTasks}
+                approvedTasks={approvedTasks}
+                expiredTasks={expiredTasks}
+                rewardsCounter={rewardsCounter}
+                openRewards={openRewards}
+                purchasedRewards={purchasedRewards}
+                redeemedRewards={redeemedRewards}
+                approvedRewards={approvedRewards}
+              />
             )}
           </div>
         </div>

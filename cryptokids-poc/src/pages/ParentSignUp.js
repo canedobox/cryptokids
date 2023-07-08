@@ -1,13 +1,13 @@
 const ParentSignUp = ({ contract, setErrorMessage }) => {
   /**
-   * Register a parent in the contract.
+   * Register a parent to the contract.
    * @param event - Event that triggered the function.
    */
   const registerParent = (event) => {
     event.preventDefault();
     setErrorMessage(null);
 
-    // Register a parent in the contract.
+    // Call the `registerParent` function on the contract.
     contract.registerParent(event.target.parentName.value).catch((error) => {
       setErrorMessage(error.message);
     });
