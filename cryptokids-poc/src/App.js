@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Header from "./components/Header";
 import CONTRACT_ABI from "./abis/CryptoKidsPOC.json";
+import ParentSignUp from "./components/ParentSignUp";
 
 function App() {
   /***** VARIABLES *****/
-  const CONTRACT_ADDRESS = "0x5fbdb2315678afecb367f032d93f642f64180aa3"; //Hardhat
+  const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; //Hardhat
   //const CONTRACT_ADDRESS = ""; //Sepolia
 
   /***** STATES *****/
@@ -106,14 +107,10 @@ function App() {
     setTokenSymbol(tempTokenSymbol);
 
     // Get account type.
-    if (account) {
-      let tempAccountType = await tempContract
-        .getAccountType()
-        .catch((error) => {
-          setErrorMessage(error.message);
-        });
-      setAccountType(tempAccountType);
-    }
+    let tempAccountType = await tempContract.getAccountType().catch((error) => {
+      setErrorMessage(error.message);
+    });
+    setAccountType(tempAccountType ? tempAccountType : "Not registered");
 
     // Stop loading.
     setIsLoading(false);
@@ -281,6 +278,12 @@ function App() {
             )}
             {isLoading && (
               <div className="font-bold text-center">Loading...</div>
+            )}
+            {!isLoading && accountType === "Not registered" && (
+              <ParentSignUp
+                contract={contract}
+                setErrorMessage={setErrorMessage}
+              />
             )}
             {!isLoading && accountType && (
               <div className="flex flex-col gap-4 break-words">
