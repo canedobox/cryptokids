@@ -56,7 +56,9 @@ const Tasks = ({
                             </th>
                           )}
                           <th className="font-normal p-2 whitespace-nowrap">
-                            {utils.etherToNumber(row.reward.toString()) + " CK"}
+                            {utils.etherToNumber(row.reward.toString()) +
+                              " " +
+                              tokenSymbol}
                           </th>
                           <th
                             className={

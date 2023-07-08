@@ -19,6 +19,11 @@ contract CryptoKidsPOC is ERC20 {
     bool exists;
   }
 
+  struct FamilyGroupChild {
+    Child child;
+    uint256 balance;
+  }
+
   struct Task {
     uint256 taskId;
     address assignedTo;
@@ -206,9 +211,14 @@ contract CryptoKidsPOC is ERC20 {
   /**
    * Get the caller's family group.
    */
-  function getFamilyGroup() external view onlyParent returns (Child[] memory) {
+  function getFamilyGroup()
+    external
+    view
+    onlyParent
+    returns (FamilyGroupChild[] memory)
+  {
     // Create an array for the caller's children.
-    Child[] memory tempFamilyGroup = new Child[](
+    FamilyGroupChild[] memory tempFamilyGroup = new FamilyGroupChild[](
       _familyGroups[msg.sender].length
     );
 
@@ -217,7 +227,10 @@ contract CryptoKidsPOC is ERC20 {
     // Loop through the family group.
     for (uint256 i = 0; i < familyGroup.length; i++) {
       // Get a child.
-      tempFamilyGroup[i] = _children[familyGroup[i]];
+      tempFamilyGroup[i] = FamilyGroupChild(
+        _children[familyGroup[i]],
+        balanceOf(_children[familyGroup[i]].childAddress)
+      );
     }
 
     // Return family group.

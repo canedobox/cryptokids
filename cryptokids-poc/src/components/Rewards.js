@@ -59,7 +59,9 @@ const Rewards = ({
                             </th>
                           )}
                           <th className="font-normal p-2 whitespace-nowrap">
-                            {utils.etherToNumber(row.price.toString()) + " CK"}
+                            {utils.etherToNumber(row.price.toString()) +
+                              " " +
+                              tokenSymbol}
                           </th>
                           {!isMarketplace && (
                             <th

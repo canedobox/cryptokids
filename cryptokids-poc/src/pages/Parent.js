@@ -97,8 +97,6 @@ const Parent = ({
     event.preventDefault();
     setErrorMessage(null);
 
-    console.log(task);
-
     // Call the `approveTaskCompletion` function on the contract.
     contract.approveTaskCompletion(task.taskId.toString()).catch((error) => {
       setErrorMessage(error.message);
@@ -153,7 +151,12 @@ const Parent = ({
         headerTitle={"Family Group"}
         headerCta={{ onClick: addChild, label: "Add Child +" }}
       >
-        <FamilyGroup familyGroup={familyGroup} removeChild={removeChild} />
+        <FamilyGroup
+          tokenSymbol={tokenSymbol}
+          utils={utils}
+          familyGroup={familyGroup}
+          removeChild={removeChild}
+        />
       </Card>
 
       {/* Tasks */}

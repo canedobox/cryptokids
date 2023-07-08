@@ -108,7 +108,8 @@ function App() {
     let tempTokenSymbol = await tempContract.symbol().catch((error) => {
       setErrorMessage(error.message);
     });
-    setTokenSymbol(tempTokenSymbol);
+    //setTokenSymbol(tempTokenSymbol); // "CKPOC" is too long.
+    setTokenSymbol("CK"); // Use "CK" instead of "CKPOC".
 
     // Get token decimals.
     let tempTokenDecimals = await tempContract.decimals().catch((error) => {

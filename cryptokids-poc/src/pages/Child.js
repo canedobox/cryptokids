@@ -122,7 +122,7 @@ const Child = ({
       {/* Marketplace */}
       <Card
         headerTitle={"Marketplace"}
-        headerInfo={"Balance: " + accountBalance + " CK"}
+        headerInfo={"Balance: " + accountBalance + " " + tokenSymbol}
       >
         <Rewards
           tokenSymbol={tokenSymbol}
