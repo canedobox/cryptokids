@@ -306,27 +306,44 @@ function App() {
 
   return (
     <div className="font-montserrat text-slate-800">
+      {/* Page header */}
       <Header
         account={account}
         accountType={accountType}
         connectionHandler={connectionHandler}
       />
 
+      {/* Page content */}
       <main className="flex min-h-screen flex-col items-center justify-start pt-16">
         <div className="w-full max-w-4xl p-4">
           <div>
+            {/* Display error message */}
             {errorMessage && (
               <div className="text-red-700 p-4 break-words">{errorMessage}</div>
             )}
-            {isLoading && (
-              <div className="font-bold text-center">Loading...</div>
+            {/* Display welcome message */}
+            {!isLoading && !account && (
+              <div className="flex flex-col my-20 gap-2 items-center justify-center">
+                <h1 className="text-2xl font-bold text-center max-w-md">
+                  Welcome to CryptoKids!
+                </h1>
+                <p className="text-justify max-w-md">Proof of Concept Dapp</p>
+              </div>
             )}
+            {/* Display loading message */}
+            {isLoading && (
+              <div className="text-lg font-bold text-center my-20">
+                Loading...
+              </div>
+            )}
+            {/* If not loading, and user is not registered */}
             {!isLoading && account && accountType === "Not registered" && (
               <ParentSignUp
                 contract={contract}
                 setErrorMessage={setErrorMessage}
               />
             )}
+            {/* If not loading, and user is a parent */}
             {!isLoading && account && accountType === "Parent" && (
               <Parent
                 contract={contract}
@@ -346,6 +363,7 @@ function App() {
                 approvedRewards={approvedRewards}
               />
             )}
+            {/* If not loading, and user is a child */}
             {!isLoading && account && accountType === "Child" && (
               <Child
                 contract={contract}

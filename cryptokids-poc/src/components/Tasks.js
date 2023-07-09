@@ -12,14 +12,17 @@ const Tasks = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
+      {/* Display a message if there is no tasks */}
       {tasksCounter === 0 ? (
         <div className="flex flex-col gap-2 pt-4">{noTasksMessage}</div>
       ) : (
         <table className="border-collapse w-full min-w-full max-w-full ">
+          {/* Loop through the tasks list */}
           {taskLists &&
             taskLists.map((tasks, index) => {
               return (
                 <tbody key={index}>
+                  {/* Tasks header */}
                   {tasks.length > 0 && (
                     <tr className="border-b-2 border-slate-200 bg-slate-300 whitespace-nowrap">
                       <th className="w-10/12 text-left p-2">
@@ -37,7 +40,7 @@ const Tasks = ({
                       <th></th>
                     </tr>
                   )}
-
+                  {/* Loop through the tasks */}
                   {tasks.length > 0 &&
                     tasks.map((row, tasksIndex) => {
                       return (
@@ -45,9 +48,11 @@ const Tasks = ({
                           key={tasksIndex}
                           className="border-b-2 border-slate-200 last-of-type:border-b-0 hover:bg-slate-200"
                         >
+                          {/* Task description */}
                           <th className="text-left font-normal p-2">
                             {row.description.toString()}
                           </th>
+                          {/* Task assigned to */}
                           {!isChild && (
                             <th className="font-normal p-2 whitespace-nowrap">
                               {row.assignedTo.slice(0, 4) +
@@ -55,11 +60,13 @@ const Tasks = ({
                                 row.assignedTo.slice(38, 42)}
                             </th>
                           )}
+                          {/* Task reward */}
                           <th className="font-normal p-2 whitespace-nowrap">
                             {utils.etherToNumber(row.reward.toString()) +
                               " " +
                               tokenSymbol}
                           </th>
+                          {/* Task date value */}
                           <th
                             className={
                               row[dateValue[index]] > 0
@@ -72,6 +79,7 @@ const Tasks = ({
                                 row[dateValue[index]] * 1000
                               ).toDateString()}
                           </th>
+                          {/* Call to action */}
                           <th className="text-right p-2 pr-0">
                             {rowCta[index] && (
                               <button

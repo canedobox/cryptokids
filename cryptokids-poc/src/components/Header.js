@@ -7,6 +7,7 @@ const Header = ({ account, accountType, connectionHandler }) => {
           <span className="text-lg font-black">KIDS</span>
         </div>
         <div>
+          {/* If there is an account, display account */}
           {account ? (
             <button
               type="button"
@@ -19,6 +20,7 @@ const Header = ({ account, accountType, connectionHandler }) => {
                 account.slice(38, 42)}
             </button>
           ) : (
+            // If there is NO account, display "Connect Wallet" button.
             <button
               type="button"
               className="bg-slate-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-slate-500"

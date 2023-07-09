@@ -14,7 +14,7 @@ const ParentSignUp = ({ contract, setErrorMessage }) => {
   };
 
   return (
-    <div className="flex flex-col w-full items-center justify-center gap-4 my-10">
+    <div className="flex flex-col w-full items-center justify-center gap-4 my-20">
       <h1 className="text-2xl font-bold">Sign up as a parent</h1>
       <form onSubmit={registerParent} className="flex flex-col gap-2 w-60">
         <input

@@ -13,14 +13,17 @@ const Rewards = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
+      {/* Display a message if there is no rewards */}
       {rewardsCounter === 0 ? (
         <div className="flex flex-col gap-2 pt-4">{noRewardsMessage}</div>
       ) : (
         <table className="border-collapse w-full min-w-full max-w-full ">
+          {/* Loop through the rewards list */}
           {rewardLists &&
             rewardLists.map((rewards, index) => {
               return (
                 <tbody key={index}>
+                  {/* Rewards header */}
                   {rewards.length > 0 && (
                     <tr className="border-b-2 border-slate-200 bg-slate-300 whitespace-nowrap">
                       <th className="w-10/12 text-left p-2">
@@ -40,7 +43,7 @@ const Rewards = ({
                       <th></th>
                     </tr>
                   )}
-
+                  {/* Loop through the rewards */}
                   {rewards.length > 0 &&
                     rewards.map((row, rewardIndex) => {
                       return (
@@ -48,9 +51,11 @@ const Rewards = ({
                           key={rewardIndex}
                           className="border-b-2 border-slate-200 last-of-type:border-b-0 hover:bg-slate-200"
                         >
+                          {/* Reward description */}
                           <th className="text-left font-normal p-2">
                             {row.description.toString()}
                           </th>
+                          {/* Reward assigned to */}
                           {!isChild && (
                             <th className="font-normal p-2 whitespace-nowrap">
                               {row.assignedTo.slice(0, 4) +
@@ -58,11 +63,13 @@ const Rewards = ({
                                 row.assignedTo.slice(38, 42)}
                             </th>
                           )}
+                          {/* Reward price */}
                           <th className="font-normal p-2 whitespace-nowrap">
                             {utils.etherToNumber(row.price.toString()) +
                               " " +
                               tokenSymbol}
                           </th>
+                          {/* If it is not a marketplace, reward date value */}
                           {!isMarketplace && (
                             <th
                               className={
@@ -77,6 +84,7 @@ const Rewards = ({
                                 ).toDateString()}
                             </th>
                           )}
+                          {/* Call to action */}
                           <th className="text-right p-2 pr-0">
                             {rowCta[index] && (
                               <button
