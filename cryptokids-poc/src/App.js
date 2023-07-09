@@ -72,12 +72,13 @@ function App() {
     }
   };
 
-  /**
-   * Set up an event listener for when the account changes on MetaMask.
-   */
-  window.ethereum.on("accountsChanged", async () => {
-    connectionHandler();
-  });
+  // Check if MetaMask is installed.
+  if (window.ethereum && window.ethereum.isMetaMask) {
+    //Set up an event listener for when the account changes on MetaMask.
+    window.ethereum.on("accountsChanged", async () => {
+      connectionHandler();
+    });
+  }
 
   /*************************/
   /***** CONTRACT DATA *****/
@@ -274,7 +275,10 @@ function App() {
    * Listen for changes to `account`.
    */
   useEffect(() => {
-    pageInit();
+    // Check if MetaMask is installed.
+    if (window.ethereum && window.ethereum.isMetaMask) {
+      pageInit();
+    }
   }, [account]);
 
   /**
@@ -288,18 +292,30 @@ function App() {
   /***** UTILS *****/
   /*****************/
 
-  const numberToEther = (number) => {
+  /**
+   * Converts a number to its equivalent value in Ether
+   * using the contract decimals.
+   * Example: 1 to 1000000000000000000
+   * @param value - Number to be converted.
+   */
+  const numberToEther = (value) => {
     if (tokenDecimals) {
       return ethers.utils
-        .parseUnits(number.toString(), tokenDecimals)
+        .parseUnits(value.toString(), tokenDecimals)
         .toString();
     }
   };
 
-  const etherToNumber = (number) => {
+  /**
+   * Converts a Ether value to its equivalent number
+   * using the contract decimals.
+   * Example: 1000000000000000000 to 1
+   * @param value - Ether value to be converted.
+   */
+  const etherToNumber = (value) => {
     if (tokenDecimals) {
       return parseFloat(
-        ethers.utils.formatUnits(number.toString(), tokenDecimals).toString()
+        ethers.utils.formatUnits(value.toString(), tokenDecimals).toString()
       );
     }
   };
