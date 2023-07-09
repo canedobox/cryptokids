@@ -28,7 +28,7 @@ const ParentSignUp = ({ contract, setErrorMessage }) => {
           type="submit"
           className="bg-slate-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-slate-500"
         >
-          Sign up
+          Sign Up
         </button>
       </form>
     </div>
