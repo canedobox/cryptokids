@@ -31,7 +31,7 @@ const Tasks = ({
                         <th className="font-bold p-2">Assigned To</th>
                       )}
                       <th className="font-bold p-2">Reward</th>
-                      <th className={dateLabel[index] && "font-bold p-2"}>
+                      <th className={dateLabel[index] ? "font-bold p-2" : ""}>
                         {dateLabel[index]}
                       </th>
                       <th></th>
@@ -62,8 +62,9 @@ const Tasks = ({
                           </th>
                           <th
                             className={
-                              row[dateValue[index]] > 0 &&
-                              "font-normal p-2 whitespace-nowrap"
+                              row[dateValue[index]] > 0
+                                ? "font-normal p-2 whitespace-nowrap"
+                                : ""
                             }
                           >
                             {row[dateValue[index]] > 0 &&

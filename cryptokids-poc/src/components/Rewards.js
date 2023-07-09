@@ -33,7 +33,7 @@ const Rewards = ({
                       )}
                       <th className="font-bold p-2">Price</th>
                       {!isMarketplace && (
-                        <th className={dateLabel[index] && "font-bold p-2"}>
+                        <th className={dateLabel[index] ? "font-bold p-2" : ""}>
                           {dateLabel[index]}
                         </th>
                       )}
@@ -66,8 +66,9 @@ const Rewards = ({
                           {!isMarketplace && (
                             <th
                               className={
-                                row[dateValue[index]] > 0 &&
-                                "font-normal p-2 whitespace-nowrap"
+                                row[dateValue[index]] > 0
+                                  ? "font-normal p-2 whitespace-nowrap"
+                                  : ""
                               }
                             >
                               {row[dateValue[index]] > 0 &&

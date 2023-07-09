@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+// Components
 import Header from "./components/Header";
-import CONTRACT_ABI from "./abis/CryptoKidsPOC.json";
 import ParentSignUp from "./pages/ParentSignUp";
+// Pages
 import Parent from "./pages/Parent";
 import Child from "./pages/Child";
+// Config
+import networkConfig from "./networkConfig.json";
+import contractAbi from "./abis/CryptoKidsPOC.json";
 
 function App() {
-  /***** VARIABLES *****/
-  const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; //Hardhat
-  //const CONTRACT_ADDRESS = ""; //Sepolia
-
   /***** STATES *****/
   // Account
   const [account, setAccount] = useState(null);
@@ -96,10 +96,12 @@ function App() {
     let provider = new ethers.providers.Web3Provider(window.ethereum);
     // Get signer.
     let signer = provider.getSigner();
+    // Get network.
+    let network = await provider.getNetwork();
     // Get contract.
     let tempContract = new ethers.Contract(
-      CONTRACT_ADDRESS,
-      CONTRACT_ABI,
+      networkConfig[network.chainId].address,
+      contractAbi,
       signer
     );
     setContract(tempContract);

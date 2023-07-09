@@ -69,7 +69,7 @@ const Parent = ({
     const childAddress = prompt("Enter child wallet address:");
     const taskDescription = prompt("Enter task description:");
     const taskReward = utils.numberToEther(
-      prompt("Enter task reward (1 to 10):")
+      prompt("Enter task reward (" + tokenSymbol + "):")
     );
     const taskDueDate = prompt(
       "Enter task due date in Unix Timestamp: (optional)"
@@ -116,7 +116,7 @@ const Parent = ({
     const childAddress = prompt("Enter child wallet address:");
     const rewardDescription = prompt("Enter reward description:");
     const rewardPrice = utils.numberToEther(
-      prompt("Enter reward price (1 to 100):")
+      prompt("Enter reward price (" + tokenSymbol + "):")
     );
 
     // Call the `addReward` function on the contract.
