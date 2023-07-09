@@ -97,8 +97,19 @@ function App() {
     let provider = new ethers.providers.Web3Provider(window.ethereum);
     // Get signer.
     let signer = provider.getSigner();
+
     // Get network.
     let network = await provider.getNetwork();
+    // Check if the network is supported.
+    if (!networkConfig[network.chainId]) {
+      setErrorMessage(
+        "Network not supported, connect to Sepolia test network instead."
+      );
+      // Stop loading.
+      setIsLoading(false);
+      return;
+    }
+
     // Get contract.
     let tempContract = new ethers.Contract(
       networkConfig[network.chainId].address,
