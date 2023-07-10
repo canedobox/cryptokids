@@ -1,10 +1,8 @@
 # CryptoKids Proof of Concept Dapp
 
-## Application Links
+## Application Link
 
 - <https://cryptokids-poc.vercel.app/>
-- <https://cryptokids-poc-canedobox.vercel.app/>
-- <https://cryptokids-poc-git-main-canedobox.vercel.app/>
 
 ## Smart Contracts
 
