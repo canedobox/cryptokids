@@ -1,1 +1,1 @@
-# cryptokids
+# CryptoKids Dapp
