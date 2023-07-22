@@ -451,7 +451,7 @@ contract CryptoKids is ERC20 {
       _children[_tasks[taskId_].assignedTo].familyGroup == msg.sender,
       "The child this task is assigned to is not part of your family group."
     );
-    // Check if the task was not completed.
+    // Check if the task has not been completed.
     require(!_tasks[taskId_].completed, "Task has already been completed.");
 
     // Update task details.
@@ -474,7 +474,7 @@ contract CryptoKids is ERC20 {
       _children[_tasks[taskId_].assignedTo].familyGroup == msg.sender,
       "The child this task is assigned to is not part of your family group."
     );
-    // Check if the task was not completed.
+    // Check if the task has not been completed.
     require(!_tasks[taskId_].completed, "Task has already been completed.");
 
     // Remove task from the child's tasks.
@@ -511,13 +511,13 @@ contract CryptoKids is ERC20 {
     require(_tasks[taskId_].exists, "Invalid task ID.");
     // Check if the task belongs to the caller.
     require(_tasks[taskId_].assignedTo == msg.sender, "This is not your task.");
-    // Check if the task was not completed.
+    // Check if the task has not been completed.
     require(!_tasks[taskId_].completed, "You already completed this task.");
-    // Check if the task is not expired.
+    // Check if the task has not expired.
     if (_tasks[taskId_].dueDate > 0) {
       require(
         _tasks[taskId_].dueDate >= block.timestamp,
-        "This task is expired."
+        "This task has expired."
       );
     }
 
@@ -540,10 +540,13 @@ contract CryptoKids is ERC20 {
     require(_tasks[taskId_].exists, "Invalid task ID.");
     // Check if the task belongs to the caller.
     require(_tasks[taskId_].assignedTo == msg.sender, "This is not your task.");
-    // Check if the task was not completed.
-    require(!_tasks[taskId_].completed, "You haven't completed this task yet.");
-    // Check if the task completion was not approved.
-    require(!_tasks[taskId_].approved, "Task completion was already approved.");
+    // Check if the task has been completed.
+    require(_tasks[taskId_].completed, "You haven't completed this task yet.");
+    // Check if the task completion has not been approved.
+    require(
+      !_tasks[taskId_].approved,
+      "Task completion has already been approved."
+    );
 
     // Cancel task completion.
     _tasks[taskId_].completed = false;
@@ -569,8 +572,11 @@ contract CryptoKids is ERC20 {
     );
     // Check if the task has been completed.
     require(_tasks[taskId_].completed, "Task has not been completed yet.");
-    // Check if the task completion was not approved.
-    require(!_tasks[taskId_].approved, "Task completion was already approved.");
+    // Check if the task completion has not been approved.
+    require(
+      !_tasks[taskId_].approved,
+      "Task completion has already been approved."
+    );
 
     // Approve task completion.
     _tasks[taskId_].approved = true;
@@ -591,29 +597,26 @@ contract CryptoKids is ERC20 {
   }
 
   /**
-   * Get a child's tasks.
+   * Get child's tasks.
    */
-  function getChildTasks(address child_) public view returns (Task[] memory) {
-    // Check if the address provided belongs to a child.
-    require(_children[child_].exists, "Address does not belong to a child.");
-
+  function getChildTasks() external view onlyChild returns (Task[] memory) {
     // Create an array for the child's tasks.
-    Task[] memory tasks = new Task[](_childTasks[child_].length);
+    Task[] memory childTasks = new Task[](_childTasks[msg.sender].length);
 
     // Get the child's task IDs.
-    uint256[] storage childTasks = _childTasks[child_];
+    uint256[] storage childTaskIDs = _childTasks[msg.sender];
     // Loop through the task IDs.
-    for (uint256 i = 0; i < childTasks.length; i++) {
-      // Get task.
-      tasks[i] = _tasks[childTasks[i]];
+    for (uint256 i = 0; i < childTaskIDs.length; i++) {
+      // Get a task.
+      childTasks[i] = _tasks[childTaskIDs[i]];
     }
 
     // Return child's tasks.
-    return tasks;
+    return childTasks;
   }
 
   /**
-   * Get a child's tasks counter.
+   * Get child's tasks counter.
    */
   function _getChildTasksCounter(
     address child_
@@ -623,19 +626,27 @@ contract CryptoKids is ERC20 {
     uint256 completedTasksCounter = 0;
     uint256 approvedTasksCounter = 0;
 
-    // Get child's tasks.
-    Task[] memory childTasks = getChildTasks(child_);
+    // Create an array for the child's tasks.
+    Task[] memory childTasks = new Task[](_childTasks[child_].length);
+    // Get the child's task IDs.
+    uint256[] storage childTaskIDs = _childTasks[child_];
+    // Loop through the task IDs.
+    for (uint256 i = 0; i < childTaskIDs.length; i++) {
+      // Get a task.
+      childTasks[i] = _tasks[childTaskIDs[i]];
+    }
+
     // Loop through the child's tasks.
     for (uint256 i = 0; i < childTasks.length; i++) {
-      // If task is approved.
+      // If task has been approved.
       if (childTasks[i].approved) {
         approvedTasksCounter++;
       }
-      // If task is completed.
+      // If task has been completed.
       else if (childTasks[i].completed) {
         completedTasksCounter++;
       }
-      // If task is expired.
+      // If task has been expired.
       else if (
         childTasks[i].dueDate > 0 && childTasks[i].dueDate <= block.timestamp
       ) {
@@ -656,7 +667,12 @@ contract CryptoKids is ERC20 {
   /**
    * Get all the tasks in the caller's family group.
    */
-  function getFamilyGroupTasks() external view returns (Task[] memory) {
+  function getFamilyGroupTasks()
+    external
+    view
+    onlyParent
+    returns (Task[] memory)
+  {
     // Get the caller's family group.
     address[] memory familyGroup = _familyGroups[msg.sender];
 
@@ -746,7 +762,7 @@ contract CryptoKids is ERC20 {
       _children[_rewards[rewardId_].assignedTo].familyGroup == msg.sender,
       "The child this reward is assigned to is not part of your family group."
     );
-    // Check if the reward was not purchased.
+    // Check if the reward has not been purchased.
     require(
       !_rewards[rewardId_].purchased,
       "Reward has already been purchased."
@@ -771,7 +787,7 @@ contract CryptoKids is ERC20 {
       _children[_rewards[rewardId_].assignedTo].familyGroup == msg.sender,
       "The child this reward is assigned to is not part of your family group."
     );
-    // Check if the reward was not purchased.
+    // Check if the reward has not been purchased.
     require(
       !_rewards[rewardId_].purchased,
       "Reward has already been purchased."
@@ -816,7 +832,7 @@ contract CryptoKids is ERC20 {
       _rewards[rewardId_].assignedTo == msg.sender,
       "This is not your reward."
     );
-    // Check if the reward was not purchased.
+    // Check if the reward has not been purchased.
     require(
       !_rewards[rewardId_].purchased,
       "You already purchased this reward."
@@ -862,7 +878,7 @@ contract CryptoKids is ERC20 {
       _rewards[rewardId_].purchased,
       "You haven't purchased this reward yet."
     );
-    // Check if the reward was not redeemed.
+    // Check if the reward has not been redeemed.
     require(!_rewards[rewardId_].redeemed, "You already redeemed this reward.");
 
     // Redeem reward.
@@ -891,15 +907,15 @@ contract CryptoKids is ERC20 {
       _rewards[rewardId_].assignedTo == msg.sender,
       "This is not your reward."
     );
-    // Check if the reward was not redeemed.
+    // Check if the reward has not been redeemed.
     require(
       _rewards[rewardId_].redeemed,
       "You haven't redeemed this reward yet."
     );
-    // Check if the reward redemption was not approved.
+    // Check if the reward redemption has not been approved.
     require(
       !_rewards[rewardId_].approved,
-      "Reward redemption was already approved."
+      "Reward redemption has already been approved."
     );
 
     // Cancel reward redemption.
@@ -927,10 +943,10 @@ contract CryptoKids is ERC20 {
     // Check if the reward has been redeemed.
     require(_rewards[rewardId_].redeemed, "Reward has not been redeemed yet.");
 
-    // Check if the reward redemption was not approved.
+    // Check if the reward redemption has not been approved.
     require(
       !_rewards[rewardId_].approved,
-      "Reward redemption was already approved."
+      "Reward redemption has already been approved."
     );
 
     // Approve reward redemption.
@@ -949,31 +965,28 @@ contract CryptoKids is ERC20 {
   }
 
   /**
-   * Get a child's rewards.
+   * Get child's rewards.
    */
-  function getChildRewards(
-    address child_
-  ) public view returns (Reward[] memory) {
-    // Check if the address provided belongs to a child.
-    require(_children[child_].exists, "Address does not belong to a child.");
-
+  function getChildRewards() external view onlyChild returns (Reward[] memory) {
     // Create an array for the child's rewards.
-    Reward[] memory rewards = new Reward[](_childRewards[child_].length);
+    Reward[] memory childRewards = new Reward[](
+      _childRewards[msg.sender].length
+    );
 
     // Get the child's reward IDs.
-    uint256[] storage childRewards = _childRewards[child_];
+    uint256[] storage childRewardIDs = _childRewards[msg.sender];
     // Loop through the reward IDs.
-    for (uint256 i = 0; i < childRewards.length; i++) {
-      // Get reward.
-      rewards[i] = _rewards[childRewards[i]];
+    for (uint256 i = 0; i < childRewardIDs.length; i++) {
+      // Get a reward.
+      childRewards[i] = _rewards[childRewardIDs[i]];
     }
 
     // Return child's rewards.
-    return rewards;
+    return childRewards;
   }
 
   /**
-   * Get a child's rewards counter.
+   * Get child's rewards counter.
    */
   function _getChildRewardsCounter(
     address child_
@@ -983,19 +996,27 @@ contract CryptoKids is ERC20 {
     uint256 redeemedRewardsCounter = 0;
     uint256 approvedRewardsCounter = 0;
 
-    // Get child's rewards.
-    Reward[] memory childRewards = getChildRewards(child_);
+    // Create an array for the child's rewards.
+    Reward[] memory childRewards = new Reward[](_childRewards[child_].length);
+    // Get the child's reward IDs.
+    uint256[] storage childRewardIDs = _childRewards[child_];
+    // Loop through the reward IDs.
+    for (uint256 i = 0; i < childRewardIDs.length; i++) {
+      // Get a reward.
+      childRewards[i] = _rewards[childRewardIDs[i]];
+    }
+
     // Loop through the child's rewards.
     for (uint256 i = 0; i < childRewards.length; i++) {
-      // If reward is approved.
+      // If reward has been approved.
       if (childRewards[i].approved) {
         approvedRewardsCounter++;
       }
-      // If reward is redeemed.
+      // If reward has been redeemed.
       else if (childRewards[i].redeemed) {
         redeemedRewardsCounter++;
       }
-      // If reward is purchased.
+      // If reward has been purchased.
       else if (childRewards[i].purchased) {
         purchasedRewardsCounter++;
       }
@@ -1014,7 +1035,12 @@ contract CryptoKids is ERC20 {
   /**
    * Get all the rewards in the caller's family group.
    */
-  function getFamilyGroupRewards() external view returns (Reward[] memory) {
+  function getFamilyGroupRewards()
+    external
+    view
+    onlyParent
+    returns (Reward[] memory)
+  {
     // Get the caller's family group.
     address[] memory familyGroup = _familyGroups[msg.sender];
 
