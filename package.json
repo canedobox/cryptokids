@@ -18,7 +18,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "hardhat-node": "cd backend && npm run node",
+    "hardhat-compile": "cd backend && npm run compile",
+    "hardhat-test": "cd backend && npm run test",
+    "hardhat-deploy": "cd backend && npm run deploy",
+    "hardhat-verify": "cd backend && npm run verify"
   },
   "eslintConfig": {
     "extends": [
