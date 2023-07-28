@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 
@@ -34,12 +34,12 @@ function Sidebar() {
     // If sidebar is opening.
     if (!isSidebarOpened) {
       // Disable body scrollbars.
-      document.body.classList.add("overflow-hidden");
+      document.body.classList.add("max-md:overflow-hidden");
     }
     // If sidebar is closing.
     else {
       // Enable body scrollbars.
-      document.body.classList.remove("overflow-hidden");
+      document.body.classList.remove("max-md:overflow-hidden");
     }
 
     // Toggle sidebar state.
@@ -49,11 +49,11 @@ function Sidebar() {
   // Return Sidebar component.
   return (
     <>
-      {/* Header topbar */}
+      {/* Header */}
       <header
         className={twMerge(
-          "absolute left-0 right-0 top-0 z-30",
-          "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.minWidth)] items-center justify-start px-2",
+          "fixed left-0 right-0 top-0 z-30",
+          "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.80)] items-center justify-start px-2",
           "bg-white shadow-sm",
           "md:hidden"
         )}
@@ -79,7 +79,7 @@ function Sidebar() {
             "fixed bottom-0 left-0 top-0 z-50 -translate-x-full transition-all duration-300 ease-in-out",
             "flex h-screen w-72 min-w-[theme(width.72)] flex-col items-start justify-start overflow-auto px-2",
             "bg-primary-700 text-white",
-            "md:sticky md:translate-x-0 md:shadow-none",
+            "md:translate-x-0 md:shadow-none",
             isSidebarOpened && "translate-x-0 shadow-md"
           )}
         >
@@ -105,7 +105,7 @@ function Sidebar() {
           </div>
 
           {/* Sidebar navigation */}
-          <nav className="flex h-full w-full flex-col gap-2 border-y-2 border-primary-600 py-2">
+          <nav className="flex h-full w-full flex-col gap-2 border-y border-primary-600 py-2">
             {/* Family group navigation link */}
             <NavLink
               to="/dashboard/family-group"

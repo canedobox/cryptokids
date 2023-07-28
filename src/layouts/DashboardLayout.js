@@ -5,9 +5,9 @@ import Sidebar from "../components/Sidebar";
 function DashboardLayout() {
   // Return DashboardLayout component.
   return (
-    <div className="flex min-w-[theme(width.minWidth)] flex-row">
+    <div className="flex min-w-[theme(width.80)] flex-row">
       <Sidebar />
-      <main className="mt-16 w-full p-4 md:mt-0">
+      <main className="mt-16 w-full p-4 md:ml-72 md:mt-0">
         <Outlet />
       </main>
     </div>

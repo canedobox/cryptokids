@@ -13,9 +13,6 @@ module.exports = {
       screens: {
         xs: "380px"
         // => @media (min-width: 380) { ... }
-      },
-      width: {
-        minWidth: "320px"
       }
     },
     colors: {

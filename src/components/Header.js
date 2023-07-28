@@ -14,11 +14,10 @@ function Header() {
 
   // Return Header component.
   return (
-    // Header topbar.
     <header
       className={twMerge(
-        "absolute left-0 right-0 top-0 z-30",
-        "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.minWidth)] items-center justify-between px-2 ",
+        "fixed left-0 right-0 top-0 z-30",
+        "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.80)] items-center justify-between px-2 ",
         "bg-white shadow-sm"
       )}
     >
