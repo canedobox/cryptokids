@@ -4,14 +4,7 @@ import { twMerge } from "tailwind-merge";
 import Button from "./Button";
 import Logo from "./Logo";
 
-function Header() {
-  /**
-   * Connects to MetaMask and get user's account.
-   */
-  const connectionHandler = () => {
-    // ...
-  };
-
+function Header({ account, connectionHandler }) {
   // Return Header component.
   return (
     <header
@@ -30,8 +23,14 @@ function Header() {
       </Link>
 
       {/* Button to connect wallet using MetaMask */}
-      <Button onClick={connectionHandler}>
-        Connect<span className="hidden xs:block"> Wallet</span>
+      <Button onClick={connectionHandler} variant={account && "connected"}>
+        {account ? (
+          account.slice(0, 4) + "..." + account.slice(38, 42)
+        ) : (
+          <>
+            Connect<span className="hidden xs:block"> Wallet</span>
+          </>
+        )}
       </Button>
     </header>
   );

@@ -23,7 +23,8 @@ module.exports = {
       black: colors.black,
       primary: colors.indigo,
       accent: colors.yellow,
-      gray: colors.slate
+      gray: colors.slate,
+      error: colors.red
     }
   },
   plugins: []

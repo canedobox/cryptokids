@@ -13,6 +13,7 @@ function Button({
   const variants = {
     default:
       "bg-primary-700 text-white px-4 py-2 font-semibold flex gap-2 whitespace-nowrap",
+    connected: "opacity-70",
     icon: "bg-transparent text-current p-3 hover:bg-gray-200",
     iconSidebar: "bg-transparent p-3 text-white hover:bg-primary-500",
     isRounded: "rounded-2xl",

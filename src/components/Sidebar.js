@@ -14,7 +14,7 @@ import { ReactComponent as IconRewards } from "../assets/icons/rewards.svg";
 import { ReactComponent as IconMarketplace } from "../assets/icons/marketplace.svg";
 import { ReactComponent as IconLogout } from "../assets/icons/logout.svg";
 
-function Sidebar() {
+function Sidebar({ logout }) {
   // State to check if the sidebar is opened.
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 
@@ -169,14 +169,17 @@ function Sidebar() {
 
           {/* User profile info */}
           <div className="flex w-full flex-col gap-2 py-2">
-            {/* Log out link */}
+            {/* Logout link */}
             <Link
               to="/"
-              onClick={openCloseSidebar}
+              onClick={() => {
+                openCloseSidebar();
+                logout();
+              }}
               className={twMerge(navLinkVariants.default)}
             >
               <IconLogout />
-              Log out
+              Logout
             </Link>
           </div>
         </div>
