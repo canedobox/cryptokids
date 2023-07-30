@@ -1,3 +1,4 @@
+// SVGs
 import { ReactComponent as LogoText } from "../assets/logo.svg";
 import { ReactComponent as LogoIcon } from "../assets/logo-icon.svg";
 

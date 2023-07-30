@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-
+// Components
 import Button from "./Button";
 import Logo from "./Logo";
 
@@ -9,7 +9,7 @@ function Header({ account, connectionHandler }) {
   return (
     <header
       className={twMerge(
-        "fixed left-0 right-0 top-0 z-30",
+        "fixed inset-x-0 top-0 z-10",
         "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.80)] items-center justify-between px-2 ",
         "bg-white shadow-sm"
       )}
@@ -17,18 +17,20 @@ function Header({ account, connectionHandler }) {
       {/* Link to homepage */}
       <Link
         to="/"
-        className="flex h-full cursor-pointer items-center justify-center gap-2 px-2"
+        className="flex h-full items-center justify-center gap-2 px-2"
       >
         <Logo />
       </Link>
 
       {/* Button to connect wallet using MetaMask */}
-      <Button onClick={connectionHandler} variant={account && "connected"}>
+      <Button onClick={connectionHandler} className={account && "normal-case"}>
         {account ? (
-          account.slice(0, 4) + "..." + account.slice(38, 42)
+          <span className="text-base">
+            {`${account.slice(0, 4)}...${account.slice(38, 42)}`}
+          </span>
         ) : (
           <>
-            Connect<span className="hidden xs:block"> Wallet</span>
+            Connect<span className="hidden 2xs:block"> Wallet</span>
           </>
         )}
       </Button>

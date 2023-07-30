@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
-
+// Components
 import Button from "./Button";
 import Logo from "./Logo";
-
+// Icons
 import { ReactComponent as IconMenu } from "../assets/icons/menu.svg";
 import { ReactComponent as IconClose } from "../assets/icons/close.svg";
-
 import { ReactComponent as IconFamilyGroup } from "../assets/icons/family-group.svg";
 import { ReactComponent as IconTasks } from "../assets/icons/tasks.svg";
 import { ReactComponent as IconRewards } from "../assets/icons/rewards.svg";
@@ -21,29 +20,32 @@ function Sidebar({ logout }) {
   const navLinkVariants = {
     default: twMerge(
       "flex w-full items-center justify-start gap-4 whitespace-nowrap p-4",
-      "cursor-pointer rounded-xl font-semibold text-primary-200",
-      "hover:bg-primary-500 hover:text-white"
+      "rounded-lg font-semibold text-primary-200",
+      "hover:bg-primary-500 hover:text-white active:bg-primary-600"
     ),
     active: "bg-primary-600 text-white"
   };
 
   /**
-   * Open and close sidebar.
+   * Open sidebar.
    */
-  const openCloseSidebar = () => {
-    // If sidebar is opening.
-    if (!isSidebarOpened) {
-      // Disable body scrollbars.
-      document.body.classList.add("max-md:overflow-hidden");
-    }
-    // If sidebar is closing.
-    else {
-      // Enable body scrollbars.
-      document.body.classList.remove("max-md:overflow-hidden");
-    }
+  const openSidebar = () => {
+    // Disable body scrollbars.
+    document.body.classList.add("max-md:overflow-hidden");
 
     // Toggle sidebar state.
-    setIsSidebarOpened(!isSidebarOpened);
+    setIsSidebarOpened(true);
+  };
+
+  /**
+   * Close sidebar.
+   */
+  const closeSidebar = () => {
+    // Enable body scrollbars.
+    document.body.classList.remove("max-md:overflow-hidden");
+
+    // Toggle sidebar state.
+    setIsSidebarOpened(false);
   };
 
   // Return Sidebar component.
@@ -52,21 +54,21 @@ function Sidebar({ logout }) {
       {/* Header */}
       <header
         className={twMerge(
-          "fixed left-0 right-0 top-0 z-30",
+          "fixed inset-x-0 top-0 z-10",
           "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.80)] items-center justify-start px-2",
           "bg-white shadow-sm",
           "md:hidden"
         )}
       >
         {/* Button to open sidebar */}
-        <Button onClick={openCloseSidebar} variant="icon" className="md:hidden">
+        <Button onClick={openSidebar} variant="icon" className="md:hidden">
           <IconMenu />
         </Button>
 
         {/* Link to dashboard homepage */}
         <Link
           to="/dashboard"
-          className="flex h-full cursor-pointer items-center justify-center gap-2 px-2"
+          className="flex h-full  items-center justify-center gap-2 px-2"
         >
           <Logo />
         </Link>
@@ -76,7 +78,7 @@ function Sidebar({ logout }) {
         {/* Sidebar */}
         <div
           className={twMerge(
-            "fixed bottom-0 left-0 top-0 z-50 -translate-x-full transition-all duration-300 ease-in-out",
+            "fixed inset-y-0 left-0 z-30 -translate-x-full transition-all duration-300 ease-in-out",
             "flex h-screen w-72 min-w-[theme(width.72)] flex-col items-start justify-start overflow-auto px-2",
             "bg-primary-700 text-white",
             "md:translate-x-0 md:shadow-none",
@@ -88,15 +90,15 @@ function Sidebar({ logout }) {
             {/* Link to dashboard homepage */}
             <Link
               to="/dashboard"
-              onClick={openCloseSidebar}
-              className="flex h-full cursor-pointer items-center justify-center gap-3 px-3"
+              onClick={closeSidebar}
+              className="flex h-full items-center justify-center gap-3 px-3"
             >
               <Logo variant="sidebar" />
             </Link>
 
             {/* Button to close sidebar */}
             <Button
-              onClick={openCloseSidebar}
+              onClick={closeSidebar}
               variant="iconSidebar"
               className="md:hidden"
             >
@@ -109,7 +111,7 @@ function Sidebar({ logout }) {
             {/* Family group navigation link */}
             <NavLink
               to="/dashboard/family-group"
-              onClick={openCloseSidebar}
+              onClick={closeSidebar}
               className={({ isActive }) => {
                 return twMerge(
                   navLinkVariants.default,
@@ -124,7 +126,7 @@ function Sidebar({ logout }) {
             {/* Tasks navigation link */}
             <NavLink
               to="/dashboard/tasks"
-              onClick={openCloseSidebar}
+              onClick={closeSidebar}
               className={({ isActive }) => {
                 return twMerge(
                   navLinkVariants.default,
@@ -139,7 +141,7 @@ function Sidebar({ logout }) {
             {/* Rewards navigation link */}
             <NavLink
               to="/dashboard/rewards"
-              onClick={openCloseSidebar}
+              onClick={closeSidebar}
               className={({ isActive }) => {
                 return twMerge(
                   navLinkVariants.default,
@@ -154,7 +156,7 @@ function Sidebar({ logout }) {
             {/* Marketplace navigation link */}
             <NavLink
               to="/dashboard/marketplace"
-              onClick={openCloseSidebar}
+              onClick={closeSidebar}
               className={({ isActive }) => {
                 return twMerge(
                   navLinkVariants.default,
@@ -173,7 +175,7 @@ function Sidebar({ logout }) {
             <Link
               to="/"
               onClick={() => {
-                openCloseSidebar();
+                closeSidebar();
                 logout();
               }}
               className={twMerge(navLinkVariants.default)}
@@ -184,14 +186,13 @@ function Sidebar({ logout }) {
           </div>
         </div>
 
-        {/* Sidebar backdrop overlay */}
+        {/* Sidebar backdrop */}
         <div
-          onClick={openCloseSidebar}
+          onClick={closeSidebar}
           className={twMerge(
-            "fixed bottom-0 left-0 right-0 top-0 z-40 -translate-x-full",
-            "h-full w-full cursor-pointer bg-black opacity-40",
+            "fixed inset-0 z-20 transition-all duration-200 ease-in-out",
             "md:hidden",
-            isSidebarOpened && "translate-x-0"
+            isSidebarOpened ? "visible bg-black/60" : "invisible"
           )}
         ></div>
       </aside>

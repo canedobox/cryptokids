@@ -1,39 +1,36 @@
 import { twMerge } from "tailwind-merge";
 
-function Button({
-  children,
-  onClick,
-  isRounded = true,
-  isCircle = false,
-  isDisabled = false,
-  variant = "default",
-  className
-}) {
+function Button({ variant = "default", className, children, ...restProps }) {
   // Button variants.
   const variants = {
-    default:
-      "bg-primary-700 text-white px-4 py-2 font-semibold flex gap-2 whitespace-nowrap",
-    connected: "opacity-70",
-    icon: "bg-transparent text-current p-3 hover:bg-gray-200",
-    iconSidebar: "bg-transparent p-3 text-white hover:bg-primary-500",
-    isRounded: "rounded-2xl",
-    isCircle: "rounded-full",
-    isDisabled: "opacity-70"
+    default: twMerge(
+      "flex h-10 w-fit flex-row items-center justify-center gap-2 px-4 py-2",
+      "whitespace-nowrap rounded-lg border text-sm font-semibold uppercase",
+      "border-primary-700 bg-primary-700 text-white",
+      "hover:border-primary-600 hover:bg-primary-600",
+      "active:border-primary-800 active:bg-primary-800"
+    ),
+    large: "h-12 text-base px-6",
+    outline: "bg-transparent text-primary-700 hover:text-white",
+    "outline-gray": twMerge(
+      "border-gray-500 bg-transparent text-current",
+      "hover:border-gra-500 hover:bg-gray-500 hover:text-white"
+    ),
+    icon: twMerge(
+      "h-fit w-fit border-none bg-transparent p-3 text-current",
+      "hover:bg-gray-200 active:bg-gray-300"
+    ),
+    iconSidebar: twMerge(
+      "h-fit w-fit border-none bg-transparent p-3 text-white",
+      "hover:bg-primary-500 active:bg-primary-600"
+    )
   };
 
   // Return Button component.
   return (
     <button
-      onClick={onClick}
-      disabled={isDisabled}
-      className={twMerge(
-        variants.default,
-        variants[variant],
-        isRounded && variants.isRounded,
-        isCircle && variants.isCircle,
-        isDisabled && variants.isDisabled,
-        className
-      )}
+      className={twMerge(variants.default, variants[variant], className)}
+      {...restProps}
     >
       {children}
     </button>

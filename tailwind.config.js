@@ -11,8 +11,10 @@ module.exports = {
         poppins: ["Poppins", "sans-serif"]
       },
       screens: {
-        xs: "380px"
         // => @media (min-width: 380) { ... }
+        "2xs": "380px",
+        // => @media (min-width: 480) { ... }
+        xs: "480px"
       }
     },
     colors: {
@@ -24,7 +26,7 @@ module.exports = {
       primary: colors.indigo,
       accent: colors.yellow,
       gray: colors.slate,
-      error: colors.red
+      red: colors.red
     }
   },
   plugins: []

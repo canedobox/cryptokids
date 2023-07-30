@@ -1,22 +1,17 @@
-import { Link } from "react-router-dom";
+// Components
+import Button from "../components/Button";
 
-function Home() {
+function Home({ connectionHandler }) {
   // Return Home component.
   return (
     <>
-      <h1 className="text-3xl font-bold">Home</h1>
-      <Link
-        to="/signup"
-        className="flex h-16 cursor-pointer items-center justify-center gap-2 px-2"
-      >
-        Go to sign up page
-      </Link>
-      <Link
-        to="/dashboard"
-        className="flex h-16 cursor-pointer items-center justify-center gap-2 px-2"
-      >
-        Go to dashboard
-      </Link>
+      <h1 className="mb-4 text-center text-3xl font-bold">
+        Welcome to CryptoKids!
+      </h1>
+      {/* Button to connect wallet using MetaMask */}
+      <Button onClick={connectionHandler} variant="large">
+        Sign up as a parent
+      </Button>
     </>
   );
 }
