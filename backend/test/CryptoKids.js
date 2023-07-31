@@ -59,7 +59,7 @@ describe(`${CONTRACT_NAME} Smart Contract Automated Tests`, function () {
     // Add Task2.
     await contract
       .connect(parent1)
-      .addTask(child1.address, "Task2", 10, 1690757999); // Due date: 30th July 2023
+      .addTask(child1.address, "Task2", 10, 1693436399); // Due date: 30th August 2023
     // Complete Task2
     await contract.connect(child1).completeTask(completedTaskID);
 

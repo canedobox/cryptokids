@@ -9,6 +9,7 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy": "hardhat run scripts/deploy.js --network",
+    "data": "hardhat run scripts/testData.js --network",
     "verify": "hardhat verify --contract \"contracts/CryptoKids.sol:CryptoKids\" --network"
   },
   "devDependencies": {

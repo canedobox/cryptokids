@@ -24,6 +24,7 @@
     "hardhat-compile": "cd backend && npm run compile",
     "hardhat-test": "cd backend && npm run test",
     "hardhat-deploy": "cd backend && npm run deploy",
+    "hardhat-data": "cd backend && npm run data",
     "hardhat-verify": "cd backend && npm run verify"
   },
   "eslintConfig": {
