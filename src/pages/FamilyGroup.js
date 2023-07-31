@@ -13,7 +13,7 @@ function FamilyGroup({ contract, familyGroup, setErrorMessage }) {
     contract
       .addChild("0x90F79bf6EB2c4f870365E785982E1f101E93b906", "Child 1")
       .catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error);
       });
   };
 

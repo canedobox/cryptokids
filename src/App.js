@@ -159,13 +159,13 @@ function App() {
 
     // Get token symbol.
     const tokenSymbol_ = await contract_.symbol().catch((error) => {
-      setErrorMessage(error.message);
+      setErrorMessage(error);
     });
     setTokenSymbol(tokenSymbol_);
 
     // Get token decimals.
     const tokenDecimals_ = await contract_.decimals().catch((error) => {
-      setErrorMessage(error.message);
+      setErrorMessage(error);
     });
     setTokenDecimals(tokenDecimals_);
 
@@ -200,17 +200,17 @@ function App() {
     if (contract && account && accountType === "parent") {
       // Get user's family group.
       const familyGroup_ = await contract.getFamilyGroup().catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error);
       });
       setFamilyGroup(familyGroup_);
       // Get user's family group tasks.
       const tasks_ = await contract.getFamilyGroupTasks().catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error);
       });
       organizeTasks(tasks_);
       // Get user's family group rewards.
       const rewards_ = await contract.getFamilyGroupRewards().catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error);
       });
       organizeRewards(rewards_);
     }
@@ -218,19 +218,19 @@ function App() {
     else if (contract && account && accountType === "child") {
       // Get user's tasks.
       const tasks_ = await contract.getChildTasks().catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error);
       });
       organizeTasks(tasks_);
       // Get user's rewards.
       const rewards_ = await contract.getChildRewards().catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error);
       });
       organizeRewards(rewards_);
       // Get user's accountBalance.
       const accountBalance_ = await contract
         .balanceOf(account)
         .catch((error) => {
-          setErrorMessage(error.message);
+          setErrorMessage(error);
         });
       setAccountBalance(etherToNumber(accountBalance_));
     }
@@ -420,6 +420,7 @@ function App() {
                     accountType={accountType}
                     connectionHandler={connectionHandler}
                     errorMessage={errorMessage}
+                    setErrorMessage={setErrorMessage}
                   />
                 ) : (
                   // If accountType is "parent" or "child".
@@ -429,6 +430,7 @@ function App() {
                     logout={logout}
                     isDataLoading={isDataLoading}
                     errorMessage={errorMessage}
+                    setErrorMessage={setErrorMessage}
                   />
                 )
               }

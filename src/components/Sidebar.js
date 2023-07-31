@@ -56,7 +56,7 @@ function Sidebar({ accountType, logout }) {
         className={twMerge(
           "fixed inset-x-0 top-0 z-10",
           "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.80)] items-center justify-start px-2",
-          "bg-white shadow-sm",
+          "bg-white shadow-md",
           "md:hidden"
         )}
       >

@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import Modal from "../components/Modal";
 // Pages
 import SignUp from "../pages/forms/SignUp";
+import ErrorMessage from "../components/ErrorMessage";
 
 function WebsiteLayout({
   account,
@@ -70,15 +71,14 @@ function WebsiteLayout({
           "mt-16 min-h-[calc(theme(height.screen)-theme(width.16))] w-full p-4"
         )}
       >
-        {/* Error message */}
-        {errorMessage && (
-          <div className="w-full break-words p-4 text-center text-red-700">
-            {errorMessage.message ? errorMessage.message : errorMessage}
-          </div>
-        )}
         {/* Child route element */}
         <Outlet />
       </main>
+      {/* Error message */}
+      <ErrorMessage
+        errorMessage={errorMessage}
+        setErrorMessage={setErrorMessage}
+      />
     </div>
   );
 }
