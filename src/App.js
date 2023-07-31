@@ -6,6 +6,10 @@ import WebsiteLayout from "./layouts/WebsiteLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 // Pages
 import Home from "./pages/Home";
+import LoadingDashboard from "./pages/LoadingDashboard";
+import ConnectWallet from "./pages/ConnectWallet";
+import DashboardHome from "./pages/DashboardHome";
+import ProtectedPage from "./pages/ProtectedPage";
 import FamilyGroup from "./pages/FamilyGroup";
 import Tasks from "./pages/Tasks";
 import Rewards from "./pages/Rewards";
@@ -165,14 +169,10 @@ function App() {
             />
           }
         >
+          {/* Homepage */}
           <Route
             index
-            element={
-              <Home
-                connectionHandler={connectionHandler}
-                errorMessage={errorMessage}
-              />
-            }
+            element={<Home connectionHandler={connectionHandler} />}
           />
         </Route>
 
@@ -180,20 +180,59 @@ function App() {
         <Route
           path="dashboard"
           element={
-            <DashboardLayout
-              account={account}
-              accountType={accountType}
-              logout={logout}
-              isLoading={isLoading}
-              errorMessage={errorMessage}
-            />
+            <>
+              {
+                // If dashboard is loading.
+                isLoading ? (
+                  <LoadingDashboard />
+                ) : // If accountType is null or "not-registered".
+                !accountType || accountType === "not-registered" ? (
+                  <ConnectWallet
+                    accountType={accountType}
+                    connectionHandler={connectionHandler}
+                    errorMessage={errorMessage}
+                  />
+                ) : (
+                  // If accountType is "parent" or "child".
+                  <DashboardLayout
+                    account={account}
+                    accountType={accountType}
+                    logout={logout}
+                    isLoading={isLoading}
+                    errorMessage={errorMessage}
+                  />
+                )
+              }
+            </>
           }
         >
-          <Route index element={<FamilyGroup />} />
-          <Route path="family-group" element={<FamilyGroup />} />
+          {/* Dashboard homepage */}
+          <Route index element={<DashboardHome accountType={accountType} />} />
+          {/* Family group */}
+          <Route
+            path="family-group"
+            element={
+              <ProtectedPage accountType={accountType}>
+                <FamilyGroup
+                  contract={contract}
+                  setErrorMessage={setErrorMessage}
+                />
+              </ProtectedPage>
+            }
+          />
+          {/* Tasks */}
           <Route path="tasks" element={<Tasks />} />
+          {/* Rewards */}
           <Route path="rewards" element={<Rewards />} />
-          <Route path="marketplace" element={<Marketplace />} />
+          {/* Marketplace */}
+          <Route
+            path="marketplace"
+            element={
+              <ProtectedPage accountType={accountType}>
+                <Marketplace />
+              </ProtectedPage>
+            }
+          />
         </Route>
 
         {/* Page not found */}

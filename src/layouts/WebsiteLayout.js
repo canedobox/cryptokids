@@ -72,8 +72,8 @@ function WebsiteLayout({
       >
         {/* Error message */}
         {errorMessage && (
-          <div className="w-full break-words p-4 text-red-700">
-            {errorMessage.message.toString()}
+          <div className="w-full break-words p-4 text-center text-red-700">
+            {errorMessage.message ? errorMessage.message : errorMessage}
           </div>
         )}
         {/* Child route element */}

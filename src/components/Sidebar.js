@@ -13,7 +13,7 @@ import { ReactComponent as IconRewards } from "../assets/icons/rewards.svg";
 import { ReactComponent as IconMarketplace } from "../assets/icons/marketplace.svg";
 import { ReactComponent as IconLogout } from "../assets/icons/logout.svg";
 
-function Sidebar({ logout }) {
+function Sidebar({ accountType, logout }) {
   // State to check if the sidebar is opened.
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 
@@ -109,19 +109,21 @@ function Sidebar({ logout }) {
           {/* Sidebar navigation */}
           <nav className="flex h-full w-full flex-col gap-2 border-y border-primary-600 py-2">
             {/* Family group navigation link */}
-            <NavLink
-              to="/dashboard/family-group"
-              onClick={closeSidebar}
-              className={({ isActive }) => {
-                return twMerge(
-                  navLinkVariants.default,
-                  isActive && navLinkVariants.active
-                );
-              }}
-            >
-              <IconFamilyGroup />
-              Family Group
-            </NavLink>
+            {accountType === "parent" && (
+              <NavLink
+                to="/dashboard/family-group"
+                onClick={closeSidebar}
+                className={({ isActive }) => {
+                  return twMerge(
+                    navLinkVariants.default,
+                    isActive && navLinkVariants.active
+                  );
+                }}
+              >
+                <IconFamilyGroup />
+                Family Group
+              </NavLink>
+            )}
 
             {/* Tasks navigation link */}
             <NavLink
@@ -154,19 +156,21 @@ function Sidebar({ logout }) {
             </NavLink>
 
             {/* Marketplace navigation link */}
-            <NavLink
-              to="/dashboard/marketplace"
-              onClick={closeSidebar}
-              className={({ isActive }) => {
-                return twMerge(
-                  navLinkVariants.default,
-                  isActive && navLinkVariants.active
-                );
-              }}
-            >
-              <IconMarketplace />
-              Marketplace
-            </NavLink>
+            {accountType === "child" && (
+              <NavLink
+                to="/dashboard/marketplace"
+                onClick={closeSidebar}
+                className={({ isActive }) => {
+                  return twMerge(
+                    navLinkVariants.default,
+                    isActive && navLinkVariants.active
+                  );
+                }}
+              >
+                <IconMarketplace />
+                Marketplace
+              </NavLink>
+            )}
           </nav>
 
           {/* User profile info */}

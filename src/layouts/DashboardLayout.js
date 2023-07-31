@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 // Components
 import Sidebar from "../components/Sidebar";
 // Pages
@@ -16,7 +15,7 @@ function DashboardLayout({
   return (
     <div className="flex min-w-[theme(width.80)] flex-row">
       {/* Sidebar */}
-      <Sidebar logout={logout} />
+      <Sidebar accountType={accountType} logout={logout} />
       {/* Main */}
       <main className="mt-16 w-full p-4 md:ml-72 md:mt-0">
         {errorMessage && (
