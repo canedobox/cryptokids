@@ -1,6 +1,6 @@
 import Button from "../components/Button";
 
-function FamilyGroup({ contract, setErrorMessage }) {
+function FamilyGroup({ contract, familyGroup, setErrorMessage }) {
   /**
    * Add a child to the contract.
    * @param event - Event that triggered the function.
@@ -19,10 +19,11 @@ function FamilyGroup({ contract, setErrorMessage }) {
 
   // Return FamilyGroup component.
   return (
-    <>
+    <div className="flex w-full flex-col gap-4">
       <h1 className="text-3xl font-bold">Family Group</h1>
       <Button onClick={addChild}>Add Child</Button>
-    </>
+      <p className="w-full break-words">{familyGroup.toString()}</p>
+    </div>
   );
 }
 

@@ -24,11 +24,30 @@ function App() {
   // Account
   const [account, setAccount] = useState(null);
   const [accountType, setAccountType] = useState(null);
+  const [accountName, setAccountName] = useState(null);
+  const [accountBalance, setAccountBalance] = useState(0);
   // Contract
   const [contract, setContract] = useState(null);
+  const [tokenSymbol, setTokenSymbol] = useState(null);
+  const [tokenDecimals, setTokenDecimals] = useState(null);
   // Utils
-  const [isLoading, setIsLoading] = useState(null);
+  const [isDashboardLoading, setIsDashboardLoading] = useState(null);
+  const [isDataLoading, setIsDataLoading] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  // Family Group
+  const [familyGroup, setFamilyGroup] = useState([]);
+  // Tasks
+  const [tasksCounter, setTasksCounter] = useState(0);
+  const [openTasks, setOpenTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [approvedTasks, setApprovedTasks] = useState([]);
+  const [expiredTasks, setExpiredTasks] = useState([]);
+  // Rewards
+  const [rewardsCounter, setRewardsCounter] = useState(0);
+  const [openRewards, setOpenRewards] = useState([]);
+  const [purchasedRewards, setPurchasedRewards] = useState([]);
+  const [redeemedRewards, setRedeemedRewards] = useState([]);
+  const [approvedRewards, setApprovedRewards] = useState([]);
 
   /*******************************/
   /***** USER AUTHENTICATION *****/
@@ -54,8 +73,8 @@ function App() {
           // Reset some state values.
           setAccountType(null);
           setErrorMessage(null);
-          // Initialize the page.
-          pageInit();
+          // Initialize the application.
+          appInit();
         })
         .catch((error) => {
           setErrorMessage(error);
@@ -85,8 +104,19 @@ function App() {
     // Account
     setAccount(null);
     setAccountType(null);
+    setAccountName(null);
+    setAccountBalance(0);
+    // Contract
+    setContract(null);
+    setTokenSymbol(null);
+    setTokenDecimals(null);
     // Utils
+    setIsDashboardLoading(null);
+    setIsDataLoading(null);
     setErrorMessage(null);
+
+    // Reset data.
+    resetData();
   };
 
   /******************/
@@ -94,47 +124,237 @@ function App() {
   /******************/
 
   /**
-   * Initialize the page by establishing communication
+   * Initialize the application by establishing communication
    * with the contract and fetching initial data.
    */
-  const pageInit = async () => {
-    // Start loading.
-    setIsLoading(true);
+  const appInit = async () => {
+    // Start loading dashboard.
+    setIsDashboardLoading(true);
     setErrorMessage(null);
 
     // Get provider.
-    let provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     // Get signer.
-    let signer = provider.getSigner();
+    const signer = provider.getSigner();
 
     // Get network.
-    let network = await provider.getNetwork();
+    const network = await provider.getNetwork();
     // Check if the network is supported.
     if (!contractAddress[network.chainId]) {
       setErrorMessage(
         "Network not supported, connect to Sepolia test network instead."
       );
-      // Stop loading.
-      setIsLoading(false);
+      // Stop loading dashboard.
+      setIsDashboardLoading(false);
       return;
     }
 
     // Get contract.
-    let contract_ = new ethers.Contract(
+    const contract_ = new ethers.Contract(
       contractAddress[network.chainId].address,
       contractAbi,
       signer
     );
     setContract(contract_);
 
+    // Get token symbol.
+    const tokenSymbol_ = await contract_.symbol().catch((error) => {
+      setErrorMessage(error.message);
+    });
+    setTokenSymbol(tokenSymbol_);
+
+    // Get token decimals.
+    const tokenDecimals_ = await contract_.decimals().catch((error) => {
+      setErrorMessage(error.message);
+    });
+    setTokenDecimals(tokenDecimals_);
+
     // Get profile.
-    let profile = await contract_.getProfile().catch((error) => {
+    const profile = await contract_.getProfile().catch((error) => {
       setErrorMessage(error);
     });
     setAccountType(profile.accountType);
+    setAccountName(profile.name);
 
-    // Stop loading.
-    setIsLoading(false);
+    // Stop loading dashboard.
+    setIsDashboardLoading(false);
+  };
+
+  /*************************/
+  /***** CONTRACT DATA *****/
+  /*************************/
+
+  /**
+   * Fetch data from the contract based on the user's account type:
+   * parent or child.
+   */
+  const fetchData = async () => {
+    console.log("fetchData");
+    // Start loading data.
+    setIsDataLoading(true);
+    // Reset data.
+    resetData();
+    setErrorMessage(null);
+
+    // Check if user is a parent.
+    if (contract && account && accountType === "parent") {
+      // Get user's family group.
+      const familyGroup_ = await contract.getFamilyGroup().catch((error) => {
+        setErrorMessage(error.message);
+      });
+      setFamilyGroup(familyGroup_);
+      // Get user's family group tasks.
+      const tasks_ = await contract.getFamilyGroupTasks().catch((error) => {
+        setErrorMessage(error.message);
+      });
+      organizeTasks(tasks_);
+      // Get user's family group rewards.
+      const rewards_ = await contract.getFamilyGroupRewards().catch((error) => {
+        setErrorMessage(error.message);
+      });
+      organizeRewards(rewards_);
+    }
+    // Check if user is a child.
+    else if (contract && account && accountType === "child") {
+      // Get user's tasks.
+      const tasks_ = await contract.getChildTasks().catch((error) => {
+        setErrorMessage(error.message);
+      });
+      organizeTasks(tasks_);
+      // Get user's rewards.
+      const rewards_ = await contract.getChildRewards().catch((error) => {
+        setErrorMessage(error.message);
+      });
+      organizeRewards(rewards_);
+      // Get user's accountBalance.
+      const accountBalance_ = await contract
+        .balanceOf(account)
+        .catch((error) => {
+          setErrorMessage(error.message);
+        });
+      setAccountBalance(etherToNumber(accountBalance_));
+    }
+
+    // Stop loading data.
+    setIsDataLoading(false);
+  };
+
+  /**
+   * Reset all data related to family groups, tasks, and rewards.
+   */
+  const resetData = () => {
+    // Reset state values.
+    // Account
+    setAccountBalance(0);
+    // Family group
+    setFamilyGroup([]);
+    // Tasks
+    setTasksCounter(0);
+    setOpenTasks([]);
+    setCompletedTasks([]);
+    setApprovedTasks([]);
+    setExpiredTasks([]);
+    // Rewards
+    setRewardsCounter(0);
+    setOpenRewards([]);
+    setPurchasedRewards([]);
+    setRedeemedRewards([]);
+    setApprovedRewards([]);
+  };
+
+  /**
+   * Organize tasks into different categories based on their status:
+   * approved, completed, expired, or open.
+   * @param tasks - An array of tasks.
+   */
+  const organizeTasks = (tasks) => {
+    // Set tasks counter.
+    setTasksCounter(tasks.length);
+    // Loop through tasks.
+    tasks.map((task) => {
+      // Check if task was approved.
+      if (task.approved) {
+        setApprovedTasks((prevState) => [...prevState, task]);
+      }
+      // Check if task was completed.
+      else if (task.completed) {
+        setCompletedTasks((prevState) => [...prevState, task]);
+      }
+      // Check if task is expired.
+      else if (
+        task.dueDate > 0 &&
+        task.dueDate < Math.floor(Date.now() / 1000)
+      ) {
+        setExpiredTasks((prevState) => [...prevState, task]);
+      }
+      // Task still open.
+      else {
+        setOpenTasks((prevState) => [...prevState, task]);
+      }
+      return true;
+    });
+  };
+
+  /**
+   * Organize rewards into different categories based on their status:
+   * approved, redeemed, purchased, or open.
+   * @param rewards - An array of rewards.
+   */
+  const organizeRewards = (rewards) => {
+    // Set rewards counter.
+    setRewardsCounter(rewards.length);
+    // Loop through rewards.
+    rewards.map((reward) => {
+      // Check if reward was approved.
+      if (reward.approved) {
+        setApprovedRewards((prevState) => [...prevState, reward]);
+      }
+      // Check if reward was redeemed.
+      else if (reward.redeemed) {
+        setRedeemedRewards((prevState) => [...prevState, reward]);
+      }
+      // Check if reward was purchased.
+      else if (reward.purchased) {
+        setPurchasedRewards((prevState) => [...prevState, reward]);
+      }
+      // Reward still open.
+      else {
+        setOpenRewards((prevState) => [...prevState, reward]);
+      }
+      return true;
+    });
+  };
+
+  /*****************/
+  /***** UTILS *****/
+  /*****************/
+
+  /**
+   * Converts a number to its equivalent value in Ether
+   * using the contract decimals.
+   * Example: 1 to 1000000000000000000
+   * @param value - Number to be converted.
+   */
+  const numberToEther = (value) => {
+    if (tokenDecimals) {
+      return ethers.utils
+        .parseUnits(value.toString(), tokenDecimals)
+        .toString();
+    }
+  };
+
+  /**
+   * Converts a Ether value to its equivalent number
+   * using the contract decimals.
+   * Example: 1000000000000000000 to 1
+   * @param value - Ether value to be converted.
+   */
+  const etherToNumber = (value) => {
+    if (tokenDecimals) {
+      return parseFloat(
+        ethers.utils.formatUnits(value.toString(), tokenDecimals).toString()
+      );
+    }
   };
 
   /***********************/
@@ -147,9 +367,18 @@ function App() {
   useEffect(() => {
     // Check if MetaMask is installed and account exists.
     if (window.ethereum && window.ethereum.isMetaMask && account) {
-      pageInit();
+      // Initialize the application.
+      appInit();
     }
   }, [account]);
+
+  /**
+   * Listen for changes to `accountType`.
+   */
+  useEffect(() => {
+    console.log("accountType changed");
+    fetchData();
+  }, [accountType]);
 
   // Return App component.
   return (
@@ -183,7 +412,7 @@ function App() {
             <>
               {
                 // If dashboard is loading.
-                isLoading ? (
+                isDashboardLoading ? (
                   <LoadingDashboard />
                 ) : // If accountType is null or "not-registered".
                 !accountType || accountType === "not-registered" ? (
@@ -198,7 +427,7 @@ function App() {
                     account={account}
                     accountType={accountType}
                     logout={logout}
-                    isLoading={isLoading}
+                    isDataLoading={isDataLoading}
                     errorMessage={errorMessage}
                   />
                 )
@@ -215,21 +444,47 @@ function App() {
               <ProtectedPage accountType={accountType}>
                 <FamilyGroup
                   contract={contract}
+                  familyGroup={familyGroup}
                   setErrorMessage={setErrorMessage}
                 />
               </ProtectedPage>
             }
           />
           {/* Tasks */}
-          <Route path="tasks" element={<Tasks />} />
+          <Route
+            path="tasks"
+            element={
+              <Tasks
+                tasksCounter={tasksCounter}
+                openTasks={openTasks}
+                completedTasks={completedTasks}
+                approvedTasks={approvedTasks}
+                expiredTasks={expiredTasks}
+              />
+            }
+          />
           {/* Rewards */}
-          <Route path="rewards" element={<Rewards />} />
+          <Route
+            path="rewards"
+            element={
+              <Rewards
+                rewardsCounter={rewardsCounter}
+                openRewards={openRewards}
+                purchasedRewards={purchasedRewards}
+                redeemedRewards={redeemedRewards}
+                approvedRewards={approvedRewards}
+              />
+            }
+          />
           {/* Marketplace */}
           <Route
             path="marketplace"
             element={
               <ProtectedPage accountType={accountType}>
-                <Marketplace />
+                <Marketplace
+                  rewardsCounter={openRewards.length}
+                  openRewards={openRewards}
+                />
               </ProtectedPage>
             }
           />
