@@ -21,7 +21,6 @@ function Modal({ title, isModalOpened, setIsModalOpened, children }) {
     <>
       {/* Modal backdrop */}
       <div
-        onClick={closeModal}
         className={twMerge(
           "fixed inset-0 z-40 transition-all duration-300 ease-in-out",
           "flex min-w-[theme(width.80)] items-center justify-center",

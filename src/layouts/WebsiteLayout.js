@@ -13,27 +13,15 @@ function WebsiteLayout({
   accountType,
   contract,
   connectionHandler,
+  isModalOpened,
+  setIsModalOpened,
+  openModal,
   errorMessage,
   setErrorMessage
 }) {
-  /***** STATES *****/
-  // State to check if the modal is opened.
-  const [isModalOpened, setIsModalOpened] = useState(false);
-
   /***** UTILS *****/
   // Set useNavigate hook.
   const navigateTo = useNavigate();
-
-  /**
-   * Open modal.
-   */
-  const openModal = () => {
-    // Disable body scrollbars.
-    document.body.classList.add("overflow-hidden");
-
-    // Open modal.
-    setIsModalOpened(true);
-  };
 
   /**
    * Listen for changes to `accountType`.

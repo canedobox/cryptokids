@@ -12,7 +12,7 @@ function Button({ variant = "default", className, children, ...restProps }) {
     ),
     large: "h-12 text-base px-6",
     outline: "bg-transparent text-primary-700 hover:text-white",
-    "outline-gray": twMerge(
+    outlineGray: twMerge(
       "border-gray-500 bg-transparent text-current",
       "hover:border-gra-500 hover:bg-gray-500 hover:text-white"
     ),

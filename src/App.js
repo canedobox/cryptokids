@@ -33,6 +33,7 @@ function App() {
   // Utils
   const [isDashboardLoading, setIsDashboardLoading] = useState(null);
   const [isDataLoading, setIsDataLoading] = useState(null);
+  const [isModalOpened, setIsModalOpened] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   // Family Group
   const [familyGroup, setFamilyGroup] = useState([]);
@@ -330,6 +331,17 @@ function App() {
   /*****************/
 
   /**
+   * Open modal window.
+   */
+  const openModal = () => {
+    // Disable body scrollbars.
+    document.body.classList.add("overflow-hidden");
+
+    // Open modal.
+    setIsModalOpened(true);
+  };
+
+  /**
    * Converts a number to its equivalent value in Ether
    * using the contract decimals.
    * Example: 1 to 1000000000000000000
@@ -393,6 +405,9 @@ function App() {
               accountType={accountType}
               contract={contract}
               connectionHandler={connectionHandler}
+              isModalOpened={isModalOpened}
+              setIsModalOpened={setIsModalOpened}
+              openModal={openModal}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
             />
@@ -447,6 +462,9 @@ function App() {
                 <FamilyGroup
                   contract={contract}
                   familyGroup={familyGroup}
+                  isModalOpened={isModalOpened}
+                  setIsModalOpened={setIsModalOpened}
+                  openModal={openModal}
                   setErrorMessage={setErrorMessage}
                 />
               </ProtectedPage>
@@ -457,11 +475,17 @@ function App() {
             path="tasks"
             element={
               <Tasks
+                accountType={accountType}
+                contract={contract}
                 tasksCounter={tasksCounter}
                 openTasks={openTasks}
                 completedTasks={completedTasks}
                 approvedTasks={approvedTasks}
                 expiredTasks={expiredTasks}
+                isModalOpened={isModalOpened}
+                setIsModalOpened={setIsModalOpened}
+                setErrorMessage={setErrorMessage}
+                utils={{ openModal, numberToEther, etherToNumber }}
               />
             }
           />
@@ -470,11 +494,17 @@ function App() {
             path="rewards"
             element={
               <Rewards
+                accountType={accountType}
+                contract={contract}
                 rewardsCounter={rewardsCounter}
                 openRewards={openRewards}
                 purchasedRewards={purchasedRewards}
                 redeemedRewards={redeemedRewards}
                 approvedRewards={approvedRewards}
+                isModalOpened={isModalOpened}
+                setIsModalOpened={setIsModalOpened}
+                setErrorMessage={setErrorMessage}
+                utils={{ openModal, numberToEther, etherToNumber }}
               />
             }
           />
