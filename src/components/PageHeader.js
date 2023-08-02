@@ -13,7 +13,7 @@ function PageHeader({ title, filterChild = true, cta }) {
       )}
     >
       {/* Title */}
-      <h1 className="text-lg font-medium">{title}</h1>
+      <h1 className="text-xl font-medium">{title}</h1>
       {/* CTA */}
       {cta && (
         <div className="flex flex-row items-center gap-4 text-sm">

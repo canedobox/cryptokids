@@ -33,7 +33,6 @@ function App() {
   // Utils
   const [isDashboardLoading, setIsDashboardLoading] = useState(null);
   const [isDataLoading, setIsDataLoading] = useState(null);
-  const [isModalOpened, setIsModalOpened] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   // Family Group
   const [familyGroup, setFamilyGroup] = useState([]);
@@ -190,7 +189,6 @@ function App() {
    * parent or child.
    */
   const fetchData = async () => {
-    console.log("fetchData");
     // Start loading data.
     setIsDataLoading(true);
     // Reset data.
@@ -333,12 +331,23 @@ function App() {
   /**
    * Open modal window.
    */
-  const openModal = () => {
+  const openModal = (setIsModalOpened) => {
     // Disable body scrollbars.
     document.body.classList.add("overflow-hidden");
 
     // Open modal.
     setIsModalOpened(true);
+  };
+
+  /**
+   * Close modal.
+   */
+  const closeModal = (setIsModalOpened) => {
+    // Enable body scrollbars.
+    document.body.classList.remove("overflow-hidden");
+
+    // Close modal.
+    setIsModalOpened(false);
   };
 
   /**
@@ -388,7 +397,6 @@ function App() {
    * Listen for changes to `accountType`.
    */
   useEffect(() => {
-    console.log("accountType changed");
     fetchData();
   }, [accountType]);
 
@@ -405,11 +413,9 @@ function App() {
               accountType={accountType}
               contract={contract}
               connectionHandler={connectionHandler}
-              isModalOpened={isModalOpened}
-              setIsModalOpened={setIsModalOpened}
-              openModal={openModal}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
+              utils={{ openModal, closeModal }}
             />
           }
         >
@@ -442,8 +448,8 @@ function App() {
                   <DashboardLayout
                     account={account}
                     accountType={accountType}
+                    fetchData={fetchData}
                     logout={logout}
-                    isDataLoading={isDataLoading}
                     errorMessage={errorMessage}
                     setErrorMessage={setErrorMessage}
                   />
@@ -461,11 +467,11 @@ function App() {
               <ProtectedPage accountType={accountType}>
                 <FamilyGroup
                   contract={contract}
+                  tokenSymbol={tokenSymbol}
                   familyGroup={familyGroup}
-                  isModalOpened={isModalOpened}
-                  setIsModalOpened={setIsModalOpened}
-                  openModal={openModal}
+                  isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
+                  utils={{ openModal, closeModal, etherToNumber }}
                 />
               </ProtectedPage>
             }
@@ -477,15 +483,17 @@ function App() {
               <Tasks
                 accountType={accountType}
                 contract={contract}
+                tokenSymbol={tokenSymbol}
                 tasksCounter={tasksCounter}
-                openTasks={openTasks}
-                completedTasks={completedTasks}
-                approvedTasks={approvedTasks}
-                expiredTasks={expiredTasks}
-                isModalOpened={isModalOpened}
-                setIsModalOpened={setIsModalOpened}
+                taskLists={[
+                  completedTasks,
+                  openTasks,
+                  approvedTasks,
+                  expiredTasks
+                ]}
+                isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
-                utils={{ openModal, numberToEther, etherToNumber }}
+                utils={{ openModal, closeModal, numberToEther, etherToNumber }}
               />
             }
           />
@@ -496,15 +504,17 @@ function App() {
               <Rewards
                 accountType={accountType}
                 contract={contract}
+                tokenSymbol={tokenSymbol}
                 rewardsCounter={rewardsCounter}
-                openRewards={openRewards}
-                purchasedRewards={purchasedRewards}
-                redeemedRewards={redeemedRewards}
-                approvedRewards={approvedRewards}
-                isModalOpened={isModalOpened}
-                setIsModalOpened={setIsModalOpened}
+                rewardLists={[
+                  openRewards,
+                  redeemedRewards,
+                  purchasedRewards,
+                  approvedRewards
+                ]}
+                isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
-                utils={{ openModal, numberToEther, etherToNumber }}
+                utils={{ openModal, closeModal, numberToEther, etherToNumber }}
               />
             }
           />
@@ -516,6 +526,7 @@ function App() {
                 <Marketplace
                   rewardsCounter={openRewards.length}
                   openRewards={openRewards}
+                  isDataLoading={isDataLoading}
                 />
               </ProtectedPage>
             }

@@ -1,56 +1,106 @@
+import { useState } from "react";
 // Components
-import Modal from "../components/Modal";
 import PageHeader from "../components/PageHeader";
 // Pages
-import AddTask from "./forms/AddTask";
+import Loading from "./Loading";
+// Modals
+import AddTask from "./modals/AddTask";
 
 function Tasks({
   accountType,
   contract,
+  tokenSymbol,
   tasksCounter,
-  openTasks,
-  completedTasks,
-  approvedTasks,
-  expiredTasks,
-  isModalOpened,
-  setIsModalOpened,
+  taskLists,
+  isDataLoading,
   setErrorMessage,
   utils
 }) {
+  /***** STATES *****/
+  // State variable to control modal.
+  const [isModalOpened, setIsModalOpened] = useState(false);
+
   // Return Tasks component.
   return (
     <>
       {/* Modal, for parent only */}
       {accountType === "parent" && (
-        <Modal
-          title="Add Task"
+        <AddTask
+          contract={contract}
           isModalOpened={isModalOpened}
           setIsModalOpened={setIsModalOpened}
-        >
-          <AddTask
-            contract={contract}
-            setErrorMessage={setErrorMessage}
-            utils={utils}
-          />
-        </Modal>
+          setErrorMessage={setErrorMessage}
+          utils={utils}
+        />
       )}
       {/* Page header */}
       {accountType === "parent" ? (
         <PageHeader
           title="Tasks"
-          cta={{ label: "Add Task", onClick: utils.openModal }}
+          cta={{
+            label: "Add Task",
+            onClick: () => {
+              utils.openModal(setIsModalOpened);
+            }
+          }}
         />
       ) : (
         <PageHeader title="Tasks" />
       )}
       {/* Page content */}
-      <div className="flex w-full flex-col gap-4">
-        <p className="w-full break-words">{tasksCounter}</p>
-        <p className="w-full break-words">{openTasks.toString()}</p>
-        <p className="w-full break-words">{completedTasks.toString()}</p>
-        <p className="w-full break-words">{approvedTasks.toString()}</p>
-        <p className="w-full break-words">{expiredTasks.toString()}</p>
-      </div>
+      {/* If data is finished loading, render tasks. */}
+      {isDataLoading ? (
+        <Loading />
+      ) : (
+        <div className="flex w-full flex-col gap-4 p-4">
+          {tasksCounter && tasksCounter === 0 ? (
+            <div>No tasks.</div>
+          ) : (
+            taskLists &&
+            taskLists.map((tasks, index) => {
+              return (
+                <table className="w-full table-auto">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2">Task ID</th>
+                      <th className="px-4 py-2">{`Tasks - ${tasks.length}`}</th>
+                      <th className="px-4 py-2">Assigned to</th>
+                      <th className="px-4 py-2">Date</th>
+                      <th className="px-4 py-2">Reward</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-center">
+                    {tasks.length > 0 &&
+                      tasks.map((task, taskIndex) => (
+                        <tr key={taskIndex}>
+                          <td className="border px-4 py-2">
+                            {task.taskId.toString()}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {task.description}
+                          </td>
+                          <td className="border px-4 py-2">{`${task.assignedTo.slice(
+                            0,
+                            4
+                          )}...${task.assignedTo.slice(38, 42)}`}</td>
+                          <td className="border px-4 py-2">
+                            {task.dueDate > 0 &&
+                              new Date(task.dueDate * 1000).toDateString()}
+                          </td>
+                          <td className="border px-4 py-2">
+                            {`${utils.etherToNumber(
+                              task.reward.toString()
+                            )} ${tokenSymbol}`}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              );
+            })
+          )}
+        </div>
+      )}
     </>
   );
 }

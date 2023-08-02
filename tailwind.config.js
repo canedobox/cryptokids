@@ -15,6 +15,9 @@ module.exports = {
         "2xs": "380px",
         // => @media (min-width: 480) { ... }
         xs: "480px"
+      },
+      spacing: {
+        128: "25rem"
       }
     },
     colors: {

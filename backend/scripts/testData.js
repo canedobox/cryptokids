@@ -36,17 +36,21 @@ async function main() {
   const approvedTaskID = 3;
 
   // Add Task1.
-  await contract.connect(parent1).addTask(child1.address, "Task1", 10, 0); // No due date
+  await contract
+    .connect(parent1)
+    .addTask(child1.address, "Task1", "10000000000000000000", 0); // No due date
 
   // Add Task2.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Task2", 10, 1693436399); // Due date: 30th August 2023
+    .addTask(child1.address, "Task2", "10000000000000000000", 1693436399); // Due date: 30th August 2023
   // Complete Task2
   await contract.connect(child1).completeTask(completedTaskID);
 
   // Add Task3.
-  await contract.connect(parent1).addTask(child1.address, "Task2", 35, 0);
+  await contract
+    .connect(parent1)
+    .addTask(child1.address, "Task2", "35000000000000000000", 0);
   // Complete Task3.
   await contract.connect(child1).completeTask(approvedTaskID);
   // Approve Task3 completion.
@@ -55,7 +59,7 @@ async function main() {
   // Add Task4.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Task4", 10, 1689893999); // Expired
+    .addTask(child1.address, "Task4", "10000000000000000000", 1689893999); // Expired
 
   /***** REWARDS *****/
   // Reward IDs.
@@ -64,24 +68,34 @@ async function main() {
   const approvedRewardID = 5;
 
   // Add Reward1.
-  await contract.connect(parent1).addReward(child1.address, "Reward1", 5);
+  await contract
+    .connect(parent1)
+    .addReward(child1.address, "Reward1", "5000000000000000000");
   // Add Reward1.
-  await contract.connect(parent1).addReward(child1.address, "Reward2", 10);
+  await contract
+    .connect(parent1)
+    .addReward(child1.address, "Reward2", "10000000000000000000");
 
   // Add Reward2.
-  await contract.connect(parent1).addReward(child1.address, "Reward3", 10);
+  await contract
+    .connect(parent1)
+    .addReward(child1.address, "Reward3", "10000000000000000000");
   // Purchase Reward2.
   await contract.connect(child1).purchaseReward(purchasedRewardID);
 
   // Add Reward3.
-  await contract.connect(parent1).addReward(child1.address, "Reward4", 10);
+  await contract
+    .connect(parent1)
+    .addReward(child1.address, "Reward4", "10000000000000000000");
   // Purchase Reward3.
   await contract.connect(child1).purchaseReward(redeemedRewardID);
   // Redeem Reward3.
   await contract.connect(child1).redeemReward(redeemedRewardID);
 
   // Add Reward4.
-  await contract.connect(parent1).addReward(child1.address, "Reward5", 10);
+  await contract
+    .connect(parent1)
+    .addReward(child1.address, "Reward5", "10000000000000000000");
   // Purchase Reward4.
   await contract.connect(child1).purchaseReward(approvedRewardID);
   // Redeem Reward4.

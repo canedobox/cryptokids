@@ -3,13 +3,13 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import ErrorMessage from "../components/ErrorMessage";
 // Pages
-import Loading from "../pages/Loading";
+import Button from "../components/Button";
 
 function DashboardLayout({
   account,
   accountType,
+  fetchData,
   logout,
-  isDataLoading,
   errorMessage,
   setErrorMessage
 }) {
@@ -19,10 +19,9 @@ function DashboardLayout({
       {/* Sidebar */}
       <Sidebar accountType={accountType} logout={logout} />
       {/* Main */}
-      <main className="box-border w-full pt-16 md:pl-72 md:pt-0">
-        <section className="box-border flex w-full flex-col items-start justify-start">
-          {/* Loading or child route element */}
-          {isDataLoading ? <Loading /> : <Outlet />}
+      <main className="box-border min-h-screen w-full pt-16 md:pl-72 md:pt-0">
+        <section className="box-border flex h-full w-full flex-col items-start justify-start">
+          <Outlet />
         </section>
       </main>
       {/* Error message */}
@@ -30,6 +29,14 @@ function DashboardLayout({
         errorMessage={errorMessage}
         setErrorMessage={setErrorMessage}
       />
+      {/* Refresh button */}
+      <Button
+        variant="outline"
+        className="fixed bottom-4 right-4 bg-white shadow-md"
+        onClick={fetchData}
+      >
+        Refresh
+      </Button>
     </div>
   );
 }

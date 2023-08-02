@@ -3,22 +3,24 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 // Components
 import Header from "../components/Header";
-import Modal from "../components/Modal";
 // Pages
-import SignUp from "../pages/forms/SignUp";
 import ErrorMessage from "../components/ErrorMessage";
+// Modals
+import SignUp from "../pages/modals/SignUp";
 
 function WebsiteLayout({
   account,
   accountType,
   contract,
   connectionHandler,
-  isModalOpened,
-  setIsModalOpened,
-  openModal,
   errorMessage,
-  setErrorMessage
+  setErrorMessage,
+  utils
 }) {
+  /***** STATES *****/
+  // State variable to control modal.
+  const [isModalOpened, setIsModalOpened] = useState(false);
+
   /***** UTILS *****/
   // Set useNavigate hook.
   const navigateTo = useNavigate();
@@ -29,8 +31,8 @@ function WebsiteLayout({
   useEffect(() => {
     // If user is not registered.
     if (accountType === "not-registered") {
-      // Show sign up form.
-      openModal();
+      // Open sign up modal.
+      utils.openModal(setIsModalOpened);
     }
     // If account type is "parent" or "child".
     else if (accountType === "parent" || accountType === "child") {
@@ -42,14 +44,15 @@ function WebsiteLayout({
   // Return WebsiteLayout component.
   return (
     <div className="flex min-w-[theme(width.80)] flex-col">
-      {/* Modal */}
-      <Modal
-        title="Sign up as a parent"
+      {/* Sign up modal */}
+      <SignUp
+        contract={contract}
         isModalOpened={isModalOpened}
         setIsModalOpened={setIsModalOpened}
-      >
-        <SignUp contract={contract} setErrorMessage={setErrorMessage} />
-      </Modal>
+        setErrorMessage={setErrorMessage}
+        utils={utils}
+      />
+
       {/* Header */}
       <Header account={account} connectionHandler={connectionHandler} />
       {/* Main */}

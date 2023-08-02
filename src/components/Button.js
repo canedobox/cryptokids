@@ -14,7 +14,8 @@ function Button({ variant = "default", className, children, ...restProps }) {
     outline: "bg-transparent text-primary-700 hover:text-white",
     outlineGray: twMerge(
       "border-gray-500 bg-transparent text-current",
-      "hover:border-gra-500 hover:bg-gray-500 hover:text-white"
+      "hover:border-gray-500 hover:bg-gray-500 hover:text-white",
+      "active:border-gray-700 active:bg-gray-700 active:text-white"
     ),
     clearErrorMessage: twMerge(
       "h-fit w-fit rounded-b-none border p-1 px-3 text-current",

@@ -4,18 +4,14 @@ import Button from "./Button";
 // Icons
 import { ReactComponent as IconClose } from "../assets/icons/close.svg";
 
-function Modal({ title, isModalOpened, setIsModalOpened, children }) {
-  /**
-   * Close modal.
-   */
-  const closeModal = () => {
-    // Enable body scrollbars.
-    document.body.classList.remove("overflow-hidden");
-
-    // Close modal.
-    setIsModalOpened(false);
-  };
-
+function Modal({
+  title,
+  isModalOpened,
+  setIsModalOpened,
+  cta,
+  utils,
+  children
+}) {
   // Return Home component.
   return (
     <>
@@ -23,7 +19,8 @@ function Modal({ title, isModalOpened, setIsModalOpened, children }) {
       <div
         className={twMerge(
           "fixed inset-0 z-40 transition-all duration-300 ease-in-out",
-          "flex min-w-[theme(width.80)] items-center justify-center",
+          "flex min-w-[theme(width.80)] items-center justify-center xs:p-4",
+          cta && "p-4",
           isModalOpened ? "visible bg-black/60" : "invisible"
         )}
       >
@@ -36,7 +33,9 @@ function Modal({ title, isModalOpened, setIsModalOpened, children }) {
             "z-50 transition-all duration-200 ease-in-out",
             "flex h-full w-full flex-col items-center justify-start",
             "overflow-hidden bg-white shadow-md",
-            "xs:h-fit xs:w-fit xs:min-w-[theme(width.80)] xs:max-w-xl xs:rounded-xl",
+            cta
+              ? "h-fit w-fit min-w-[theme(width.80)] max-w-xl rounded-xl"
+              : "xs:h-fit xs:w-fit xs:min-w-[theme(width.80)] xs:max-w-xl xs:rounded-xl",
             isModalOpened ? "scale-100 opacity-100" : "scale-90 opacity-0"
           )}
         >
@@ -51,7 +50,13 @@ function Modal({ title, isModalOpened, setIsModalOpened, children }) {
             {title && <h1 className="text-lg font-medium">{title}</h1>}
             {/* Button to close sidebar */}
             <Button
-              onClick={closeModal}
+              onClick={
+                cta && cta.cancel
+                  ? cta.cancel.onClick
+                  : () => {
+                      utils.closeModal(setIsModalOpened);
+                    }
+              }
               variant="icon"
               className={!title && "rounded-r-none rounded-t-none"}
             >
@@ -68,6 +73,24 @@ function Modal({ title, isModalOpened, setIsModalOpened, children }) {
           >
             {children}
           </div>
+
+          {/* CTA */}
+          {cta && (
+            <div className="flex w-full flex-row items-center justify-end gap-4 bg-gray-200 p-4">
+              {/* Cancel */}
+              {cta.cancel && (
+                <Button variant="outlineGray" onClick={cta.cancel.onClick}>
+                  {cta.cancel.label}
+                </Button>
+              )}
+              {/* Confirm */}
+              {cta.confirm && (
+                <Button onClick={cta.confirm.onClick}>
+                  {cta.confirm.label}
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
