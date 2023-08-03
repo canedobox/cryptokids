@@ -8,7 +8,6 @@ import Button from "../components/Button";
 function DashboardLayout({
   account,
   accountType,
-  fetchData,
   logout,
   errorMessage,
   setErrorMessage,
@@ -30,14 +29,6 @@ function DashboardLayout({
         errorMessage={errorMessage}
         setErrorMessage={setErrorMessage}
       />
-      {/* Refresh button */}
-      <Button
-        variant="outline"
-        className="fixed bottom-4 left-40 z-30 bg-white shadow-md"
-        onClick={fetchData}
-      >
-        Refresh
-      </Button>
     </div>
   );
 }

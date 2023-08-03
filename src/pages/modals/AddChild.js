@@ -27,7 +27,7 @@ function AddChild({
       {/* Add child form */}
       <form
         ref={formRef}
-        onSubmit={addChild}
+        onSubmit={(event) => addChild(event, formRef)}
         className="flex w-full flex-col gap-4"
       >
         {/* Child wallet address */}

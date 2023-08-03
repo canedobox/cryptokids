@@ -28,7 +28,11 @@ function AddEditTask({
       {/* Add|Edit task form */}
       <form
         ref={formRef}
-        onSubmit={editTask ? editTask : addTask}
+        onSubmit={
+          editTask
+            ? (event) => editTask(event, formRef)
+            : (event) => addTask(event, formRef)
+        }
         className="flex w-full flex-col gap-4"
       >
         {/* Child wallet address */}

@@ -39,33 +39,41 @@ function FamilyGroup({
   /**
    * Deselect a child.
    */
-  const deselectChild = (formRef = null) => {
+  const deselectChild = (formRef_ = null) => {
     // Deselect child.
     setSelectedChild(null);
     // Close modal.
-    if (formRef) {
+    if (formRef_) {
       utils.closeModal(setIsModalOpened);
     } else {
       utils.closeModal(setIsModalOpened2);
     }
     // Check if form exists.
-    if (formRef) {
+    if (formRef_) {
       // Reset form.
-      formRef.current.reset();
+      formRef_.current.reset();
     }
   };
 
   /**
    * Add a child to the contract.
    * @param event - Event that triggered the function.
+   * @param formRef - Form reference.
    */
-  const addChild = (event) => {
+  const addChild = (event, formRef) => {
     event.preventDefault();
     setErrorMessage(null);
 
     // Call the `addChild` function on the contract.
     contract
       .addChild(event.target.childAddress.value, event.target.childName.value)
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectChild(formRef);
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -79,9 +87,18 @@ function FamilyGroup({
     setErrorMessage(null);
 
     // Call the `removeChild` function on the contract.
-    contract.removeChild(child.childAddress).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .removeChild(child.childAddress)
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectChild();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   // Return FamilyGroup component.

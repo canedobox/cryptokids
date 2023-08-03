@@ -67,8 +67,9 @@ function Tasks({
   /**
    * Add a task to the contract.
    * @param event - Event that triggered the function.
+   * @param formRef - Form reference.
    */
-  const addTask = (event) => {
+  const addTask = (event, formRef) => {
     event.preventDefault();
     setErrorMessage(null);
 
@@ -105,6 +106,13 @@ function Tasks({
         taskReward,
         taskDueDate
       )
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectTask(formRef);
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -113,8 +121,9 @@ function Tasks({
   /**
    * Edit a task to the contract.
    * @param event - Event that triggered the function.
+   * @param formRef - Form reference.
    */
-  const editTask = (event) => {
+  const editTask = (event, formRef) => {
     event.preventDefault();
     setErrorMessage(null);
 
@@ -151,6 +160,13 @@ function Tasks({
         taskReward,
         taskDueDate
       )
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectTask(formRef);
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -164,9 +180,18 @@ function Tasks({
     setErrorMessage(null);
 
     // Call the `deleteTask` function on the contract.
-    contract.deleteTask(task.taskId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .deleteTask(task.taskId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectTask();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /**
@@ -177,9 +202,18 @@ function Tasks({
     setErrorMessage(null);
 
     // Call the `completeTask` function on the contract.
-    contract.completeTask(task.taskId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .completeTask(task.taskId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectTask();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /**
@@ -190,9 +224,18 @@ function Tasks({
     setErrorMessage(null);
 
     // Call the `cancelTaskCompletion` function on the contract.
-    contract.cancelTaskCompletion(task.taskId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .cancelTaskCompletion(task.taskId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectTask();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /**
@@ -203,9 +246,18 @@ function Tasks({
     setErrorMessage(null);
 
     // Call the `approveTaskCompletion` function on the contract.
-    contract.approveTaskCompletion(task.taskId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .approveTaskCompletion(task.taskId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectTask();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /***** VARIABLES *****/

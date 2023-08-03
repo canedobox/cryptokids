@@ -67,8 +67,9 @@ function Rewards({
   /**
    * Add a reward to the contract.
    * @param event - Event that triggered the function.
+   * @param formRef - Form reference.
    */
-  const addReward = (event) => {
+  const addReward = (event, formRef) => {
     event.preventDefault();
     setErrorMessage(null);
 
@@ -82,6 +83,13 @@ function Rewards({
         event.target.rewardDescription.value,
         rewardPrice
       )
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectReward(formRef);
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -90,8 +98,9 @@ function Rewards({
   /**
    * Edit a reward to the contract.
    * @param event - Event that triggered the function.
+   * @param formRef - Form reference.
    */
-  const editReward = (event) => {
+  const editReward = (event, formRef) => {
     event.preventDefault();
     setErrorMessage(null);
 
@@ -105,6 +114,13 @@ function Rewards({
         event.target.rewardDescription.value,
         rewardPrice
       )
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectReward(formRef);
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -118,9 +134,18 @@ function Rewards({
     setErrorMessage(null);
 
     // Call the `deleteReward` function on the contract.
-    contract.deleteReward(reward.rewardId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .deleteReward(reward.rewardId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectReward();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /**
@@ -131,9 +156,18 @@ function Rewards({
     setErrorMessage(null);
 
     // Call the `redeemReward` function on the contract.
-    contract.redeemReward(reward.rewardId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .redeemReward(reward.rewardId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectReward();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /**
@@ -146,6 +180,13 @@ function Rewards({
     // Call the `cancelRewardRedemption` function on the contract.
     contract
       .cancelRewardRedemption(reward.rewardId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectReward();
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -161,6 +202,13 @@ function Rewards({
     // Call the `approveRewardRedemption` function on the contract.
     contract
       .approveRewardRedemption(reward.rewardId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+          deselectReward();
+        });
+      })
       .catch((error) => {
         setErrorMessage(error);
       });
@@ -192,7 +240,7 @@ function Rewards({
       dateValue: ["redemptionDate", "purchaseDate", "approvalDate"],
       rewardCta: [
         { onClick: cancelRewardRedemption, label: "Cancel" },
-        { onClick: redeemReward, label: "Complete" },
+        { onClick: redeemReward, label: "Redeem" },
         null
       ],
       isEditable: [false, false, false]

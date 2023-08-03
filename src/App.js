@@ -498,7 +498,6 @@ function App() {
                   <DashboardLayout
                     account={account}
                     accountType={accountType}
-                    fetchData={fetchData}
                     logout={logout}
                     errorMessage={errorMessage}
                     setErrorMessage={setErrorMessage}
@@ -522,6 +521,7 @@ function App() {
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
                   utils={{
+                    fetchData,
                     openModal,
                     closeModal,
                     getShortAddress,
@@ -585,6 +585,7 @@ function App() {
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
                 utils={{
+                  fetchData,
                   openModal,
                   closeModal,
                   getShortAddress,
@@ -607,7 +608,7 @@ function App() {
                   openRewards={openRewards}
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
-                  utils={{ etherToNumber, addTokenSymbol }}
+                  utils={{ fetchData, etherToNumber, addTokenSymbol }}
                 />
               </ProtectedPage>
             }

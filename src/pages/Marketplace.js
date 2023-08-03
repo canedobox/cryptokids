@@ -21,9 +21,17 @@ function Marketplace({
     setErrorMessage(null);
 
     // Call the `purchaseReward` function on the contract.
-    contract.purchaseReward(reward.rewardId.toString()).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .purchaseReward(reward.rewardId.toString())
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.fetchData();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /***** VARIABLES *****/

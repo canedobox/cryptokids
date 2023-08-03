@@ -27,7 +27,11 @@ function AddEditReward({
       {/* Add|Edit reward form */}
       <form
         ref={formRef}
-        onSubmit={editReward ? editReward : addReward}
+        onSubmit={
+          editReward
+            ? (event) => editReward(event, formRef)
+            : (event) => addReward(event, formRef)
+        }
         className="flex w-full flex-col gap-4"
       >
         {/* Child wallet address */}

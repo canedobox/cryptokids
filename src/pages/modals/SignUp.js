@@ -19,7 +19,7 @@ function SignUp({ isModalOpened, setIsModalOpened, registerParent, utils }) {
       {/* Sign up form */}
       <form
         ref={formRef}
-        onSubmit={registerParent}
+        onSubmit={(event) => registerParent(event, formRef)}
         className="flex w-full flex-col gap-4"
       >
         {/* Parent name */}

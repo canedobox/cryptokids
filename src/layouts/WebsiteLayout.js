@@ -31,9 +31,17 @@ function WebsiteLayout({
     setErrorMessage(null);
 
     // Call the `registerParent` function on the contract.
-    contract.registerParent(event.target.parentName.value).catch((error) => {
-      setErrorMessage(error);
-    });
+    contract
+      .registerParent(event.target.parentName.value)
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          connectionHandler();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
   };
 
   /***** REACT HOOKS *****/
