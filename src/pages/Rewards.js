@@ -9,7 +9,6 @@ import AddReward from "./modals/AddReward";
 function Rewards({
   accountType,
   contract,
-  tokenSymbol,
   rewardsCounter,
   rewardLists,
   isDataLoading,
@@ -48,6 +47,7 @@ function Rewards({
         <PageHeader title="Rewards" />
       )}
       {/* Page content */}
+      {/* If data is finished loading, render rewards. */}
       {isDataLoading ? (
         <Loading />
       ) : (
@@ -82,9 +82,7 @@ function Rewards({
                             4
                           )}...${reward.assignedTo.slice(38, 42)}`}</td>
                           <td className="border px-4 py-2">
-                            {`${utils.etherToNumber(
-                              reward.price.toString()
-                            )} ${tokenSymbol}`}
+                            {utils.addTokenSymbol(reward.price)}
                           </td>
                         </tr>
                       ))}

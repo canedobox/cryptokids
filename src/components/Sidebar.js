@@ -14,9 +14,11 @@ import { ReactComponent as IconMarketplace } from "../assets/icons/marketplace.s
 import { ReactComponent as IconLogout } from "../assets/icons/logout.svg";
 
 function Sidebar({ accountType, logout }) {
+  /***** STATES *****/
   // State to check if the sidebar is opened.
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
 
+  /***** VARIABLES *****/
   const navLinkVariants = {
     default: twMerge(
       "flex w-full items-center justify-start gap-4 whitespace-nowrap p-4",
@@ -26,6 +28,7 @@ function Sidebar({ accountType, logout }) {
     active: "bg-primary-600 text-white"
   };
 
+  /***** METHODS *****/
   /**
    * Open sidebar.
    */

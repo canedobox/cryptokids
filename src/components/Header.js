@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import Button from "./Button";
 import Logo from "./Logo";
 
-function Header({ account, connectionHandler }) {
+function Header({ account, connectionHandler, utils }) {
   // Return Header component.
   return (
     <header
@@ -25,9 +25,7 @@ function Header({ account, connectionHandler }) {
       {/* Button to connect wallet using MetaMask */}
       <Button onClick={connectionHandler} className={account && "normal-case"}>
         {account ? (
-          <span className="text-base">
-            {`${account.slice(0, 4)}...${account.slice(38, 42)}`}
-          </span>
+          <span className="text-base">{utils.getShortAddress(account)}</span>
         ) : (
           <>
             Connect<span className="hidden 2xs:block"> Wallet</span>

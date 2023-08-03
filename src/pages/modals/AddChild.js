@@ -1,40 +1,35 @@
+import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
 
 function AddChild({
-  contract,
+  selectedChild,
+  deselectChild,
+  addChild,
   isModalOpened,
   setIsModalOpened,
-  setErrorMessage,
   utils
 }) {
-  /**
-   * Add a child to the contract.
-   * @param event - Event that triggered the function.
-   */
-  const addChild = (event) => {
-    event.preventDefault();
-    setErrorMessage(null);
-
-    // Call the `addChild` function on the contract.
-    contract
-      .addChild(event.target.childAddress.value, event.target.childName.value)
-      .catch((error) => {
-        setErrorMessage(error);
-      });
-  };
+  // Ref to the form.
+  const formRef = useRef(null);
 
   // Return AddChild component.
   return (
     <Modal
       title="Add Child"
+      formRef={formRef}
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
+      closeModal={selectedChild && (() => deselectChild(formRef))}
       utils={utils}
     >
       {/* Add child form */}
-      <form onSubmit={addChild} className="flex w-full flex-col gap-4">
+      <form
+        ref={formRef}
+        onSubmit={addChild}
+        className="flex w-full flex-col gap-4"
+      >
         {/* Child wallet address */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">

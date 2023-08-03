@@ -85,28 +85,28 @@ describe(`${CONTRACT_NAME} Smart Contract Automated Tests`, function () {
 
     // Add Reward1.
     await contract.connect(parent1).addReward(child1.address, "Reward1", 5);
-    // Add Reward1.
+    // Add Reward2.
     await contract.connect(parent1).addReward(child1.address, "Reward2", 10);
 
-    // Add Reward2.
+    // Add Reward3.
     await contract.connect(parent1).addReward(child1.address, "Reward3", 10);
-    // Purchase Reward2.
+    // Purchase Reward3.
     await contract.connect(child1).purchaseReward(purchasedRewardID);
 
-    // Add Reward3.
+    // Add Reward4.
     await contract.connect(parent1).addReward(child1.address, "Reward4", 10);
-    // Purchase Reward3.
+    // Purchase Reward4.
     await contract.connect(child1).purchaseReward(redeemedRewardID);
-    // Redeem Reward3.
+    // Redeem Reward4.
     await contract.connect(child1).redeemReward(redeemedRewardID);
 
-    // Add Reward4.
+    // Add Reward5.
     await contract.connect(parent1).addReward(child1.address, "Reward5", 10);
-    // Purchase Reward4.
+    // Purchase Reward5.
     await contract.connect(child1).purchaseReward(approvedRewardID);
-    // Redeem Reward4.
+    // Redeem Reward5.
     await contract.connect(child1).redeemReward(approvedRewardID);
-    // Approve Reward4 redemption.
+    // Approve Reward5 redemption.
     await contract.connect(parent1).approveRewardRedemption(approvedRewardID);
 
     /***** COUNTERS *****/

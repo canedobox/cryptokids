@@ -334,7 +334,6 @@ function App() {
   const openModal = (setIsModalOpened) => {
     // Disable body scrollbars.
     document.body.classList.add("overflow-hidden");
-
     // Open modal.
     setIsModalOpened(true);
   };
@@ -342,12 +341,55 @@ function App() {
   /**
    * Close modal.
    */
-  const closeModal = (setIsModalOpened) => {
+  const closeModal = (setIsModalOpened, formRef = null) => {
     // Enable body scrollbars.
     document.body.classList.remove("overflow-hidden");
-
     // Close modal.
     setIsModalOpened(false);
+    // Check if form exists.
+    if (formRef) {
+      // Reset form.
+      formRef.current.reset();
+    }
+  };
+
+  /**
+   * Get short address.
+   * Example: 0x1234...5678
+   */
+  const getShortAddress = (address) => {
+    return `${address.substring(0, 4)}...${address.substring(
+      address.length - 4,
+      address.length
+    )}`;
+  };
+
+  /**
+   * Get avatar seed based on the user's account type.
+   * Example: name:Alice+address:0x1234...5678
+   */
+  const getAvatarSeed = (address) => {
+    // Avatar seed.
+    let avatarSeed = "";
+
+    // Check if user is a parent.
+    if (account === address) {
+      avatarSeed = `name:${accountName}+address:${account}`;
+    }
+    // If user is a child.
+    else {
+      // Loop through family group.
+      familyGroup.map((child) => {
+        // Get the child's avatar seed.
+        if (child.child.childAddress === address) {
+          avatarSeed = `name:${child.child.name}+address:${child.child.childAddress}`;
+        }
+        return true;
+      });
+    }
+
+    // Return avatar seed.
+    return avatarSeed;
   };
 
   /**
@@ -376,6 +418,14 @@ function App() {
         ethers.utils.formatUnits(value.toString(), tokenDecimals).toString()
       );
     }
+  };
+
+  /**
+   * Add token symbol to a value.
+   * Example: 1 to 1 CK
+   */
+  const addTokenSymbol = (value) => {
+    return `${etherToNumber(value.toString())} ${tokenSymbol}`;
   };
 
   /***********************/
@@ -415,7 +465,7 @@ function App() {
               connectionHandler={connectionHandler}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}
-              utils={{ openModal, closeModal }}
+              utils={{ openModal, closeModal, getShortAddress }}
             />
           }
         >
@@ -452,6 +502,7 @@ function App() {
                     logout={logout}
                     errorMessage={errorMessage}
                     setErrorMessage={setErrorMessage}
+                    utils={{ getAvatarSeed, addTokenSymbol }}
                   />
                 )
               }
@@ -467,11 +518,17 @@ function App() {
               <ProtectedPage accountType={accountType}>
                 <FamilyGroup
                   contract={contract}
-                  tokenSymbol={tokenSymbol}
                   familyGroup={familyGroup}
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
-                  utils={{ openModal, closeModal, etherToNumber }}
+                  utils={{
+                    openModal,
+                    closeModal,
+                    getShortAddress,
+                    getAvatarSeed,
+                    etherToNumber,
+                    addTokenSymbol
+                  }}
                 />
               </ProtectedPage>
             }
@@ -483,17 +540,23 @@ function App() {
               <Tasks
                 accountType={accountType}
                 contract={contract}
-                tokenSymbol={tokenSymbol}
                 tasksCounter={tasksCounter}
-                taskLists={[
-                  completedTasks,
-                  openTasks,
-                  approvedTasks,
-                  expiredTasks
-                ]}
+                taskLists={
+                  accountType === "parent"
+                    ? [completedTasks, openTasks, expiredTasks, approvedTasks]
+                    : [completedTasks, openTasks, approvedTasks, expiredTasks]
+                }
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
-                utils={{ openModal, closeModal, numberToEther, etherToNumber }}
+                utils={{
+                  openModal,
+                  closeModal,
+                  getShortAddress,
+                  getAvatarSeed,
+                  numberToEther,
+                  etherToNumber,
+                  addTokenSymbol
+                }}
               />
             }
           />
@@ -504,17 +567,28 @@ function App() {
               <Rewards
                 accountType={accountType}
                 contract={contract}
-                tokenSymbol={tokenSymbol}
                 rewardsCounter={rewardsCounter}
-                rewardLists={[
-                  openRewards,
-                  redeemedRewards,
-                  purchasedRewards,
-                  approvedRewards
-                ]}
+                rewardLists={
+                  accountType === "parent"
+                    ? [
+                        redeemedRewards,
+                        openRewards,
+                        purchasedRewards,
+                        approvedRewards
+                      ]
+                    : [redeemedRewards, purchasedRewards, approvedRewards]
+                }
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
-                utils={{ openModal, closeModal, numberToEther, etherToNumber }}
+                utils={{
+                  openModal,
+                  closeModal,
+                  getShortAddress,
+                  getAvatarSeed,
+                  numberToEther,
+                  etherToNumber,
+                  addTokenSymbol
+                }}
               />
             }
           />

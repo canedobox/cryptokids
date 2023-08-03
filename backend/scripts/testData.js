@@ -6,14 +6,16 @@ const { ethers } = require("hardhat");
  */
 async function main() {
   // Get accounts.
-  const [parent1, parent2, child1, child2] = await ethers.getSigners();
-  const parent1Name = "Parent1";
-  const parent2Name = "Parent2";
-  const child1Name = "Child1";
-  const child2Name = "Child2";
+  const [parent1, parent2, child1, child2, child3] = await ethers.getSigners();
+  const parent1Name = "Alice";
+  const parent2Name = "David";
+  const child1Name = "Bob";
+  const child2Name = "Charlie";
+  const child3Named = "Grace";
 
   // Get contract.
   const CryptoKids = await ethers.getContractFactory("CryptoKids");
+  // Hardhat local network contract address.
   const contract = CryptoKids.attach(
     "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   );
@@ -21,8 +23,9 @@ async function main() {
   /***** FAMILY GROUP 1 *****/
   // Register parent.
   await contract.connect(parent1).registerParent(parent1Name);
-  // Add child to family group.
+  // Add children to family group.
   await contract.connect(parent1).addChild(child1.address, child1Name);
+  await contract.connect(parent1).addChild(child3.address, child3Named);
 
   /***** FAMILY GROUP 2 *****/
   // Register parent.
@@ -38,19 +41,34 @@ async function main() {
   // Add Task1.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Task1", "10000000000000000000", 0); // No due date
+    .addTask(
+      child1.address,
+      "Bring the bin out",
+      "3000000000000000000",
+      1690757999
+    ); // Expired
 
   // Add Task2.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Task2", "10000000000000000000", 1693436399); // Due date: 30th August 2023
+    .addTask(
+      child1.address,
+      "Help set the table for dinner",
+      "2000000000000000000",
+      0
+    );
   // Complete Task2
   await contract.connect(child1).completeTask(completedTaskID);
 
   // Add Task3.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Task2", "35000000000000000000", 0);
+    .addTask(
+      child1.address,
+      "Clean your bedroom",
+      "20000000000000000000",
+      1693436399
+    ); // Due date: 30th August 2023
   // Complete Task3.
   await contract.connect(child1).completeTask(approvedTaskID);
   // Approve Task3 completion.
@@ -59,34 +77,63 @@ async function main() {
   // Add Task4.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Task4", "10000000000000000000", 1689893999); // Expired
+    .addTask(child1.address, "Water the plants", "3000000000000000000", 0);
+
+  // Add Task5.
+  await contract
+    .connect(parent1)
+    .addTask(child1.address, "Feed and walk the dog", "5000000000000000000", 0);
+
+  // Add Task6.
+  await contract
+    .connect(parent1)
+    .addTask(
+      child1.address,
+      "Do some research and explain how blockchain works",
+      "15000000000000000000",
+      0
+    );
+
+  // Add Task7.
+  await contract
+    .connect(parent1)
+    .addTask(
+      child1.address,
+      "Use your creativity to make a beautiful artwork",
+      "15000000000000000000",
+      0
+    );
 
   /***** REWARDS *****/
   // Reward IDs.
-  const purchasedRewardID = 3;
-  const redeemedRewardID = 4;
-  const approvedRewardID = 5;
+  const redeemedRewardID = 3;
+  const approvedRewardID = 4;
 
   // Add Reward1.
   await contract
     .connect(parent1)
-    .addReward(child1.address, "Reward1", "5000000000000000000");
-  // Add Reward1.
-  await contract
-    .connect(parent1)
-    .addReward(child1.address, "Reward2", "10000000000000000000");
-
+    .addReward(
+      child1.address,
+      "Choose a special meal for the family to enjoy",
+      "5000000000000000000"
+    );
   // Add Reward2.
   await contract
     .connect(parent1)
-    .addReward(child1.address, "Reward3", "10000000000000000000");
-  // Purchase Reward2.
-  await contract.connect(child1).purchaseReward(purchasedRewardID);
+    .addReward(
+      child1.address,
+      "Get a new toy or game of your choice",
+      "25000000000000000000"
+    );
 
   // Add Reward3.
   await contract
     .connect(parent1)
-    .addReward(child1.address, "Reward4", "10000000000000000000");
+    .addReward(
+      child1.address,
+      "Ice cream or frozen yogurt treat",
+      "5000000000000000000"
+    );
   // Purchase Reward3.
   await contract.connect(child1).purchaseReward(redeemedRewardID);
   // Redeem Reward3.
@@ -95,7 +142,11 @@ async function main() {
   // Add Reward4.
   await contract
     .connect(parent1)
-    .addReward(child1.address, "Reward5", "10000000000000000000");
+    .addReward(
+      child1.address,
+      "Fun day out at the Zoo",
+      "10000000000000000000"
+    );
   // Purchase Reward4.
   await contract.connect(child1).purchaseReward(approvedRewardID);
   // Redeem Reward4.

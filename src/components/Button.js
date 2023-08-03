@@ -10,8 +10,10 @@ function Button({ variant = "default", className, children, ...restProps }) {
       "hover:border-primary-600 hover:bg-primary-600",
       "active:border-primary-800 active:bg-primary-800"
     ),
+    small: "h-8 px-2",
     large: "h-12 text-base px-6",
     outline: "bg-transparent text-primary-700 hover:text-white",
+    outlineSmall: "bg-transparent text-primary-700 hover:text-white h-8 px-2",
     outlineGray: twMerge(
       "border-gray-500 bg-transparent text-current",
       "hover:border-gray-500 hover:bg-gray-500 hover:text-white",
@@ -30,6 +32,18 @@ function Button({ variant = "default", className, children, ...restProps }) {
     iconSidebar: twMerge(
       "h-fit w-fit border-none bg-transparent p-3 text-white",
       "hover:bg-primary-500 active:bg-primary-600"
+    ),
+    iconEdit: twMerge(
+      "h-fit w-fit p-1 ",
+      "border-gray-500 bg-transparent text-gray-500",
+      "hover:border-gray-500 hover:bg-gray-500 hover:text-white",
+      "active:border-gray-700 active:bg-gray-700 active:text-white"
+    ),
+    iconDelete: twMerge(
+      "h-fit w-fit p-1 ",
+      "border-red-700 bg-transparent text-red-700",
+      "hover:border-red-600 hover:bg-red-600 hover:text-white",
+      "active:border-red-800 active:bg-red-800 active:text-white"
     )
   };
 

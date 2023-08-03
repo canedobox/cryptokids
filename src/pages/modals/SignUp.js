@@ -1,38 +1,27 @@
+import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
 
-function SignUp({
-  contract,
-  isModalOpened,
-  setIsModalOpened,
-  setErrorMessage,
-  utils
-}) {
-  /**
-   * Register a parent to the contract.
-   * @param event - Event that triggered the function.
-   */
-  const registerParent = (event) => {
-    event.preventDefault();
-    setErrorMessage(null);
-
-    // Call the `registerParent` function on the contract.
-    contract.registerParent(event.target.parentName.value).catch((error) => {
-      setErrorMessage(error);
-    });
-  };
+function SignUp({ isModalOpened, setIsModalOpened, registerParent, utils }) {
+  // Ref to the form.
+  const formRef = useRef(null);
 
   // Return SignUp component.
   return (
     <Modal
       title="Sign up as a parent"
+      formRef={formRef}
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
       utils={utils}
     >
       {/* Sign up form */}
-      <form onSubmit={registerParent} className="flex w-full flex-col gap-4">
+      <form
+        ref={formRef}
+        onSubmit={registerParent}
+        className="flex w-full flex-col gap-4"
+      >
         {/* Parent name */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">

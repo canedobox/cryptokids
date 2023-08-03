@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function DashboardHome({ accountType }) {
+  /***** REACT HOOKS *****/
   // Set useNavigate hook.
   const navigateTo = useNavigate();
 

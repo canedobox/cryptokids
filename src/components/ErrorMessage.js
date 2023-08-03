@@ -3,10 +3,11 @@ import { twMerge } from "tailwind-merge";
 import Button from "./Button";
 
 function ErrorMessage({ errorMessage, setErrorMessage }) {
-  // Variables
+  /***** VARIABLES *****/
   let errorMessageReason;
   let errorMessage_;
 
+  /***** METHODS *****/
   /**
    * Clear error message.
    */

@@ -2,10 +2,11 @@ import { twMerge } from "tailwind-merge";
 // Components
 import Button from "./Button";
 import Avatar from "./Avatar";
+// Icons
+import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
 function ChildCard({
   contract,
-  tokenSymbol,
   child,
   selectChild,
   setErrorMessage,
@@ -16,7 +17,7 @@ function ChildCard({
   return (
     <div
       className={twMerge(
-        "flex-grow md:max-w-screen-sm",
+        "h-fit flex-grow md:max-w-screen-sm",
         "box-border overflow-hidden rounded-xl border",
         "border-gray-200 bg-white",
         className
@@ -24,7 +25,10 @@ function ChildCard({
     >
       {/* Header */}
       <header className="box-border flex w-full flex-1 flex-row gap-4 border-b border-gray-200 p-4">
-        <Avatar seed={`${child.child.childAddress}`} className="h-16 w-16" />
+        <Avatar
+          seed={utils.getAvatarSeed(child.child.childAddress)}
+          className="h-16 w-16"
+        />
         <div className="flex flex-col overflow-hidden">
           <h1 className="w-full break-words font-semibold">
             {child.child.name}
@@ -34,7 +38,7 @@ function ChildCard({
           </p>
           <p className="w-full break-words text-sm text-gray-600">
             <b>Balance: </b>
-            {`${utils.etherToNumber(child.balance.toString())} ${tokenSymbol}`}
+            {utils.addTokenSymbol(child.balance)}
           </p>
         </div>
       </header>
@@ -178,6 +182,7 @@ function ChildCard({
           selectChild(child.child);
         }}
       >
+        <IconDelete />
         Remove Child
       </Button>
     </div>

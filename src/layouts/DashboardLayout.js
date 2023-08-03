@@ -11,7 +11,8 @@ function DashboardLayout({
   fetchData,
   logout,
   errorMessage,
-  setErrorMessage
+  setErrorMessage,
+  utils
 }) {
   // Return DashboardLayout component.
   return (
@@ -32,7 +33,7 @@ function DashboardLayout({
       {/* Refresh button */}
       <Button
         variant="outline"
-        className="fixed bottom-4 right-4 bg-white shadow-md"
+        className="fixed bottom-4 left-40 z-30 bg-white shadow-md"
         onClick={fetchData}
       >
         Refresh

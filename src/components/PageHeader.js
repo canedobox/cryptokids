@@ -18,9 +18,7 @@ function PageHeader({ title, filterChild = true, cta }) {
       {cta && (
         <div className="flex flex-row items-center gap-4 text-sm">
           {/* CTA button */}
-          <Button onClick={cta.onClick} variant="small">
-            {cta.label}
-          </Button>
+          <Button onClick={cta.onClick}>{cta.label}</Button>
         </div>
       )}
     </header>

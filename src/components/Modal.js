@@ -6,8 +6,10 @@ import { ReactComponent as IconClose } from "../assets/icons/close.svg";
 
 function Modal({
   title,
+  formRef,
   isModalOpened,
   setIsModalOpened,
+  closeModal,
   cta,
   utils,
   children
@@ -51,10 +53,10 @@ function Modal({
             {/* Button to close sidebar */}
             <Button
               onClick={
-                cta && cta.cancel
-                  ? cta.cancel.onClick
+                closeModal
+                  ? closeModal
                   : () => {
-                      utils.closeModal(setIsModalOpened);
+                      utils.closeModal(setIsModalOpened, formRef);
                     }
               }
               variant="icon"

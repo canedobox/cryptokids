@@ -21,7 +21,22 @@ function WebsiteLayout({
   // State variable to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
 
-  /***** UTILS *****/
+  /***** METHODS *****/
+  /**
+   * Register a parent to the contract.
+   * @param event - Event that triggered the function.
+   */
+  const registerParent = (event) => {
+    event.preventDefault();
+    setErrorMessage(null);
+
+    // Call the `registerParent` function on the contract.
+    contract.registerParent(event.target.parentName.value).catch((error) => {
+      setErrorMessage(error);
+    });
+  };
+
+  /***** REACT HOOKS *****/
   // Set useNavigate hook.
   const navigateTo = useNavigate();
 
@@ -46,15 +61,18 @@ function WebsiteLayout({
     <div className="flex min-w-[theme(width.80)] flex-col">
       {/* Sign up modal */}
       <SignUp
-        contract={contract}
         isModalOpened={isModalOpened}
         setIsModalOpened={setIsModalOpened}
-        setErrorMessage={setErrorMessage}
+        registerParent={registerParent}
         utils={utils}
       />
 
       {/* Header */}
-      <Header account={account} connectionHandler={connectionHandler} />
+      <Header
+        account={account}
+        connectionHandler={connectionHandler}
+        utils={utils}
+      />
       {/* Main */}
       <main
         className={twMerge(
