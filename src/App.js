@@ -567,7 +567,11 @@ function App() {
               <Rewards
                 accountType={accountType}
                 contract={contract}
-                rewardsCounter={rewardsCounter}
+                rewardsCounter={
+                  accountType === "parent"
+                    ? rewardsCounter
+                    : rewardsCounter - openRewards.length
+                }
                 rewardLists={
                   accountType === "parent"
                     ? [

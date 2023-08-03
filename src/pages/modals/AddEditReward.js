@@ -1,46 +1,35 @@
+import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
 
-function AddReward({
-  contract,
+function AddEditReward({
+  selectedReward,
+  deselectReward,
+  addReward,
+  editReward,
   isModalOpened,
   setIsModalOpened,
-  setErrorMessage,
   utils
 }) {
-  /**
-   * Add a reward to the contract.
-   * @param event - Event that triggered the function.
-   */
-  const addChild = (event) => {
-    event.preventDefault();
-    setErrorMessage(null);
-
-    // Get the reward price.
-    const rewardPrice = utils.numberToEther(event.target.rewardPrice.value);
-
-    // Call the `addReward` function on the contract.
-    contract
-      .addReward(
-        event.target.childAddress.value,
-        event.target.rewardDescription.value,
-        rewardPrice
-      )
-      .catch((error) => {
-        setErrorMessage(error);
-      });
-  };
-
-  // Return AddReward component.
+  // Ref to the form.
+  const formRef = useRef(null);
+  // Return AddEditReward component.
   return (
     <Modal
-      title="Add Reward"
+      title={`${editReward ? "Edit" : "Add"} Reward`}
+      formRef={formRef}
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
+      closeModal={selectedReward && (() => deselectReward(formRef))}
       utils={utils}
     >
-      <form onSubmit={addChild} className="flex w-full flex-col gap-4">
+      {/* Add|Edit reward form */}
+      <form
+        ref={formRef}
+        onSubmit={editReward ? editReward : addReward}
+        className="flex w-full flex-col gap-4"
+      >
         {/* Child wallet address */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">
@@ -49,14 +38,17 @@ function AddReward({
           <input
             id="childAddress"
             type="text"
+            defaultValue={selectedReward ? selectedReward.assignedTo : ""}
             placeholder="Enter the child wallet address"
             minLength={42}
             maxLength={42}
             spellCheck={false}
+            disabled={selectedReward && true}
             required
-            className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600"
+            className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </label>
+
         {/* Reward description */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">
@@ -65,6 +57,7 @@ function AddReward({
           <input
             id="rewardDescription"
             type="text"
+            defaultValue={selectedReward && selectedReward.description}
             placeholder="Enter the reward description"
             minLength={3}
             required
@@ -79,6 +72,9 @@ function AddReward({
           <input
             id="rewardPrice"
             type="number"
+            defaultValue={
+              selectedReward && utils.etherToNumber(selectedReward.price)
+            }
             placeholder="Enter the reward price in CK"
             min={1}
             max={100}
@@ -88,11 +84,11 @@ function AddReward({
         </label>
         {/* Submit button */}
         <Button type="submit" className="w-full">
-          Add Reward
+          {`${editReward ? "Edit" : "Add"} Reward`}
         </Button>
       </form>
     </Modal>
   );
 }
 
-export default AddReward;
+export default AddEditReward;

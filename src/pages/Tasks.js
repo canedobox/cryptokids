@@ -158,25 +158,39 @@ function Tasks({
 
   /**
    * Delete a task from the contract.
+   * @param task - Task to be deleted (task.taskId).
    */
-  const deleteTask = () => {
+  const deleteTask = (task) => {
     setErrorMessage(null);
 
     // Call the `deleteTask` function on the contract.
-    contract.deleteTask(selectedTask.taskId.toString()).catch((error) => {
+    contract.deleteTask(task.taskId.toString()).catch((error) => {
       setErrorMessage(error);
     });
   };
 
   /**
    * Complete a task in the contract.
-   * @param task - Task to be approved (task.taskId).
+   * @param task - Task to be completed (task.taskId).
    */
   const completeTask = (task) => {
     setErrorMessage(null);
 
     // Call the `completeTask` function on the contract.
     contract.completeTask(task.taskId.toString()).catch((error) => {
+      setErrorMessage(error);
+    });
+  };
+
+  /**
+   * Cancel task completion in the contract.
+   * @param task - Task to be cancelled (task.taskId).
+   */
+  const cancelTaskCompletion = (task) => {
+    setErrorMessage(null);
+
+    // Call the `cancelTaskCompletion` function on the contract.
+    contract.cancelTaskCompletion(task.taskId.toString()).catch((error) => {
       setErrorMessage(error);
     });
   };
@@ -201,12 +215,6 @@ function Tasks({
       noTasksMessage: "You have not created any tasks yet.",
       taskStatuses: ["Waiting Approval", "Open", "Expired", "Completed"],
       dateValue: ["completionDate", "dueDate", "dueDate", "approvalDate"],
-      dateLabel: [
-        "Completion Date",
-        "Due Date",
-        "Expiration Date",
-        "Approval Date"
-      ],
       taskCta: [
         { onClick: approveTaskCompletion, label: "Approve" },
         null,
@@ -219,26 +227,19 @@ function Tasks({
       noTasksMessage: "No tasks assigned to you yet.",
       taskStatuses: ["Waiting Approval", "Open", "Completed", "Expired"],
       dateValue: ["completionDate", "dueDate", "approvalDate", "dueDate"],
-      dateLabel: [
-        "Completion Date",
-        "Due Date",
-        "Approval Date",
-        "Expiration Date"
+      taskCta: [
+        { onClick: cancelTaskCompletion, label: "Cancel" },
+        { onClick: completeTask, label: "Complete" },
+        null,
+        null
       ],
-      taskCta: [null, { onClick: completeTask, label: "Complete" }, null, null],
       isEditable: [false, false, false, false]
     }
   };
 
   // Get current tasks config.
-  const {
-    noTasksMessage,
-    taskStatuses,
-    dateValue,
-    dateLabel,
-    taskCta,
-    isEditable
-  } = tasksConfig[accountType];
+  const { noTasksMessage, taskStatuses, dateValue, taskCta, isEditable } =
+    tasksConfig[accountType];
 
   // Return Tasks component.
   return (
@@ -256,7 +257,7 @@ function Tasks({
             setIsModalOpened={setIsModalOpened}
             utils={utils}
           />
-          {/* Remove child modal */}
+          {/* Delete task modal */}
           <DeleteTask
             selectedTask={selectedTask}
             deselectTask={deselectTask}
@@ -287,7 +288,6 @@ function Tasks({
         <Loading />
       ) : (
         <div className="flex h-full w-full flex-col gap-4 p-4">
-          {/* {true ? ( */}
           {tasksCounter === 0 ? (
             <div className="flex flex-1 items-center justify-center py-4">
               {noTasksMessage}

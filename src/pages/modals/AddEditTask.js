@@ -32,25 +32,24 @@ function AddEditTask({
         className="flex w-full flex-col gap-4"
       >
         {/* Child wallet address */}
-        {!selectedTask && (
-          <label className="flex w-full flex-col items-start gap-1">
-            <span className="font-medium text-gray-600">
-              Assign to <span className="text-red-500">*</span>
-            </span>
-            <input
-              id="childAddress"
-              type="text"
-              defaultValue={selectedTask ? selectedTask.assignedTo : ""}
-              placeholder="Enter the child wallet address"
-              minLength={42}
-              maxLength={42}
-              spellCheck={false}
-              disabled={selectedTask && true}
-              required
-              className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600"
-            />
-          </label>
-        )}
+        <label className="flex w-full flex-col items-start gap-1">
+          <span className="font-medium text-gray-600">
+            Assign to <span className="text-red-500">*</span>
+          </span>
+          <input
+            id="childAddress"
+            type="text"
+            defaultValue={selectedTask ? selectedTask.assignedTo : ""}
+            placeholder="Enter the child wallet address"
+            minLength={42}
+            maxLength={42}
+            spellCheck={false}
+            disabled={selectedTask && true}
+            required
+            className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600 disabled:cursor-not-allowed disabled:opacity-60"
+          />
+        </label>
+
         {/* Task description */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">
@@ -102,7 +101,7 @@ function AddEditTask({
             className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600"
           />
         </label>
-        {/* Add|Edit task button */}
+        {/* Submit button */}
         <Button type="submit" className="w-full">
           {`${editTask ? "Edit" : "Add"} Task`}
         </Button>
