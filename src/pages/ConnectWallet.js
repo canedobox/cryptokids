@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // Components
 import Button from "../components/Button";
+import Logo from "../components/Logo";
 import ErrorMessage from "../components/ErrorMessage";
 
 function ConnectWallet({
@@ -27,14 +28,26 @@ function ConnectWallet({
   // Return ConnectWallet component.
   return (
     <div className="flex min-w-[theme(width.80)] flex-col">
-      <main className="flex h-screen w-screen min-w-[theme(width.80)] flex-col items-center justify-center gap-4">
-        <h1 className="mb-4 text-center font-medium">
-          Connect your wallet to access the dashboard.
-        </h1>
-        {/* Button to connect wallet using MetaMask */}
-        <Button onClick={connectionHandler} variant="large">
-          Connect Wallet
-        </Button>
+      <main className="flex h-screen w-screen min-w-[theme(width.80)] flex-col items-center justify-center gap-10">
+        {/* Logo */}
+        <div className="flex flex-row items-center justify-center gap-4">
+          <Logo
+            iconHeight="48"
+            iconWidth="48"
+            logoHeight="38"
+            logoWidth="160"
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          {/* Message */}
+          <h1 className="text-center font-medium">
+            Connect your wallet to access the dashboard.
+          </h1>
+          {/* Button to connect wallet using MetaMask */}
+          <Button onClick={connectionHandler} variant="large">
+            Connect Wallet
+          </Button>
+        </div>
       </main>
       {/* Error message */}
       <ErrorMessage

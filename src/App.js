@@ -548,6 +548,7 @@ function App() {
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
                 utils={{
+                  fetchData,
                   openModal,
                   closeModal,
                   getShortAddress,
