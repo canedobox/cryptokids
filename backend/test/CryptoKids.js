@@ -34,6 +34,13 @@ describe(`${CONTRACT_NAME} Smart Contract Automated Tests`, function () {
     const child1Name = "Child1";
     const child2Name = "Child2";
 
+    // Unix timestamps.
+    const today = new Date();
+    let yesterday = today.setDate(today.getDate() - 1);
+    yesterday = Math.round(yesterday / 1000);
+    let oneMonthFromNow = today.setDate(today.getDate() + 30);
+    oneMonthFromNow = Math.round(oneMonthFromNow / 1000);
+
     /***** FAMILY GROUP 1 *****/
     // Register parent.
     await contract.connect(parent1).registerParent(parent1Name);
@@ -59,7 +66,7 @@ describe(`${CONTRACT_NAME} Smart Contract Automated Tests`, function () {
     // Add Task2.
     await contract
       .connect(parent1)
-      .addTask(child1.address, "Task2", 10, 1693436399); // Due date: 30th August 2023
+      .addTask(child1.address, "Task2", 10, oneMonthFromNow); // Due date in 30 days.
     // Complete Task2
     await contract.connect(child1).completeTask(completedTaskID);
 
@@ -73,7 +80,7 @@ describe(`${CONTRACT_NAME} Smart Contract Automated Tests`, function () {
     // Add Task4.
     await contract
       .connect(parent1)
-      .addTask(child1.address, "Task4", 10, 1689893999); // Expired
+      .addTask(child1.address, "Task4", 10, yesterday); // Expired
 
     /***** REWARDS *****/
     // Reward IDs.

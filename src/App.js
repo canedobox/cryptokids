@@ -526,7 +526,6 @@ function App() {
                     closeModal,
                     getShortAddress,
                     getAvatarSeed,
-                    etherToNumber,
                     addTokenSymbol
                   }}
                 />
@@ -602,9 +601,12 @@ function App() {
             element={
               <ProtectedPage accountType={accountType}>
                 <Marketplace
+                  contract={contract}
                   rewardsCounter={openRewards.length}
                   openRewards={openRewards}
                   isDataLoading={isDataLoading}
+                  setErrorMessage={setErrorMessage}
+                  utils={{ etherToNumber, addTokenSymbol }}
                 />
               </ProtectedPage>
             }

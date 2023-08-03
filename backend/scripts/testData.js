@@ -20,6 +20,13 @@ async function main() {
     "0x5FbDB2315678afecb367f032d93F642f64180aa3"
   );
 
+  // Unix timestamps.
+  const today = new Date();
+  let yesterday = today.setDate(today.getDate() - 1);
+  yesterday = Math.round(yesterday / 1000);
+  let oneMonthFromNow = today.setDate(today.getDate() + 30);
+  oneMonthFromNow = Math.round(oneMonthFromNow / 1000);
+
   /***** FAMILY GROUP 1 *****/
   // Register parent.
   await contract.connect(parent1).registerParent(parent1Name);
@@ -45,7 +52,7 @@ async function main() {
       child1.address,
       "Bring the bin out",
       "3000000000000000000",
-      1690757999
+      yesterday
     ); // Expired
 
   // Add Task2.
@@ -63,12 +70,7 @@ async function main() {
   // Add Task3.
   await contract
     .connect(parent1)
-    .addTask(
-      child1.address,
-      "Clean your bedroom",
-      "20000000000000000000",
-      1693436399
-    ); // Due date: 30th August 2023
+    .addTask(child1.address, "Clean your bedroom", "20000000000000000000", 0);
   // Complete Task3.
   await contract.connect(child1).completeTask(approvedTaskID);
   // Approve Task3 completion.
@@ -77,7 +79,12 @@ async function main() {
   // Add Task4.
   await contract
     .connect(parent1)
-    .addTask(child1.address, "Water the plants", "3000000000000000000", 0);
+    .addTask(
+      child1.address,
+      "Water the plants",
+      "3000000000000000000",
+      oneMonthFromNow
+    ); // Due date in 30 days.
 
   // Add Task5.
   await contract
