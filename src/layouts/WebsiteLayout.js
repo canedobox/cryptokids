@@ -69,9 +69,9 @@ function WebsiteLayout({
     <div className="flex min-w-[theme(width.80)] flex-col">
       {/* Sign up modal */}
       <SignUp
+        registerParent={registerParent}
         isModalOpened={isModalOpened}
         setIsModalOpened={setIsModalOpened}
-        registerParent={registerParent}
         utils={utils}
       />
 

@@ -25,17 +25,22 @@ function ChildCard({
     >
       {/* Header */}
       <header className="box-border flex w-full flex-1 flex-row gap-4 border-b border-gray-200 p-4">
+        {/* Avatar */}
         <Avatar
           seed={utils.getAvatarSeed(child.child.childAddress)}
           className="h-16 w-16"
         />
+        {/* Child Info */}
         <div className="flex flex-col overflow-hidden">
+          {/* Name */}
           <h1 className="w-full break-words font-semibold">
             {child.child.name}
           </h1>
+          {/* Address */}
           <p className="line-clamp-2 w-full break-words text-sm text-gray-600">
             {child.child.childAddress}
           </p>
+          {/* Balance */}
           <p className="w-full break-words text-sm text-gray-600">
             <b>Balance: </b>
             {utils.addTokenSymbol(child.balance)}
@@ -177,7 +182,8 @@ function ChildCard({
       </div>
       {/* CTA */}
       <Button
-        className="w-full rounded-none"
+        className="w-full rounded-none rounded-b-xl"
+        variant="outline"
         onClick={() => {
           selectChild(child.child);
         }}

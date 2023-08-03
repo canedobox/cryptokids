@@ -7,6 +7,7 @@ import Loading from "./Loading";
 
 function Marketplace({
   contract,
+  accountBalance,
   rewardsCounter = 0,
   openRewards,
   isDataLoading,
@@ -45,7 +46,11 @@ function Marketplace({
   return (
     <>
       {/* Page header */}
-      <PageHeader title="Rewards" />
+      <PageHeader
+        title="Rewards"
+        accountBalance={accountBalance}
+        utils={utils}
+      />
       {/* Page content */}
       {/* If data is finished loading, render rewards. */}
       {isDataLoading ? (

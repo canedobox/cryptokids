@@ -14,8 +14,9 @@ import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
 function Tasks({
-  accountType,
   contract,
+  accountType,
+  accountBalance,
   tasksCounter = 0,
   taskLists,
   isDataLoading,
@@ -23,7 +24,7 @@ function Tasks({
   utils
 }) {
   /***** STATES *****/
-  // State variable to control modal.
+  // State variables to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [isModalOpened2, setIsModalOpened2] = useState(false);
   // Selected task.
@@ -119,7 +120,7 @@ function Tasks({
   };
 
   /**
-   * Edit a task to the contract.
+   * Edit a task in the contract.
    * @param event - Event that triggered the function.
    * @param formRef - Form reference.
    */
@@ -332,7 +333,11 @@ function Tasks({
           }}
         />
       ) : (
-        <PageHeader title="Tasks" />
+        <PageHeader
+          title="Tasks"
+          accountBalance={accountBalance}
+          utils={utils}
+        />
       )}
       {/* Page content */}
       {/* If data is finished loading, render tasks. */}
@@ -431,14 +436,18 @@ function Tasks({
                                   {/* Edit button */}
                                   <Button
                                     variant="iconEdit"
-                                    onClick={() => selectTask(task)}
+                                    onClick={() => {
+                                      selectTask(task);
+                                    }}
                                   >
                                     <IconEdit />
                                   </Button>
                                   {/* Delete button */}
                                   <Button
                                     variant="iconDelete"
-                                    onClick={() => selectTask(task, true)}
+                                    onClick={() => {
+                                      selectTask(task, true);
+                                    }}
                                   >
                                     <IconDelete />
                                   </Button>

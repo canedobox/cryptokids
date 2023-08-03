@@ -2,6 +2,8 @@ import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
+// Icons
+import { ReactComponent as IconAdd } from "../../assets/icons/add.svg";
 
 function AddChild({
   selectedChild,
@@ -22,6 +24,7 @@ function AddChild({
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
       closeModal={selectedChild && (() => deselectChild(formRef))}
+      closeWithBackdrop={false}
       utils={utils}
     >
       {/* Add child form */}
@@ -57,12 +60,14 @@ function AddChild({
             placeholder="Enter the child name"
             minLength={2}
             maxLength={30}
+            spellCheck={false}
             required
             className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600"
           />
         </label>
         {/* Submit button */}
         <Button type="submit" className="w-full">
+          <IconAdd />
           Add Child
         </Button>
       </form>

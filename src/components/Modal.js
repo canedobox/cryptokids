@@ -11,6 +11,7 @@ function Modal({
   setIsModalOpened,
   closeModal,
   cta,
+  closeWithBackdrop = true,
   utils,
   children
 }) {
@@ -19,6 +20,15 @@ function Modal({
     <>
       {/* Modal backdrop */}
       <div
+        onClick={
+          closeWithBackdrop
+            ? closeModal
+              ? closeModal
+              : () => {
+                  utils.closeModal(setIsModalOpened, formRef);
+                }
+            : () => {}
+        }
         className={twMerge(
           "fixed inset-0 z-40 transition-all duration-300 ease-in-out",
           "flex min-w-[theme(width.80)] items-center justify-center xs:p-4",

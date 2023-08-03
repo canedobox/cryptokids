@@ -2,6 +2,9 @@ import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
+// Icons
+import { ReactComponent as IconAdd } from "../../assets/icons/add.svg";
+import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 
 function AddEditTask({
   selectedTask,
@@ -23,6 +26,7 @@ function AddEditTask({
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
       closeModal={selectedTask && (() => deselectTask(formRef))}
+      closeWithBackdrop={false}
       utils={utils}
     >
       {/* Add|Edit task form */}
@@ -107,7 +111,8 @@ function AddEditTask({
         </label>
         {/* Submit button */}
         <Button type="submit" className="w-full">
-          {`${editTask ? "Edit" : "Add"} Task`}
+          {editTask ? <IconSave /> : <IconAdd />}
+          {`${editTask ? "Save" : "Add"} Task`}
         </Button>
       </form>
     </Modal>

@@ -2,6 +2,9 @@ import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
+// Icons
+import { ReactComponent as IconAdd } from "../../assets/icons/add.svg";
+import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 
 function AddEditReward({
   selectedReward,
@@ -22,6 +25,7 @@ function AddEditReward({
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
       closeModal={selectedReward && (() => deselectReward(formRef))}
+      closeWithBackdrop={false}
       utils={utils}
     >
       {/* Add|Edit reward form */}
@@ -88,7 +92,8 @@ function AddEditReward({
         </label>
         {/* Submit button */}
         <Button type="submit" className="w-full">
-          {`${editReward ? "Edit" : "Add"} Reward`}
+          {editReward ? <IconSave /> : <IconAdd />}
+          {`${editReward ? "Save" : "Add"} Reward`}
         </Button>
       </form>
     </Modal>

@@ -2,35 +2,44 @@ import { useRef } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
+// Icons
+import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 
-function SignUp({ registerParent, isModalOpened, setIsModalOpened, utils }) {
+function EditProfile({
+  accountName,
+  editProfile,
+  isModalOpened,
+  setIsModalOpened,
+  utils
+}) {
   // Ref to the form.
   const formRef = useRef(null);
 
-  // Return SignUp component.
+  // Return EditProfile component.
   return (
     <Modal
-      title="Sign up as a parent"
+      title="Edit Profile"
       formRef={formRef}
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
       closeWithBackdrop={false}
       utils={utils}
     >
-      {/* Sign up form */}
+      {/* Edit profile form */}
       <form
         ref={formRef}
-        onSubmit={(event) => registerParent(event, formRef)}
+        onSubmit={(event) => editProfile(event, formRef)}
         className="flex w-full flex-col gap-4"
       >
-        {/* Parent name */}
+        {/* Profile name */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">
             Name <span className="text-red-500">*</span>
           </span>
           <input
-            id="parentName"
+            id="profileName"
             type="text"
+            defaultValue={accountName}
             placeholder="Enter your name"
             minLength={2}
             maxLength={30}
@@ -39,13 +48,14 @@ function SignUp({ registerParent, isModalOpened, setIsModalOpened, utils }) {
             className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600"
           />
         </label>
-        {/* Sign up button */}
+        {/* Save button */}
         <Button type="submit" className="w-full">
-          Sign up
+          <IconSave />
+          Save Changes
         </Button>
       </form>
     </Modal>
   );
 }
 
-export default SignUp;
+export default EditProfile;

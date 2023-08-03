@@ -2,13 +2,13 @@ import { Outlet } from "react-router-dom";
 // Components
 import Sidebar from "../components/Sidebar";
 import ErrorMessage from "../components/ErrorMessage";
-// Pages
-import Button from "../components/Button";
 
 function DashboardLayout({
+  contract,
   account,
   accountType,
-  logout,
+  accountName,
+  accountBalance,
   errorMessage,
   setErrorMessage,
   utils
@@ -17,7 +17,15 @@ function DashboardLayout({
   return (
     <div className="flex min-w-[theme(width.80)] flex-row">
       {/* Sidebar */}
-      <Sidebar accountType={accountType} logout={logout} />
+      <Sidebar
+        contract={contract}
+        account={account}
+        accountType={accountType}
+        accountName={accountName}
+        accountBalance={accountBalance}
+        setErrorMessage={setErrorMessage}
+        utils={utils}
+      />
       {/* Main */}
       <main className="box-border min-h-screen w-full pt-16 md:pl-72 md:pt-0">
         <section className="box-border flex h-full w-full flex-col items-start justify-start">

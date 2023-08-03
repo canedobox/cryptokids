@@ -4,6 +4,11 @@ import { twMerge } from "tailwind-merge";
 // Components
 import Button from "./Button";
 import Logo from "./Logo";
+import Avatar from "./Avatar";
+// Modals
+import EditProfile from "../pages/modals/EditProfile";
+import AccountSettings from "../pages/modals/AccountSettings";
+import DeleteParent from "../pages/modals/DeleteParent";
 // Icons
 import { ReactComponent as IconMenu } from "../assets/icons/menu.svg";
 import { ReactComponent as IconClose } from "../assets/icons/close.svg";
@@ -11,12 +16,26 @@ import { ReactComponent as IconFamilyGroup } from "../assets/icons/family-group.
 import { ReactComponent as IconTasks } from "../assets/icons/tasks.svg";
 import { ReactComponent as IconRewards } from "../assets/icons/rewards.svg";
 import { ReactComponent as IconMarketplace } from "../assets/icons/marketplace.svg";
+import { ReactComponent as IconEdit } from "../assets/icons/edit-20.svg";
+import { ReactComponent as IconSettings } from "../assets/icons/account-settings.svg";
 import { ReactComponent as IconLogout } from "../assets/icons/logout.svg";
 
-function Sidebar({ accountType, logout }) {
+function Sidebar({
+  contract,
+  account,
+  accountType,
+  accountName,
+  accountBalance,
+  setErrorMessage,
+  utils
+}) {
   /***** STATES *****/
   // State to check if the sidebar is opened.
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
+  // State variables to control modal.
+  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isModalOpened2, setIsModalOpened2] = useState(false);
+  const [isModalOpened3, setIsModalOpened3] = useState(false);
 
   /***** VARIABLES *****/
   const navLinkVariants = {
@@ -51,29 +70,105 @@ function Sidebar({ accountType, logout }) {
     setIsSidebarOpened(false);
   };
 
+  /**
+   * Edit a profile in the contract.
+   * @param event - Event that triggered the function.
+   * @param formRef - Form reference.
+   */
+  const editProfile = (event, formRef) => {
+    event.preventDefault();
+    setErrorMessage(null);
+
+    // Call the `registerParent` function on the contract.
+    contract
+      .editProfile(event.target.profileName.value)
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          // Sync profile data.
+          utils.syncProfile();
+          // Close modal.
+          utils.closeModal(setIsModalOpened);
+          // Reset form.
+          formRef.current.reset();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
+  };
+
+  /**
+   * Delete parent account from the contract.
+   */
+  const deleteParent = () => {
+    setErrorMessage(null);
+
+    // Call the `deleteTask` function on the contract.
+    contract
+      .deleteParent()
+      .then(async (receipt) => {
+        // Wait for the transaction to be mined.
+        receipt.wait().then(() => {
+          utils.logout();
+        });
+      })
+      .catch((error) => {
+        setErrorMessage(error);
+      });
+  };
+
   // Return Sidebar component.
   return (
     <>
+      {/* Edit profile modal */}
+      <EditProfile
+        accountName={accountName}
+        editProfile={editProfile}
+        isModalOpened={isModalOpened}
+        setIsModalOpened={setIsModalOpened}
+        utils={utils}
+      />
+      {/* Parent only */}
+      {accountType === "parent" && (
+        <>
+          {/* Account settings modal */}
+          <AccountSettings
+            isModalOpened={isModalOpened2}
+            setIsModalOpened={setIsModalOpened2}
+            confirmModal={setIsModalOpened3}
+            utils={utils}
+          />
+          {/* Delete parent nodal */}
+          <DeleteParent
+            deleteParent={deleteParent}
+            isModalOpened={isModalOpened3}
+            setIsModalOpened={setIsModalOpened3}
+            utils={utils}
+          />
+        </>
+      )}
+
       {/* Header */}
       <header
         className={twMerge(
           "fixed inset-x-0 top-0 z-10",
           "flex h-16 min-h-[theme(width.16)] w-full min-w-[theme(width.80)] items-center justify-start px-2",
-          "bg-white shadow-md",
+          "bg-primary-700 text-white shadow-md",
           "md:hidden"
         )}
       >
         {/* Button to open sidebar */}
-        <Button onClick={openSidebar} variant="icon" className="md:hidden">
+        <Button onClick={openSidebar} variant="iconSidebar">
           <IconMenu />
         </Button>
 
         {/* Link to dashboard homepage */}
         <Link
           to="/dashboard"
-          className="flex h-full  items-center justify-center gap-2 px-2"
+          className="flex h-full items-center justify-center gap-2 px-2"
         >
-          <Logo />
+          <Logo variant="sidebar" />
         </Link>
       </header>
 
@@ -178,12 +273,77 @@ function Sidebar({ accountType, logout }) {
 
           {/* User profile info */}
           <div className="flex w-full flex-col gap-2 py-2">
+            {/* Profile */}
+            <div
+              className={twMerge(
+                "box-border flex w-full flex-col gap-2 p-4",
+                "border-b border-primary-600 text-primary-200"
+              )}
+            >
+              <div className="flex w-full flex-row gap-4">
+                {/* Avatar */}
+                <Avatar
+                  seed={utils.getAvatarSeed(account)}
+                  className="h-10 w-10 border-2 border-primary-600"
+                />
+                {/* Account Info */}
+                <div className="flex flex-col overflow-hidden">
+                  {/* Name */}
+                  <div
+                    onClick={() => {
+                      utils.openModal(setIsModalOpened);
+                    }}
+                    className={twMerge(
+                      "flex w-fit flex-row items-center gap-2 break-words",
+                      "cursor-pointer border-b border-transparent font-semibold",
+                      "hover:border-white hover:text-white active:text-white"
+                    )}
+                  >
+                    {accountName}
+                    <IconEdit className="min-h-fit min-w-fit" />
+                  </div>
+                  {/* Account */}
+                  <p className="line-clamp-2 w-full break-words text-sm">
+                    {account}
+                  </p>
+                </div>
+              </div>
+              {/* Balance, only child */}
+              {accountType === "child" && (
+                <div
+                  className={twMerge(
+                    "flex h-8 w-full flex-row items-center justify-center gap-2 px-2 py-2 text-center",
+                    "whitespace-nowrap rounded-lg border text-sm font-semibold uppercase",
+                    "border-primary-600"
+                  )}
+                >
+                  {/* Account balance */}
+                  <p className="w-full whitespace-nowrap">
+                    <b>Balance: </b>
+                    {utils.addTokenSymbol(accountBalance)}
+                  </p>
+                </div>
+              )}
+            </div>
+            {/* Account settings link, parent only */}
+            {accountType === "parent" && (
+              <Link
+                onClick={(event) => {
+                  event.preventDefault();
+                  utils.openModal(setIsModalOpened2);
+                }}
+                className={twMerge(navLinkVariants.default)}
+              >
+                <IconSettings />
+                Account Settings
+              </Link>
+            )}
             {/* Logout link */}
             <Link
               to="/"
               onClick={() => {
                 closeSidebar();
-                logout();
+                utils.logout();
               }}
               className={twMerge(navLinkVariants.default)}
             >

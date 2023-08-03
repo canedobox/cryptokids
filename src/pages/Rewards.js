@@ -14,8 +14,9 @@ import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
 function Rewards({
-  accountType,
   contract,
+  accountType,
+  accountBalance,
   rewardsCounter = 0,
   rewardLists,
   isDataLoading,
@@ -23,7 +24,7 @@ function Rewards({
   utils
 }) {
   /***** STATES *****/
-  // State variable to control modal.
+  // State variables to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [isModalOpened2, setIsModalOpened2] = useState(false);
   // Selected reward.
@@ -96,7 +97,7 @@ function Rewards({
   };
 
   /**
-   * Edit a reward to the contract.
+   * Edit a reward in the contract.
    * @param event - Event that triggered the function.
    * @param formRef - Form reference.
    */
@@ -290,7 +291,11 @@ function Rewards({
           }}
         />
       ) : (
-        <PageHeader title="Rewards" />
+        <PageHeader
+          title="Rewards"
+          accountBalance={accountBalance}
+          utils={utils}
+        />
       )}
       {/* Page content */}
       {/* If data is finished loading, render rewards. */}
@@ -393,14 +398,18 @@ function Rewards({
                                   {/* Edit button */}
                                   <Button
                                     variant="iconEdit"
-                                    onClick={() => selectReward(reward)}
+                                    onClick={() => {
+                                      selectReward(reward);
+                                    }}
                                   >
                                     <IconEdit />
                                   </Button>
                                   {/* Delete button */}
                                   <Button
                                     variant="iconDelete"
-                                    onClick={() => selectReward(reward, true)}
+                                    onClick={() => {
+                                      selectReward(reward, true);
+                                    }}
                                   >
                                     <IconDelete />
                                   </Button>

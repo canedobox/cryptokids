@@ -231,7 +231,7 @@ function App() {
         .catch((error) => {
           setErrorMessage(error);
         });
-      setAccountBalance(etherToNumber(accountBalance_));
+      setAccountBalance(accountBalance_);
     }
 
     // Stop loading data.
@@ -324,6 +324,19 @@ function App() {
     });
   };
 
+  /**
+   * Sync profile data.
+   */
+  const syncProfile = async () => {
+    if (contract) {
+      // Get profile.
+      const profile = await contract.getProfile().catch((error) => {
+        setErrorMessage(error);
+      });
+      setAccountName(profile.name);
+    }
+  };
+
   /*****************/
   /***** UTILS *****/
   /*****************/
@@ -374,7 +387,7 @@ function App() {
 
     // Check if user is a parent.
     if (account === address) {
-      avatarSeed = `name:${accountName}+address:${account}`;
+      avatarSeed = `name:${accountName}_account:${account.toUpperCase()}`;
     }
     // If user is a child.
     else {
@@ -382,7 +395,9 @@ function App() {
       familyGroup.map((child) => {
         // Get the child's avatar seed.
         if (child.child.childAddress === address) {
-          avatarSeed = `name:${child.child.name}+address:${child.child.childAddress}`;
+          avatarSeed = `name:${
+            child.child.name
+          }_account:${child.child.childAddress.toUpperCase()}`;
         }
         return true;
       });
@@ -496,12 +511,22 @@ function App() {
                 ) : (
                   // If accountType is "parent" or "child".
                   <DashboardLayout
+                    contract={contract}
                     account={account}
                     accountType={accountType}
-                    logout={logout}
+                    accountName={accountName}
+                    accountBalance={accountBalance}
                     errorMessage={errorMessage}
                     setErrorMessage={setErrorMessage}
-                    utils={{ getAvatarSeed, addTokenSymbol }}
+                    utils={{
+                      openModal,
+                      closeModal,
+                      syncProfile,
+                      getAvatarSeed,
+                      getShortAddress,
+                      addTokenSymbol,
+                      logout
+                    }}
                   />
                 )
               }
@@ -521,9 +546,9 @@ function App() {
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
                   utils={{
-                    fetchData,
                     openModal,
                     closeModal,
+                    fetchData,
                     getShortAddress,
                     getAvatarSeed,
                     addTokenSymbol
@@ -537,8 +562,9 @@ function App() {
             path="tasks"
             element={
               <Tasks
-                accountType={accountType}
                 contract={contract}
+                accountType={accountType}
+                accountBalance={accountBalance}
                 tasksCounter={tasksCounter}
                 taskLists={
                   accountType === "parent"
@@ -548,9 +574,9 @@ function App() {
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
                 utils={{
-                  fetchData,
                   openModal,
                   closeModal,
+                  fetchData,
                   getShortAddress,
                   getAvatarSeed,
                   numberToEther,
@@ -565,8 +591,9 @@ function App() {
             path="rewards"
             element={
               <Rewards
-                accountType={accountType}
                 contract={contract}
+                accountType={accountType}
+                accountBalance={accountBalance}
                 rewardsCounter={
                   accountType === "parent"
                     ? rewardsCounter
@@ -585,9 +612,9 @@ function App() {
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
                 utils={{
-                  fetchData,
                   openModal,
                   closeModal,
+                  fetchData,
                   getShortAddress,
                   getAvatarSeed,
                   numberToEther,
@@ -604,6 +631,7 @@ function App() {
               <ProtectedPage accountType={accountType}>
                 <Marketplace
                   contract={contract}
+                  accountBalance={accountBalance}
                   rewardsCounter={openRewards.length}
                   openRewards={openRewards}
                   isDataLoading={isDataLoading}
