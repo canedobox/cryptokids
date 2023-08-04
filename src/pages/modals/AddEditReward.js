@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 // Components
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
@@ -9,14 +9,30 @@ import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 function AddEditReward({
   selectedReward,
   deselectReward,
+  filterByChild,
   addReward,
   editReward,
   isModalOpened,
   setIsModalOpened,
   utils
 }) {
+  /***** STATES *****/
+  // State for selected child address.
+  const [selectedChild, setSelectedChild] = useState(null);
+
   // Ref to the form.
   const formRef = useRef(null);
+
+  /***** REACT HOOKS *****/
+  /**
+   * Listen for changes to `isModalOpened` and `filterByChild`.
+   */
+  useEffect(() => {
+    setSelectedChild(
+      selectedReward ? selectedReward.assignedTo : filterByChild
+    );
+  }, [isModalOpened, filterByChild]);
+
   // Return AddEditReward component.
   return (
     <Modal
@@ -43,20 +59,24 @@ function AddEditReward({
           <span className="font-medium text-gray-600">
             Assign to <span className="text-red-500">*</span>
           </span>
-          <input
+          <select
             id="childAddress"
-            type="text"
-            defaultValue={selectedReward ? selectedReward.assignedTo : ""}
-            placeholder="Enter the child wallet address"
-            minLength={42}
-            maxLength={42}
-            spellCheck={false}
-            disabled={selectedReward && true}
+            value={selectedChild ? selectedChild : ""}
+            onChange={(event) => {
+              setSelectedChild(
+                event.target.value !== "" ? event.target.value : null
+              );
+            }}
             required
-            className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600 disabled:cursor-not-allowed disabled:opacity-60"
-          />
+            disabled={selectedReward && true}
+            className={
+              "h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600 disabled:cursor-not-allowed disabled:opacity-60"
+            }
+          >
+            <option value="">Select a child</option>
+            {utils.getFamilyGroupOptions(true)}
+          </select>
         </label>
-
         {/* Reward description */}
         <label className="flex w-full flex-col items-start gap-1">
           <span className="font-medium text-gray-600">

@@ -393,6 +393,7 @@ function Tasks({
           <AddEditTask
             selectedTask={selectedTask}
             deselectTask={deselectTask}
+            filterByChild={filterByChild}
             addTask={addTask}
             editTask={selectedTask && editTask}
             isModalOpened={isModalOpened}
@@ -436,18 +437,18 @@ function Tasks({
           <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
             <IconFilter />
             <select
+              value={filterByChild ? filterByChild : ""}
               onChange={(event) => {
                 setFilterByChild(
-                  event.target.value !== "all" ? event.target.value : null
+                  event.target.value !== "" ? event.target.value : null
                 );
               }}
-              value={filterByChild ? filterByChild : "all"}
               className={twMerge(
                 "text-base font-medium text-gray-600",
                 "bg-transparent p-0 py-2"
               )}
             >
-              <option value="all">Filter by</option>
+              <option value="">Filter by</option>
               {utils.getFamilyGroupOptions()}
             </select>
           </label>

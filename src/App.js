@@ -336,7 +336,7 @@ function App() {
    * Get family group options for select inputs.
    * Example: <option value="0x1234...5678">Alice</option>
    */
-  const getFamilyGroupOptions = () => {
+  const getFamilyGroupOptions = (withAddress = false) => {
     // Return family group options.
     return (
       <>
@@ -346,7 +346,13 @@ function App() {
             return (
               <option key={index} value={option.child.childAddress}>
                 {/* Get only first name */}
-                {option.child.name.split(" ")[0]}
+                {`${option.child.name.split(" ")[0]} 
+                ${
+                  // Get short address
+                  withAddress
+                    ? ` - ${getShortAddress(option.child.childAddress)}`
+                    : ""
+                }`}
               </option>
             );
           })}
