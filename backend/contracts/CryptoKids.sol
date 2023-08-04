@@ -224,7 +224,7 @@ contract CryptoKids is ERC20 {
   function deleteParent() external onlyParent {
     // Remove children from the caller's family group.
     // Get the caller's family group.
-    address[] storage familyGroup = _familyGroups[msg.sender];
+    address[] memory familyGroup = _familyGroups[msg.sender];
     // Loop through the family group.
     for (uint256 i = 0; i < familyGroup.length; i++) {
       // Remove child from the family group.
@@ -323,7 +323,7 @@ contract CryptoKids is ERC20 {
     );
 
     // Get the caller's family group.
-    address[] storage familyGroup = _familyGroups[msg.sender];
+    address[] memory familyGroup = _familyGroups[msg.sender];
     // Loop through the family group.
     for (uint256 i = 0; i < familyGroup.length; i++) {
       // Get a child.
@@ -604,7 +604,7 @@ contract CryptoKids is ERC20 {
     Task[] memory childTasks = new Task[](_childTasks[msg.sender].length);
 
     // Get the child's task IDs.
-    uint256[] storage childTaskIDs = _childTasks[msg.sender];
+    uint256[] memory childTaskIDs = _childTasks[msg.sender];
     // Loop through the task IDs.
     for (uint256 i = 0; i < childTaskIDs.length; i++) {
       // Get a task.
@@ -629,7 +629,7 @@ contract CryptoKids is ERC20 {
     // Create an array for the child's tasks.
     Task[] memory childTasks = new Task[](_childTasks[child_].length);
     // Get the child's task IDs.
-    uint256[] storage childTaskIDs = _childTasks[child_];
+    uint256[] memory childTaskIDs = _childTasks[child_];
     // Loop through the task IDs.
     for (uint256 i = 0; i < childTaskIDs.length; i++) {
       // Get a task.
@@ -689,7 +689,7 @@ contract CryptoKids is ERC20 {
     uint256 taskIndex;
     for (uint256 i = 0; i < familyGroup.length; i++) {
       // Create an array for the current child's tasks.
-      uint256[] storage childTasks = _childTasks[familyGroup[i]];
+      uint256[] memory childTasks = _childTasks[familyGroup[i]];
       // Loop through the child's tasks.
       for (uint256 j = 0; j < childTasks.length; j++) {
         //Get child's task.
@@ -974,7 +974,7 @@ contract CryptoKids is ERC20 {
     );
 
     // Get the child's reward IDs.
-    uint256[] storage childRewardIDs = _childRewards[msg.sender];
+    uint256[] memory childRewardIDs = _childRewards[msg.sender];
     // Loop through the reward IDs.
     for (uint256 i = 0; i < childRewardIDs.length; i++) {
       // Get a reward.
@@ -999,7 +999,7 @@ contract CryptoKids is ERC20 {
     // Create an array for the child's rewards.
     Reward[] memory childRewards = new Reward[](_childRewards[child_].length);
     // Get the child's reward IDs.
-    uint256[] storage childRewardIDs = _childRewards[child_];
+    uint256[] memory childRewardIDs = _childRewards[child_];
     // Loop through the reward IDs.
     for (uint256 i = 0; i < childRewardIDs.length; i++) {
       // Get a reward.
@@ -1057,7 +1057,7 @@ contract CryptoKids is ERC20 {
     uint256 rewardIndex;
     for (uint256 i = 0; i < familyGroup.length; i++) {
       // Create an array for the current child's rewards.
-      uint256[] storage childRewards = _childRewards[familyGroup[i]];
+      uint256[] memory childRewards = _childRewards[familyGroup[i]];
       // Loop through the child's rewards.
       for (uint256 j = 0; j < childRewards.length; j++) {
         //Get child's reward.
