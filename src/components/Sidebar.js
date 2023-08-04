@@ -123,6 +123,7 @@ function Sidebar({
     <>
       {/* Edit profile modal */}
       <EditProfile
+        account={account}
         accountName={accountName}
         editProfile={editProfile}
         isModalOpened={isModalOpened}

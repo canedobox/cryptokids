@@ -306,7 +306,12 @@ function App() {
    * Get avatar seed based on the user's account type.
    * Example: name:Alice+address:0x1234...5678
    */
-  const getAvatarSeed = (address) => {
+  const getAvatarSeed = (address, newName = null) => {
+    // If a new name is provided, use it instead.
+    if (newName) {
+      return `name:${newName}_account:${address.toUpperCase()}`;
+    }
+
     // Avatar seed.
     let avatarSeed = "";
 
@@ -314,7 +319,7 @@ function App() {
     if (account === address) {
       avatarSeed = `name:${accountName}_account:${account.toUpperCase()}`;
     }
-    // If user is a child.
+    // Check if user is a child.
     else {
       // Loop through family group.
       familyGroup.map((child) => {
