@@ -79,7 +79,6 @@ function Marketplace({
   // Rewards config.
   const noRewardsMessage = "No rewards available in the marketplace.";
   const rewardStatuses = "Available Rewards";
-  const dateValue = "approvalDate";
   const rewardCta = { onClick: purchaseReward, label: "Buy" };
 
   /***** REACT HOOKS *****/
@@ -146,14 +145,6 @@ function Marketplace({
                             <div className="w-full break-words">
                               {reward.description}
                             </div>
-                            {/* Reward date */}
-                            {reward[dateValue] > 0 && (
-                              <div className="w-full break-words text-xs text-gray-600">
-                                {new Date(
-                                  reward[dateValue] * 1000
-                                ).toDateString()}
-                              </div>
-                            )}
                           </div>
                         </div>
                         {/* Column 2 */}

@@ -401,6 +401,74 @@ function App() {
     return `${etherToNumber(value.toString())} ${tokenSymbol}`;
   };
 
+  /**
+   * Format a date to a readable format.
+   * Making it easier for kids to understand.
+   * @param {string} date - Date to be format.
+   * @param {string} prefix - Prefix to be added to the date.
+   * @returns {string} Formatted date.
+   */
+  const formatDate = (date, prefix) => {
+    // Get current date.
+    const startDate = new Date();
+    // Get end date.
+    const endDate = new Date(date);
+
+    // Calculate the difference in days.
+    const differenceInTime = endDate.getTime() - startDate.getTime();
+    const differenceInDays = Math.ceil(
+      differenceInTime / (1000 * 60 * 60 * 24)
+    );
+
+    // Formatted date.
+    let formattedDate = "";
+
+    // If the date is in the past, return the number of days and date.
+    if (differenceInDays < -1) {
+      const options = {
+        day: "2-digit",
+        month: "numeric",
+        year: "numeric"
+      };
+      const fullDate = new Date(date).toLocaleDateString("en-GB", options);
+      formattedDate = `${Math.abs(differenceInDays)} days ago, ${fullDate}`;
+    }
+    // If the date is yesterday.
+    else if (differenceInDays === -1) {
+      formattedDate = "yesterday";
+    }
+    // If the date is today.
+    else if (differenceInDays === 0) {
+      formattedDate = "today";
+    }
+    // If the date is in tomorrow.
+    else if (differenceInDays === 1) {
+      formattedDate = "tomorrow";
+    }
+    // If the date is in the next three days, return the day of the week.
+    else if (differenceInDays > 1 && differenceInDays <= 3) {
+      // return the day of the week
+      const options = {
+        weekday: "long"
+      };
+      const fullDate = new Date(date).toLocaleDateString("en-GB", options);
+      formattedDate = `this ${fullDate}`;
+    }
+    // If is more than 3 days away, return the number of days and date.
+    else if (differenceInDays > 3) {
+      const options = {
+        day: "2-digit",
+        month: "numeric",
+        year: "numeric"
+      };
+      const fullDate = new Date(date).toLocaleDateString("en-GB", options);
+      formattedDate = `in ${Math.abs(differenceInDays)} days, ${fullDate}`;
+    }
+
+    // Return formatted date.
+    return `${prefix} ${formattedDate}`;
+  };
+
   /***********************/
   /***** REACT HOOKS *****/
   /***********************/
@@ -535,7 +603,8 @@ function App() {
                   getFamilyGroupOptions,
                   numberToEther,
                   etherToNumber,
-                  addTokenSymbol
+                  addTokenSymbol,
+                  formatDate
                 }}
               />
             }
@@ -560,7 +629,8 @@ function App() {
                   getAvatarSeed,
                   numberToEther,
                   etherToNumber,
-                  addTokenSymbol
+                  addTokenSymbol,
+                  formatDate
                 }}
               />
             }
@@ -576,7 +646,11 @@ function App() {
                   allRewards={allRewards}
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
-                  utils={{ fetchData, etherToNumber, addTokenSymbol }}
+                  utils={{
+                    fetchData,
+                    etherToNumber,
+                    addTokenSymbol
+                  }}
                 />
               </ProtectedPage>
             }

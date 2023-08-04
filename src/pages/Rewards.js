@@ -301,6 +301,7 @@ function Rewards({
         "purchaseDate",
         "approvalDate"
       ],
+      dateLabel: ["Redeemed", "", "Purchased", "Approved"],
       rewardCta: [
         { onClick: approveRewardRedemption, label: "Approve" },
         null,
@@ -314,6 +315,7 @@ function Rewards({
       noChildRewardsMessage: "No rewards assigned to you yet.",
       rewardStatuses: ["Waiting Approval", "Purchased", "Redeemed"],
       dateValue: ["redemptionDate", "purchaseDate", "approvalDate"],
+      dateLabel: ["Redeemed", "Purchased", "Approved"],
       rewardCta: [
         { onClick: cancelRewardRedemption, label: "Cancel" },
         { onClick: redeemReward, label: "Redeem" },
@@ -329,6 +331,7 @@ function Rewards({
     noChildRewardsMessage,
     rewardStatuses,
     dateValue,
+    dateLabel,
     rewardCta,
     isEditable
   } = rewardsConfig[accountType];
@@ -478,9 +481,12 @@ function Rewards({
                                 {/* Reward date */}
                                 {reward[dateValue[index]] > 0 && (
                                   <div className="w-full break-words text-xs text-gray-600">
-                                    {new Date(
-                                      reward[dateValue[index]] * 1000
-                                    ).toDateString()}
+                                    {utils.formatDate(
+                                      new Date(
+                                        reward[dateValue[index]] * 1000
+                                      ).toDateString(),
+                                      dateLabel[index]
+                                    )}
                                   </div>
                                 )}
                               </div>

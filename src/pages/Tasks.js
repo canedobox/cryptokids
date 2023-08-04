@@ -157,10 +157,10 @@ function Tasks({
     else {
       // Get task due date as a Date object.
       taskDueDate = new Date(taskDueDate);
+      // Set the task due date to the end of the day.
+      taskDueDate.setHours(23, 59, 59);
       // Check if the due date is greater than the current date.
       if (taskDueDate >= new Date()) {
-        // Set the task due date to the end of the day.
-        taskDueDate.setHours(23, 59, 59);
         // Convert the task due date to a Unix timestamp.
         taskDueDate = Math.round(taskDueDate.getTime() / 1000);
       } else {
@@ -211,10 +211,10 @@ function Tasks({
     else {
       // Get task due date as a Date object.
       taskDueDate = new Date(taskDueDate);
+      // Set the task due date to the end of the day.
+      taskDueDate.setHours(23, 59, 59);
       // Check if the due date is greater than the current date.
       if (taskDueDate >= new Date()) {
-        // Set the task due date to the end of the day.
-        taskDueDate.setHours(23, 59, 59);
         // Convert the task due date to a Unix timestamp.
         taskDueDate = Math.round(taskDueDate.getTime() / 1000);
       } else {
@@ -340,6 +340,7 @@ function Tasks({
       noChildTasksMessage: "This child does not have any tasks yet.",
       taskStatuses: ["Waiting Approval", "Open", "Expired", "Completed"],
       dateValue: ["completionDate", "dueDate", "dueDate", "approvalDate"],
+      dateLabel: ["Completed", "Due", "Expired", "Approved"],
       taskCta: [
         { onClick: approveTaskCompletion, label: "Approve" },
         null,
@@ -353,6 +354,7 @@ function Tasks({
       noChildTasksMessage: "No tasks assigned to you yet.",
       taskStatuses: ["Waiting Approval", "Open", "Completed", "Expired"],
       dateValue: ["completionDate", "dueDate", "approvalDate", "dueDate"],
+      dateLabel: ["Completed", "Due", "Approved", "Expired"],
       taskCta: [
         { onClick: cancelTaskCompletion, label: "Cancel" },
         { onClick: completeTask, label: "Complete" },
@@ -369,6 +371,7 @@ function Tasks({
     noChildTasksMessage,
     taskStatuses,
     dateValue,
+    dateLabel,
     taskCta,
     isEditable
   } = tasksConfig[accountType];
@@ -520,9 +523,12 @@ function Tasks({
                                     {/* Task date */}
                                     {task[dateValue[index]] > 0 && (
                                       <div className="w-full break-words text-xs text-gray-600">
-                                        {new Date(
-                                          task[dateValue[index]] * 1000
-                                        ).toDateString()}
+                                        {utils.formatDate(
+                                          new Date(
+                                            task[dateValue[index]] * 1000
+                                          ).toDateString(),
+                                          dateLabel[index]
+                                        )}
                                       </div>
                                     )}
                                   </div>
