@@ -48,10 +48,10 @@ function EditProfile({
             className="h-10 w-full rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600"
           />
         </label>
-        {/* Save button */}
+        {/* Submit button */}
         <Button type="submit" className="w-full">
           <IconSave />
-          Save Changes
+          Save Profile
         </Button>
       </form>
     </Modal>

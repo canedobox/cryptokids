@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 // Components
 import PageHeader from "../components/PageHeader";
@@ -10,6 +10,7 @@ import Loading from "./Loading";
 import AddEditTask from "./modals/AddEditTask";
 import DeleteTask from "./modals/DeleteTask";
 // Icons
+import { ReactComponent as IconFilter } from "../assets/icons/filter.svg";
 import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
@@ -17,20 +18,89 @@ function Tasks({
   contract,
   accountType,
   accountBalance,
-  tasksCounter = 0,
-  taskLists,
+  allTasks,
   isDataLoading,
   setErrorMessage,
   utils
 }) {
   /***** STATES *****/
+  // Tasks.
+  const [tasksCounter, setTasksCounter] = useState(0);
+  const [taskLists, setTaskLists] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  // Filter by child address.
+  const [filterByChild, setFilterByChild] = useState(false);
   // State variables to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [isModalOpened2, setIsModalOpened2] = useState(false);
-  // Selected task.
-  const [selectedTask, setSelectedTask] = useState(null);
 
   /***** METHODS *****/
+  /**
+   * Organize tasks into different categories based on their status:
+   * approved, completed, expired, or open.
+   */
+  const organizeTasks = () => {
+    // Check if tasks exist.
+    if (!allTasks) {
+      return false;
+    }
+
+    // Local tasks counter.
+    let tasksCounter_ = allTasks.length;
+    // Reset task lists.
+    setTaskLists([]);
+    // Task lists.
+    const openTasks = [];
+    const completedTasks = [];
+    const approvedTasks = [];
+    const expiredTasks = [];
+
+    // Loop through tasks.
+    allTasks.map((task) => {
+      // If filter by child is enabled, check if task belongs to child.
+      if (filterByChild && task.assignedTo !== filterByChild) {
+        // Decrement tasks counter.
+        tasksCounter_--;
+        // Skip task.
+        return false;
+      }
+      // Check if task was approved.
+      if (task.approved) {
+        // Add task to approved tasks list.
+        approvedTasks.push(task);
+      }
+      // Check if task was completed.
+      else if (task.completed) {
+        // Add task to completed tasks list.
+        completedTasks.push(task);
+      }
+      // Check if task is expired.
+      else if (
+        task.dueDate > 0 &&
+        task.dueDate < Math.floor(Date.now() / 1000)
+      ) {
+        // Add task to expired tasks list.
+        expiredTasks.push(task);
+      }
+      // Task still open.
+      else {
+        // Add task to open tasks list.
+        openTasks.push(task);
+      }
+      return true;
+    });
+
+    // Set tasks counter.
+    setTasksCounter(tasksCounter_);
+
+    // Set task lists.
+    if (accountType === "parent") {
+      setTaskLists([completedTasks, openTasks, expiredTasks, approvedTasks]);
+    } else {
+      setTaskLists([completedTasks, openTasks, approvedTasks, expiredTasks]);
+    }
+  };
+
   /**
    * Select a task.
    * @param task - Task to be selected.
@@ -262,10 +332,12 @@ function Tasks({
   };
 
   /***** VARIABLES *****/
+  // These variables need to be defined after the functions above.
   // Tasks config.
   const tasksConfig = {
     parent: {
       noTasksMessage: "You have not created any tasks yet.",
+      noChildTasksMessage: "This child does not have any tasks yet.",
       taskStatuses: ["Waiting Approval", "Open", "Expired", "Completed"],
       dateValue: ["completionDate", "dueDate", "dueDate", "approvalDate"],
       taskCta: [
@@ -278,6 +350,7 @@ function Tasks({
     },
     child: {
       noTasksMessage: "No tasks assigned to you yet.",
+      noChildTasksMessage: "No tasks assigned to you yet.",
       taskStatuses: ["Waiting Approval", "Open", "Completed", "Expired"],
       dateValue: ["completionDate", "dueDate", "approvalDate", "dueDate"],
       taskCta: [
@@ -291,8 +364,24 @@ function Tasks({
   };
 
   // Get current tasks config.
-  const { noTasksMessage, taskStatuses, dateValue, taskCta, isEditable } =
-    tasksConfig[accountType];
+  const {
+    noTasksMessage,
+    noChildTasksMessage,
+    taskStatuses,
+    dateValue,
+    taskCta,
+    isEditable
+  } = tasksConfig[accountType];
+
+  /***** REACT HOOKS *****/
+  /**
+   * Listen for changes to `allTasks` or `filterByChild`.
+   */
+  useEffect(() => {
+    if (allTasks.length > 0) {
+      organizeTasks();
+    }
+  }, [allTasks, filterByChild]);
 
   // Return Tasks component.
   return (
@@ -321,6 +410,7 @@ function Tasks({
           />
         </>
       )}
+
       {/* Page header */}
       {accountType === "parent" ? (
         <PageHeader
@@ -339,6 +429,31 @@ function Tasks({
           utils={utils}
         />
       )}
+
+      {/* Filter by child, parent only */}
+      {accountType === "parent" && (
+        <div className="flex w-full flex-row items-center justify-end border-b border-gray-200 px-4">
+          <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
+            <IconFilter />
+            <select
+              onChange={(event) => {
+                setFilterByChild(
+                  event.target.value !== "all" ? event.target.value : null
+                );
+              }}
+              value={filterByChild ? filterByChild : "all"}
+              className={twMerge(
+                "text-base font-medium text-gray-600",
+                "bg-transparent p-0 py-2"
+              )}
+            >
+              <option value="all">Filter by</option>
+              {utils.getFamilyGroupOptions()}
+            </select>
+          </label>
+        </div>
+      )}
+
       {/* Page content */}
       {/* If data is finished loading, render tasks. */}
       {isDataLoading ? (
@@ -347,121 +462,128 @@ function Tasks({
         <div className="flex h-full w-full flex-col gap-4 p-4">
           {tasksCounter === 0 ? (
             <div className="flex flex-1 items-center justify-center py-4">
-              {noTasksMessage}
+              {filterByChild ? noChildTasksMessage : noTasksMessage}
             </div>
           ) : (
-            taskLists &&
-            taskLists.map((tasks, index) => {
-              return (
-                tasks.length > 0 && (
-                  <div key={index} className="box-border flex flex-col">
-                    {/* Status */}
-                    <div className="flex flex-row items-center justify-start gap-4">
-                      <span className="rounded-t-lg bg-gray-300 p-2 px-3 text-sm font-semibold uppercase">
-                        {taskStatuses[index]}
-                      </span>
-                      <span className="text-xs font-medium uppercase text-gray-500">{`${
-                        tasks.length
-                      } ${tasks.length > 1 ? "Tasks" : "Task"}`}</span>
-                    </div>
-                    {/* Tasks */}
-                    <div
-                      className={twMerge(
-                        "flex flex-col overflow-hidden rounded-xl rounded-tl-none border",
-                        "border-gray-200 bg-white text-sm font-medium"
-                      )}
-                    >
-                      {tasks.map((task, taskIndex) => {
-                        return (
-                          <div
-                            key={taskIndex}
-                            className={twMerge(
-                              "flex flex-row justify-between gap-4 border-b p-4",
-                              "group border-gray-200 last:border-none hover:bg-gray-50"
-                            )}
-                          >
-                            <div className="flex flex-row gap-4">
-                              {/* Column 1 */}
-                              {/* Child avatar */}
-                              {accountType === "parent" && (
-                                <div className="flex min-w-fit items-center justify-center">
-                                  <Avatar
-                                    seed={utils.getAvatarSeed(task.assignedTo)}
-                                    className="h-6 w-6"
-                                  />
-                                </div>
-                              )}
-                              {/* Column 2 */}
-                              <div className="flex flex-col items-start justify-center">
-                                {/* Task description */}
-                                <div className="w-full break-words">
-                                  {task.description}
-                                </div>
-                                {/* Task date */}
-                                {task[dateValue[index]] > 0 && (
-                                  <div className="w-full break-words text-xs text-gray-600">
-                                    {new Date(
-                                      task[dateValue[index]] * 1000
-                                    ).toDateString()}
-                                  </div>
+            <>
+              {/* Task cards */}
+              {taskLists &&
+                taskLists.map((tasks, index) => {
+                  return (
+                    tasks.length > 0 && (
+                      <div key={index} className="box-border flex flex-col">
+                        {/* Status */}
+                        <div className="flex flex-row items-center justify-start gap-4">
+                          <span className="rounded-t-lg bg-gray-300 p-2 px-3 text-sm font-semibold uppercase">
+                            {taskStatuses[index]}
+                          </span>
+                          <span className="text-xs font-medium uppercase text-gray-500">{`${
+                            tasks.length
+                          } ${tasks.length > 1 ? "Tasks" : "Task"}`}</span>
+                        </div>
+                        {/* Tasks */}
+                        <div
+                          className={twMerge(
+                            "flex flex-col overflow-hidden rounded-xl rounded-tl-none border",
+                            "border-gray-200 bg-white text-sm font-medium"
+                          )}
+                        >
+                          {tasks.map((task, taskIndex) => {
+                            return (
+                              <div
+                                key={taskIndex}
+                                className={twMerge(
+                                  "flex flex-row justify-between gap-4 border-b p-4",
+                                  "group border-gray-200 last:border-none hover:bg-gray-50"
                                 )}
-                              </div>
-                            </div>
-                            {/* Column 3 */}
-                            <div
-                              className={twMerge(
-                                "flex flex-col items-end justify-center gap-1",
-                                "xs:flex-row xs:items-center xs:gap-4"
-                              )}
-                            >
-                              {/* Task reward */}
-                              <div className="whitespace-nowrap font-semibold">
-                                {utils.addTokenSymbol(task.reward)}
-                              </div>
-                              {/* Task CTA */}
-                              {taskCta[index] && (
-                                <div>
-                                  {/* CTA button */}
-                                  <Button
-                                    variant="outlineSmall"
-                                    onClick={() => taskCta[index].onClick(task)}
-                                  >
-                                    {taskCta[index].label}
-                                  </Button>
+                              >
+                                <div className="flex flex-row gap-4">
+                                  {/* Column 1 */}
+                                  {/* Child avatar */}
+                                  {accountType === "parent" && (
+                                    <div className="flex min-w-fit items-center justify-center">
+                                      <Avatar
+                                        seed={utils.getAvatarSeed(
+                                          task.assignedTo
+                                        )}
+                                        className="h-6 w-6"
+                                      />
+                                    </div>
+                                  )}
+                                  {/* Column 2 */}
+                                  <div className="flex flex-col items-start justify-center">
+                                    {/* Task description */}
+                                    <div className="w-full break-words">
+                                      {task.description}
+                                    </div>
+                                    {/* Task date */}
+                                    {task[dateValue[index]] > 0 && (
+                                      <div className="w-full break-words text-xs text-gray-600">
+                                        {new Date(
+                                          task[dateValue[index]] * 1000
+                                        ).toDateString()}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
-                              {/* Edit and delete */}
-                              {isEditable[index] && (
-                                <div className="flex flex-row gap-2">
-                                  {/* Edit button */}
-                                  <Button
-                                    variant="iconEdit"
-                                    onClick={() => {
-                                      selectTask(task);
-                                    }}
-                                  >
-                                    <IconEdit />
-                                  </Button>
-                                  {/* Delete button */}
-                                  <Button
-                                    variant="iconDelete"
-                                    onClick={() => {
-                                      selectTask(task, true);
-                                    }}
-                                  >
-                                    <IconDelete />
-                                  </Button>
+                                {/* Column 3 */}
+                                <div
+                                  className={twMerge(
+                                    "flex flex-col items-end justify-center gap-1",
+                                    "xs:flex-row xs:items-center xs:gap-4"
+                                  )}
+                                >
+                                  {/* Task reward */}
+                                  <div className="whitespace-nowrap font-semibold">
+                                    {utils.addTokenSymbol(task.reward)}
+                                  </div>
+                                  {/* Task CTA */}
+                                  {taskCta[index] && (
+                                    <div>
+                                      {/* CTA button */}
+                                      <Button
+                                        variant="outlineSmall"
+                                        onClick={() =>
+                                          taskCta[index].onClick(task)
+                                        }
+                                      >
+                                        {taskCta[index].label}
+                                      </Button>
+                                    </div>
+                                  )}
+                                  {/* Edit and delete */}
+                                  {isEditable[index] && (
+                                    <div className="flex flex-row gap-2">
+                                      {/* Edit button */}
+                                      <Button
+                                        variant="iconEdit"
+                                        onClick={() => {
+                                          selectTask(task);
+                                        }}
+                                      >
+                                        <IconEdit />
+                                      </Button>
+                                      {/* Delete button */}
+                                      <Button
+                                        variant="iconDelete"
+                                        onClick={() => {
+                                          selectTask(task, true);
+                                        }}
+                                      >
+                                        <IconDelete />
+                                      </Button>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )
-              );
-            })
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  );
+                })}
+            </>
           )}
         </div>
       )}

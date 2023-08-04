@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 // Components
 import PageHeader from "../components/PageHeader";
@@ -10,6 +10,7 @@ import Loading from "./Loading";
 import AddEditReward from "./modals/AddEditReward";
 import DeleteReward from "./modals/DeleteReward";
 // Icons
+import { ReactComponent as IconFilter } from "../assets/icons/filter.svg";
 import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
@@ -17,20 +18,91 @@ function Rewards({
   contract,
   accountType,
   accountBalance,
-  rewardsCounter = 0,
-  rewardLists,
+  allRewards,
   isDataLoading,
   setErrorMessage,
   utils
 }) {
   /***** STATES *****/
+  // Rewards
+  const [rewardsCounter, setRewardsCounter] = useState(0);
+  const [rewardLists, setRewardLists] = useState([]);
+  const [selectedReward, setSelectedReward] = useState(null);
+  // Filter by child address.
+  const [filterByChild, setFilterByChild] = useState(null);
   // State variables to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
   const [isModalOpened2, setIsModalOpened2] = useState(false);
-  // Selected reward.
-  const [selectedReward, setSelectedReward] = useState(null);
 
   /***** METHODS *****/
+  /**
+   * Organize rewards into different categories based on their status:
+   * approved, redeemed, purchased, or open.
+   */
+  const organizeRewards = () => {
+    // Check if rewards exist.
+    if (!allRewards) {
+      return false;
+    }
+
+    // Local rewards counter.
+    let rewardsCounter_ = allRewards.length;
+    // Reset reward lists.
+    setRewardLists([]);
+    // Reward lists.
+    const openRewards = [];
+    const purchasedRewards = [];
+    const redeemedRewards = [];
+    const approvedRewards = [];
+
+    // Loop through rewards.
+    allRewards.map((reward) => {
+      // If filter by child is enabled, check if reward belongs to child.
+      if (filterByChild && reward.assignedTo !== filterByChild) {
+        // Decrement rewards counter.
+        rewardsCounter_--;
+        // Skip reward.
+        return false;
+      }
+      // Check if reward was approved.
+      if (reward.approved) {
+        // Add reward to approved rewards list.
+        approvedRewards.push(reward);
+      }
+      // Check if reward was redeemed.
+      else if (reward.redeemed) {
+        // Add reward to redeemed rewards list.
+        redeemedRewards.push(reward);
+      }
+      // Check if reward was purchased.
+      else if (reward.purchased) {
+        // Add reward to purchased rewards list.
+        purchasedRewards.push(reward);
+      }
+      // Reward still open.
+      else {
+        // Add reward to open rewards list.
+        openRewards.push(reward);
+      }
+      return true;
+    });
+
+    // Set rewards counter.
+    setRewardsCounter(rewardsCounter_);
+
+    // Set reward lists.
+    if (accountType === "parent") {
+      setRewardLists([
+        redeemedRewards,
+        openRewards,
+        purchasedRewards,
+        approvedRewards
+      ]);
+    } else {
+      setRewardLists([redeemedRewards, purchasedRewards, approvedRewards]);
+    }
+  };
+
   /**
    * Select a reward.
    * @param reward - Reward to be selected.
@@ -216,10 +288,12 @@ function Rewards({
   };
 
   /***** VARIABLES *****/
+  // These variables need to be defined after the functions above.
   // Rewards config.
   const rewardsConfig = {
     parent: {
       noRewardsMessage: "You have not created any rewards yet.",
+      noChildRewardsMessage: "This child does not have any rewards yet.",
       rewardStatuses: ["Waiting Approval", "Open", "Purchased", "Redeemed"],
       dateValue: [
         "redemptionDate",
@@ -237,6 +311,7 @@ function Rewards({
     },
     child: {
       noRewardsMessage: "No rewards assigned to you yet.",
+      noChildRewardsMessage: "No rewards assigned to you yet.",
       rewardStatuses: ["Waiting Approval", "Purchased", "Redeemed"],
       dateValue: ["redemptionDate", "purchaseDate", "approvalDate"],
       rewardCta: [
@@ -249,8 +324,24 @@ function Rewards({
   };
 
   // Get current rewards config.
-  const { noRewardsMessage, rewardStatuses, dateValue, rewardCta, isEditable } =
-    rewardsConfig[accountType];
+  const {
+    noRewardsMessage,
+    noChildRewardsMessage,
+    rewardStatuses,
+    dateValue,
+    rewardCta,
+    isEditable
+  } = rewardsConfig[accountType];
+
+  /***** REACT HOOKS *****/
+  /**
+   * Listen for changes to `allRewards` or `filterByChild`.
+   */
+  useEffect(() => {
+    if (allRewards.length > 0) {
+      organizeRewards();
+    }
+  }, [allRewards, filterByChild]);
 
   // Return Rewards component.
   return (
@@ -279,6 +370,7 @@ function Rewards({
           />
         </>
       )}
+
       {/* Page header */}
       {accountType === "parent" ? (
         <PageHeader
@@ -297,6 +389,31 @@ function Rewards({
           utils={utils}
         />
       )}
+
+      {/* Filter by child, parent only */}
+      {accountType === "parent" && (
+        <div className="flex w-full flex-row items-center justify-end border-b border-gray-200 px-4">
+          <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
+            <IconFilter />
+            <select
+              onChange={(event) => {
+                setFilterByChild(
+                  event.target.value !== "all" ? event.target.value : null
+                );
+              }}
+              value={filterByChild ? filterByChild : "all"}
+              className={twMerge(
+                "text-base font-medium text-gray-600",
+                "bg-transparent p-0 py-2"
+              )}
+            >
+              <option value="all">Filter by</option>
+              {utils.getFamilyGroupOptions()}
+            </select>
+          </label>
+        </div>
+      )}
+
       {/* Page content */}
       {/* If data is finished loading, render rewards. */}
       {isDataLoading ? (
@@ -305,7 +422,7 @@ function Rewards({
         <div className="flex h-full w-full flex-col gap-4 p-4">
           {rewardsCounter === 0 ? (
             <div className="flex flex-1 items-center justify-center py-4">
-              {noRewardsMessage}
+              {filterByChild ? noChildRewardsMessage : noRewardsMessage}
             </div>
           ) : (
             rewardLists &&

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 // Components
 import PageHeader from "../components/PageHeader";
@@ -8,12 +9,51 @@ import Loading from "./Loading";
 function Marketplace({
   contract,
   accountBalance,
-  rewardsCounter = 0,
-  openRewards,
+  allRewards,
   isDataLoading,
   setErrorMessage,
   utils
 }) {
+  /***** STATES *****/
+  // Rewards
+  const [rewardsCounter, setRewardsCounter] = useState(0);
+  const [openRewards, setOpenRewards] = useState([]);
+
+  /***** METHODS *****/
+  /**
+   * Loop through all rewards and get open rewards.
+   */
+  const getOpenRewards = () => {
+    // Check if rewards exist.
+    if (!allRewards) {
+      return false;
+    }
+
+    // Local rewards counter.
+    let rewardsCounter_ = 0;
+    // Reset open rewards list.
+    setOpenRewards([]);
+    // Reward lists.
+    const openRewards_ = [];
+
+    // Loop through rewards.
+    allRewards.map((reward) => {
+      // Check if reward is opened.
+      if (!reward.approved && !reward.redeemed && !reward.purchased) {
+        // Increment rewards counter.
+        rewardsCounter_++;
+        // Add reward to open rewards list.
+        openRewards_.push(reward);
+      }
+      return true;
+    });
+
+    // Set rewards counter.
+    setRewardsCounter(rewardsCounter_);
+    // Set open rewards list.
+    setOpenRewards(openRewards_);
+  };
+
   /**
    * Purchase a reward in the contract.
    * @param reward - Reward to be purchased (reward.rewardId).
@@ -41,6 +81,16 @@ function Marketplace({
   const rewardStatuses = "Available Rewards";
   const dateValue = "approvalDate";
   const rewardCta = { onClick: purchaseReward, label: "Buy" };
+
+  /***** REACT HOOKS *****/
+  /**
+   * Listen for changes to `allRewards`.
+   */
+  useEffect(() => {
+    if (allRewards.length > 0) {
+      getOpenRewards();
+    }
+  }, [allRewards]);
 
   // Return Marketplace component.
   return (

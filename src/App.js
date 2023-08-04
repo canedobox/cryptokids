@@ -37,17 +37,9 @@ function App() {
   // Family Group
   const [familyGroup, setFamilyGroup] = useState([]);
   // Tasks
-  const [tasksCounter, setTasksCounter] = useState(0);
-  const [openTasks, setOpenTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
-  const [approvedTasks, setApprovedTasks] = useState([]);
-  const [expiredTasks, setExpiredTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
   // Rewards
-  const [rewardsCounter, setRewardsCounter] = useState(0);
-  const [openRewards, setOpenRewards] = useState([]);
-  const [purchasedRewards, setPurchasedRewards] = useState([]);
-  const [redeemedRewards, setRedeemedRewards] = useState([]);
-  const [approvedRewards, setApprovedRewards] = useState([]);
+  const [allRewards, setAllRewards] = useState([]);
 
   /*******************************/
   /***** USER AUTHENTICATION *****/
@@ -206,12 +198,14 @@ function App() {
       const tasks_ = await contract.getFamilyGroupTasks().catch((error) => {
         setErrorMessage(error);
       });
-      organizeTasks(tasks_);
+      // Store all tasks.
+      setAllTasks(tasks_);
       // Get user's family group rewards.
       const rewards_ = await contract.getFamilyGroupRewards().catch((error) => {
         setErrorMessage(error);
       });
-      organizeRewards(rewards_);
+      // Store all rewards.
+      setAllRewards(rewards_);
     }
     // Check if user is a child.
     else if (contract && account && accountType === "child") {
@@ -219,12 +213,14 @@ function App() {
       const tasks_ = await contract.getChildTasks().catch((error) => {
         setErrorMessage(error);
       });
-      organizeTasks(tasks_);
+      // Store all tasks.
+      setAllTasks(tasks_);
       // Get user's rewards.
       const rewards_ = await contract.getChildRewards().catch((error) => {
         setErrorMessage(error);
       });
-      organizeRewards(rewards_);
+      // Store all rewards.
+      setAllRewards(rewards_);
       // Get user's accountBalance.
       const accountBalance_ = await contract
         .balanceOf(account)
@@ -242,86 +238,15 @@ function App() {
    * Reset all data related to family groups, tasks, and rewards.
    */
   const resetData = () => {
-    // Reset state values.
+    // Reset state values.http://localhost:3000/dashboard/tasks
     // Account
     setAccountBalance(0);
     // Family group
     setFamilyGroup([]);
     // Tasks
-    setTasksCounter(0);
-    setOpenTasks([]);
-    setCompletedTasks([]);
-    setApprovedTasks([]);
-    setExpiredTasks([]);
+    setAllTasks([]);
     // Rewards
-    setRewardsCounter(0);
-    setOpenRewards([]);
-    setPurchasedRewards([]);
-    setRedeemedRewards([]);
-    setApprovedRewards([]);
-  };
-
-  /**
-   * Organize tasks into different categories based on their status:
-   * approved, completed, expired, or open.
-   * @param tasks - An array of tasks.
-   */
-  const organizeTasks = (tasks) => {
-    // Set tasks counter.
-    setTasksCounter(tasks.length);
-    // Loop through tasks.
-    tasks.map((task) => {
-      // Check if task was approved.
-      if (task.approved) {
-        setApprovedTasks((prevState) => [...prevState, task]);
-      }
-      // Check if task was completed.
-      else if (task.completed) {
-        setCompletedTasks((prevState) => [...prevState, task]);
-      }
-      // Check if task is expired.
-      else if (
-        task.dueDate > 0 &&
-        task.dueDate < Math.floor(Date.now() / 1000)
-      ) {
-        setExpiredTasks((prevState) => [...prevState, task]);
-      }
-      // Task still open.
-      else {
-        setOpenTasks((prevState) => [...prevState, task]);
-      }
-      return true;
-    });
-  };
-
-  /**
-   * Organize rewards into different categories based on their status:
-   * approved, redeemed, purchased, or open.
-   * @param rewards - An array of rewards.
-   */
-  const organizeRewards = (rewards) => {
-    // Set rewards counter.
-    setRewardsCounter(rewards.length);
-    // Loop through rewards.
-    rewards.map((reward) => {
-      // Check if reward was approved.
-      if (reward.approved) {
-        setApprovedRewards((prevState) => [...prevState, reward]);
-      }
-      // Check if reward was redeemed.
-      else if (reward.redeemed) {
-        setRedeemedRewards((prevState) => [...prevState, reward]);
-      }
-      // Check if reward was purchased.
-      else if (reward.purchased) {
-        setPurchasedRewards((prevState) => [...prevState, reward]);
-      }
-      // Reward still open.
-      else {
-        setOpenRewards((prevState) => [...prevState, reward]);
-      }
-      return true;
-    });
+    setAllRewards([]);
   };
 
   /**
@@ -405,6 +330,28 @@ function App() {
 
     // Return avatar seed.
     return avatarSeed;
+  };
+
+  /**
+   * Get family group options for select inputs.
+   * Example: <option value="0x1234...5678">Alice</option>
+   */
+  const getFamilyGroupOptions = () => {
+    // Return family group options.
+    return (
+      <>
+        {familyGroup &&
+          familyGroup.length > 0 &&
+          familyGroup.map((option, index) => {
+            return (
+              <option key={index} value={option.child.childAddress}>
+                {/* Get only first name */}
+                {option.child.name.split(" ")[0]}
+              </option>
+            );
+          })}
+      </>
+    );
   };
 
   /**
@@ -565,12 +512,7 @@ function App() {
                 contract={contract}
                 accountType={accountType}
                 accountBalance={accountBalance}
-                tasksCounter={tasksCounter}
-                taskLists={
-                  accountType === "parent"
-                    ? [completedTasks, openTasks, expiredTasks, approvedTasks]
-                    : [completedTasks, openTasks, approvedTasks, expiredTasks]
-                }
+                allTasks={allTasks}
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
                 utils={{
@@ -579,6 +521,7 @@ function App() {
                   fetchData,
                   getShortAddress,
                   getAvatarSeed,
+                  getFamilyGroupOptions,
                   numberToEther,
                   etherToNumber,
                   addTokenSymbol
@@ -594,21 +537,7 @@ function App() {
                 contract={contract}
                 accountType={accountType}
                 accountBalance={accountBalance}
-                rewardsCounter={
-                  accountType === "parent"
-                    ? rewardsCounter
-                    : rewardsCounter - openRewards.length
-                }
-                rewardLists={
-                  accountType === "parent"
-                    ? [
-                        redeemedRewards,
-                        openRewards,
-                        purchasedRewards,
-                        approvedRewards
-                      ]
-                    : [redeemedRewards, purchasedRewards, approvedRewards]
-                }
+                allRewards={allRewards}
                 isDataLoading={isDataLoading}
                 setErrorMessage={setErrorMessage}
                 utils={{
@@ -616,6 +545,7 @@ function App() {
                   closeModal,
                   fetchData,
                   getShortAddress,
+                  getFamilyGroupOptions,
                   getAvatarSeed,
                   numberToEther,
                   etherToNumber,
@@ -632,8 +562,7 @@ function App() {
                 <Marketplace
                   contract={contract}
                   accountBalance={accountBalance}
-                  rewardsCounter={openRewards.length}
-                  openRewards={openRewards}
+                  allRewards={allRewards}
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
                   utils={{ fetchData, etherToNumber, addTokenSymbol }}
