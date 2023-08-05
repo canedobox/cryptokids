@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
 // Components
 import Header from "../components/Header";
@@ -85,7 +85,8 @@ function WebsiteLayout({
       <main
         className={twMerge(
           "flex flex-col items-center justify-center",
-          "mt-16 min-h-[calc(theme(height.screen)-theme(width.16))] w-full p-4"
+          "mt-16 min-h-[calc(theme(height.screen)-theme(width.16))] w-full p-4",
+          useLocation().pathname === "/" && "mt-0 p-0"
         )}
       >
         {/* Child route element */}

@@ -3,6 +3,8 @@ import { twMerge } from "tailwind-merge";
 function Button({ variant = "default", className, children, ...restProps }) {
   // Button variants.
   const variants = {
+    small: "h-8 px-2",
+    large: "h-12 text-base px-6",
     default: twMerge(
       "flex h-10 w-fit flex-row items-center justify-center gap-2 px-4 py-2",
       "whitespace-nowrap rounded-lg border text-sm font-semibold uppercase",
@@ -10,10 +12,18 @@ function Button({ variant = "default", className, children, ...restProps }) {
       "hover:border-primary-600 hover:bg-primary-600",
       "active:border-primary-800 active:bg-primary-800"
     ),
-    small: "h-8 px-2",
-    large: "h-12 text-base px-6",
+    white: twMerge(
+      "border-gray-100 bg-gray-100 text-primary-700",
+      "hover:border-white hover:bg-white",
+      "active:border-gray-100 active:bg-gray-100"
+    ),
     outline: "bg-transparent text-primary-700 hover:text-white",
     outlineSmall: "bg-transparent text-primary-700 hover:text-white h-8 px-2",
+    outlineWhite: twMerge(
+      "border-gray-100 bg-transparent text-white",
+      "hover:border-white hover:bg-white hover:text-primary-700",
+      "active:border-gray-100 active:bg-gray-100"
+    ),
     outlineGray: twMerge(
       "border-gray-500 bg-transparent text-current",
       "hover:border-gray-500 hover:bg-gray-500 hover:text-white",

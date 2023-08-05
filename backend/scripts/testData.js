@@ -24,6 +24,8 @@ async function main() {
   const today = new Date();
   let yesterday = today.setDate(today.getDate() - 1);
   yesterday = Math.round(yesterday / 1000);
+  let threeDaysFromNow = today.setDate(today.getDate() + 3);
+  threeDaysFromNow = Math.round(threeDaysFromNow / 1000);
   let oneMonthFromNow = today.setDate(today.getDate() + 30);
   oneMonthFromNow = Math.round(oneMonthFromNow / 1000);
 
@@ -49,7 +51,7 @@ async function main() {
   await contract
     .connect(parent1)
     .addTask(
-      child1.address,
+      child3.address,
       "Bring the bin out",
       "3000000000000000000",
       yesterday
@@ -59,13 +61,13 @@ async function main() {
   await contract
     .connect(parent1)
     .addTask(
-      child1.address,
+      child3.address,
       "Help set the table for dinner",
       "2000000000000000000",
       0
     );
   // Complete Task2
-  await contract.connect(child1).completeTask(completedTaskID);
+  await contract.connect(child3).completeTask(completedTaskID);
 
   // Add Task3.
   await contract
@@ -95,7 +97,7 @@ async function main() {
   await contract
     .connect(parent1)
     .addTask(
-      child1.address,
+      child3.address,
       "Do some research and explain how blockchain works",
       "15000000000000000000",
       0
@@ -109,6 +111,16 @@ async function main() {
       "Use your creativity to make a beautiful artwork",
       "15000000000000000000",
       0
+    );
+
+  // Add Task8.
+  await contract
+    .connect(parent1)
+    .addTask(
+      child1.address,
+      "Sort out toys and choose some to donate to charity",
+      "15000000000000000000",
+      threeDaysFromNow
     );
 
   /***** REWARDS *****/

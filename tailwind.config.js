@@ -18,6 +18,9 @@ module.exports = {
       },
       spacing: {
         128: "25rem"
+      },
+      maxWidth: {
+        "3xs": "11rem"
       }
     },
     colors: {

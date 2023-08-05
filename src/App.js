@@ -521,42 +521,38 @@ function App() {
         <Route
           path="dashboard"
           element={
-            <>
-              {
-                // If dashboard is loading.
-                isDashboardLoading ? (
-                  <LoadingDashboard />
-                ) : // If accountType is null or "not-registered".
-                !accountType || accountType === "not-registered" ? (
-                  <ConnectWallet
-                    accountType={accountType}
-                    connectionHandler={connectionHandler}
-                    errorMessage={errorMessage}
-                    setErrorMessage={setErrorMessage}
-                  />
-                ) : (
-                  // If accountType is "parent" or "child".
-                  <DashboardLayout
-                    contract={contract}
-                    account={account}
-                    accountType={accountType}
-                    accountName={accountName}
-                    accountBalance={accountBalance}
-                    errorMessage={errorMessage}
-                    setErrorMessage={setErrorMessage}
-                    utils={{
-                      openModal,
-                      closeModal,
-                      syncProfile,
-                      getAvatarSeed,
-                      getShortAddress,
-                      addTokenSymbol,
-                      logout
-                    }}
-                  />
-                )
-              }
-            </>
+            // If dashboard is loading.
+            isDashboardLoading ? (
+              <LoadingDashboard />
+            ) : // If accountType is null or "not-registered".
+            !accountType || accountType === "not-registered" ? (
+              <ConnectWallet
+                accountType={accountType}
+                connectionHandler={connectionHandler}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
+            ) : (
+              // If accountType is "parent" or "child".
+              <DashboardLayout
+                contract={contract}
+                account={account}
+                accountType={accountType}
+                accountName={accountName}
+                accountBalance={accountBalance}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+                utils={{
+                  openModal,
+                  closeModal,
+                  syncProfile,
+                  getAvatarSeed,
+                  getShortAddress,
+                  addTokenSymbol,
+                  logout
+                }}
+              />
+            )
           }
         >
           {/* Dashboard homepage */}
