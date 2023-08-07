@@ -3,7 +3,13 @@ import { useRef } from "react";
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
 
-function SignUp({ registerParent, isModalOpened, setIsModalOpened, utils }) {
+function SignUp({
+  registerParent,
+  isModalOpened,
+  setIsModalOpened,
+  isSignUpPending,
+  utils
+}) {
   // Ref to the form.
   const formRef = useRef(null);
 
@@ -40,7 +46,7 @@ function SignUp({ registerParent, isModalOpened, setIsModalOpened, utils }) {
           />
         </label>
         {/* Sign up button */}
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" inProgress={isSignUpPending}>
           Sign up
         </Button>
       </form>

@@ -11,6 +11,7 @@ function AddChild({
   addChild,
   isModalOpened,
   setIsModalOpened,
+  isAddPending,
   utils
 }) {
   // Ref to the form.
@@ -66,7 +67,7 @@ function AddChild({
           />
         </label>
         {/* Submit button */}
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" inProgress={isAddPending}>
           <IconAdd />
           Add Child
         </Button>

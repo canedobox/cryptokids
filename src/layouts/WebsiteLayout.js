@@ -19,7 +19,9 @@ function WebsiteLayout({
 }) {
   /***** STATES *****/
   // State variable to control modal.
-  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isSignUpModalOpened, setIsSignUpModalOpened] = useState(false);
+  // State variables to control loading indicator.
+  const [isSignUpPending, setIsSignUpPending] = useState(false);
 
   /***** METHODS *****/
   /**
@@ -27,8 +29,12 @@ function WebsiteLayout({
    * @param event - Event that triggered the function.
    */
   const registerParent = (event) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsSignUpPending(true);
 
     // Call the `registerParent` function on the contract.
     contract
@@ -37,10 +43,15 @@ function WebsiteLayout({
         // Wait for the transaction to be mined.
         receipt.wait().then(() => {
           connectionHandler();
+          // Stop loading indicator.
+          setIsSignUpPending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsSignUpPending(false);
       });
   };
 
@@ -55,7 +66,7 @@ function WebsiteLayout({
     // If user is not registered.
     if (accountType === "not-registered") {
       // Open sign up modal.
-      utils.openModal(setIsModalOpened);
+      utils.openModal(setIsSignUpModalOpened);
     }
     // If account type is "parent" or "child".
     else if (accountType === "parent" || accountType === "child") {
@@ -70,8 +81,9 @@ function WebsiteLayout({
       {/* Sign up modal */}
       <SignUp
         registerParent={registerParent}
-        isModalOpened={isModalOpened}
-        setIsModalOpened={setIsModalOpened}
+        isModalOpened={isSignUpModalOpened}
+        setIsModalOpened={setIsSignUpModalOpened}
+        isSignUpPending={isSignUpPending}
         utils={utils}
       />
 

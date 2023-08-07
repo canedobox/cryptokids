@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 // Components
 import Modal from "../../components/Modal";
@@ -13,6 +13,7 @@ function EditProfile({
   editProfile,
   isModalOpened,
   setIsModalOpened,
+  isEditPending,
   utils
 }) {
   /***** STATES *****/
@@ -21,6 +22,18 @@ function EditProfile({
 
   // Ref to the form.
   const formRef = useRef(null);
+
+  /***** REACT HOOKS *****/
+  /**
+   * Listen for changes to `isModalOpened`.
+   */
+  useEffect(() => {
+    // If modal is opened.
+    if (isModalOpened) {
+      // Set profile name to account name.
+      setProfileName(accountName);
+    }
+  }, [isModalOpened]);
 
   // Return EditProfile component.
   return (
@@ -74,7 +87,7 @@ function EditProfile({
           />
         </label>
         {/* Submit button */}
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" inProgress={isEditPending}>
           <IconSave />
           Save Profile
         </Button>

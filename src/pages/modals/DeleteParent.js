@@ -5,6 +5,7 @@ function DeleteParent({
   deleteParent,
   isModalOpened,
   setIsModalOpened,
+  isDeletePending,
   utils
 }) {
   // Return DeleteParent component.
@@ -16,15 +17,12 @@ function DeleteParent({
       cta={{
         cancel: {
           label: "Cancel",
-          onClick: () => {
-            utils.closeModal(setIsModalOpened);
-          }
+          onClick: () => utils.closeModal(setIsModalOpened)
         },
         confirm: {
           label: "Delete",
-          onClick: () => {
-            deleteParent();
-          }
+          onClick: () => deleteParent(),
+          inProgress: isDeletePending
         }
       }}
       utils={utils}

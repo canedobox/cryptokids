@@ -9,6 +9,7 @@ import Loading from "./Loading";
 // Modals
 import AddEditTask from "./modals/AddEditTask";
 import DeleteTask from "./modals/DeleteTask";
+import WaitingForTransaction from "./modals/WaitingForTransaction";
 // Icons
 import { ReactComponent as IconFilter } from "../assets/icons/filter.svg";
 import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
@@ -31,8 +32,16 @@ function Tasks({
   // Filter by child address.
   const [filterByChild, setFilterByChild] = useState(false);
   // State variables to control modal.
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [isModalOpened2, setIsModalOpened2] = useState(false);
+  const [isAddEditTaskModalOpened, setIsAddEditTaskModalOpened] =
+    useState(false);
+  const [isDeleteTaskModalOpened, setIsDeleteTaskModalOpened] = useState(false);
+  const [
+    isWaitingForTransactionModalOpened,
+    setIsWaitingForTransactionModalOpened
+  ] = useState(false);
+  // State variables to control loading indicator.
+  const [isAddEditPending, setIsAddEditPending] = useState(false);
+  const [isDeletePending, setIsDeletePending] = useState(false);
 
   /***** METHODS *****/
   /**
@@ -109,10 +118,10 @@ function Tasks({
     // Set selected task.
     setSelectedTask(task);
     // Open modal.
-    if (!isDelete) {
-      utils.openModal(setIsModalOpened);
+    if (isDelete) {
+      utils.openModal(setIsDeleteTaskModalOpened);
     } else {
-      utils.openModal(setIsModalOpened2);
+      utils.openModal(setIsAddEditTaskModalOpened);
     }
   };
 
@@ -124,14 +133,9 @@ function Tasks({
     setSelectedTask(null);
     // Close modal.
     if (formRef) {
-      utils.closeModal(setIsModalOpened);
+      utils.closeModal(setIsAddEditTaskModalOpened, formRef);
     } else {
-      utils.closeModal(setIsModalOpened2);
-    }
-    // Check if form exists.
-    if (formRef) {
-      // Reset form.
-      formRef.current.reset();
+      utils.closeModal(setIsDeleteTaskModalOpened);
     }
   };
 
@@ -141,8 +145,12 @@ function Tasks({
    * @param formRef - Form reference.
    */
   const addTask = (event, formRef) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsAddEditPending(true);
 
     // Get the task reward.
     const taskReward = utils.numberToEther(event.target.taskReward.value);
@@ -182,10 +190,15 @@ function Tasks({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectTask(formRef);
+          // Stop loading indicator.
+          setIsAddEditPending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsAddEditPending(false);
       });
   };
 
@@ -195,8 +208,12 @@ function Tasks({
    * @param formRef - Form reference.
    */
   const editTask = (event, formRef) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsAddEditPending(true);
 
     // Get the task reward.
     const taskReward = utils.numberToEther(event.target.taskReward.value);
@@ -236,10 +253,15 @@ function Tasks({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectTask(formRef);
+          // Stop loading indicator.
+          setIsAddEditPending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsAddEditPending(false);
       });
   };
 
@@ -248,7 +270,10 @@ function Tasks({
    * @param task - Task to be deleted (task.taskId).
    */
   const deleteTask = (task) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsDeletePending(true);
 
     // Call the `deleteTask` function on the contract.
     contract
@@ -258,10 +283,15 @@ function Tasks({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectTask();
+          // Stop loading indicator.
+          setIsDeletePending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsDeletePending(false);
       });
   };
 
@@ -270,7 +300,10 @@ function Tasks({
    * @param task - Task to be completed (task.taskId).
    */
   const completeTask = (task) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `completeTask` function on the contract.
     contract
@@ -280,10 +313,15 @@ function Tasks({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectTask();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -292,7 +330,10 @@ function Tasks({
    * @param task - Task to be cancelled (task.taskId).
    */
   const cancelTaskCompletion = (task) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `cancelTaskCompletion` function on the contract.
     contract
@@ -302,10 +343,15 @@ function Tasks({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectTask();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -314,7 +360,10 @@ function Tasks({
    * @param task - Task to be approved (task.taskId).
    */
   const approveTaskCompletion = (task) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `approveTaskCompletion` function on the contract.
     contract
@@ -324,10 +373,15 @@ function Tasks({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectTask();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -399,8 +453,9 @@ function Tasks({
             filterByChild={filterByChild}
             addTask={addTask}
             editTask={selectedTask && editTask}
-            isModalOpened={isModalOpened}
-            setIsModalOpened={setIsModalOpened}
+            isModalOpened={isAddEditTaskModalOpened}
+            setIsModalOpened={setIsAddEditTaskModalOpened}
+            isAddEditPending={isAddEditPending}
             utils={utils}
           />
           {/* Delete task modal */}
@@ -408,12 +463,19 @@ function Tasks({
             selectedTask={selectedTask}
             deselectTask={deselectTask}
             deleteTask={deleteTask}
-            isModalOpened={isModalOpened2}
-            setIsModalOpened={setIsModalOpened2}
+            isModalOpened={isDeleteTaskModalOpened}
+            setIsModalOpened={setIsDeleteTaskModalOpened}
+            isDeletePending={isDeletePending}
             utils={utils}
           />
         </>
       )}
+      {/* Waiting for transaction modal */}
+      <WaitingForTransaction
+        isModalOpened={isWaitingForTransactionModalOpened}
+        setIsModalOpened={setIsWaitingForTransactionModalOpened}
+        utils={utils}
+      />
 
       {/* Page header */}
       {accountType === "parent" ? (
@@ -422,7 +484,7 @@ function Tasks({
           cta={{
             label: "Add Task",
             onClick: () => {
-              utils.openModal(setIsModalOpened);
+              utils.openModal(setIsAddEditTaskModalOpened);
             }
           }}
         />
@@ -435,7 +497,7 @@ function Tasks({
       )}
 
       {/* Filter by child, parent only */}
-      {accountType === "parent" && (
+      {accountType === "parent" && tasksCounter > 0 && (
         <div className="flex w-full flex-row items-center justify-end border-b border-gray-200 px-4">
           <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
             <IconFilter />

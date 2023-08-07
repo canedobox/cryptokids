@@ -33,9 +33,15 @@ function Sidebar({
   // State to check if the sidebar is opened.
   const [isSidebarOpened, setIsSidebarOpened] = useState(false);
   // State variables to control modal.
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [isModalOpened2, setIsModalOpened2] = useState(false);
-  const [isModalOpened3, setIsModalOpened3] = useState(false);
+  const [isEditProfileModalOpened, setIsEditProfileModalOpened] =
+    useState(false);
+  const [isAccountSettingsModalOpened, setIsAccountSettingsModalOpened] =
+    useState(false);
+  const [isDeleteParentModalOpened, setIsDeleteParentModalOpened] =
+    useState(false);
+  // State variables to control loading indicator.
+  const [isEditPending, setIsEditPending] = useState(false);
+  const [isDeletePending, setIsDeletePending] = useState(false);
 
   /***** VARIABLES *****/
   const navLinkVariants = {
@@ -76,8 +82,12 @@ function Sidebar({
    * @param formRef - Form reference.
    */
   const editProfile = (event, formRef) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsEditPending(true);
 
     // Call the `registerParent` function on the contract.
     contract
@@ -88,13 +98,16 @@ function Sidebar({
           // Sync profile data.
           utils.syncProfile();
           // Close modal.
-          utils.closeModal(setIsModalOpened);
-          // Reset form.
-          formRef.current.reset();
+          utils.closeModal(setIsEditProfileModalOpened, formRef);
+          // Stop loading indicator.
+          setIsEditPending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsEditPending(false);
       });
   };
 
@@ -102,7 +115,10 @@ function Sidebar({
    * Delete parent account from the contract.
    */
   const deleteParent = () => {
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsDeletePending(true);
 
     // Call the `deleteTask` function on the contract.
     contract
@@ -111,10 +127,15 @@ function Sidebar({
         // Wait for the transaction to be mined.
         receipt.wait().then(() => {
           utils.logout();
+          // Stop loading indicator.
+          setIsDeletePending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsDeletePending(false);
       });
   };
 
@@ -126,8 +147,9 @@ function Sidebar({
         account={account}
         accountName={accountName}
         editProfile={editProfile}
-        isModalOpened={isModalOpened}
-        setIsModalOpened={setIsModalOpened}
+        isModalOpened={isEditProfileModalOpened}
+        setIsModalOpened={setIsEditProfileModalOpened}
+        isEditPending={isEditPending}
         utils={utils}
       />
       {/* Parent only */}
@@ -135,16 +157,17 @@ function Sidebar({
         <>
           {/* Account settings modal */}
           <AccountSettings
-            isModalOpened={isModalOpened2}
-            setIsModalOpened={setIsModalOpened2}
-            confirmModal={setIsModalOpened3}
+            isModalOpened={isAccountSettingsModalOpened}
+            setIsModalOpened={setIsAccountSettingsModalOpened}
+            confirmModal={setIsDeleteParentModalOpened}
             utils={utils}
           />
           {/* Delete parent nodal */}
           <DeleteParent
             deleteParent={deleteParent}
-            isModalOpened={isModalOpened3}
-            setIsModalOpened={setIsModalOpened3}
+            isModalOpened={isDeleteParentModalOpened}
+            setIsModalOpened={setIsDeleteParentModalOpened}
+            isDeletePending={isDeletePending}
             utils={utils}
           />
         </>
@@ -292,7 +315,7 @@ function Sidebar({
                   {/* Name */}
                   <div
                     onClick={() => {
-                      utils.openModal(setIsModalOpened);
+                      utils.openModal(setIsEditProfileModalOpened);
                     }}
                     className={twMerge(
                       "flex w-fit flex-row items-center gap-2 break-words",
@@ -331,7 +354,7 @@ function Sidebar({
               <Link
                 onClick={(event) => {
                   event.preventDefault();
-                  utils.openModal(setIsModalOpened2);
+                  utils.openModal(setIsAccountSettingsModalOpened);
                 }}
                 className={twMerge(navLinkVariants.default)}
               >

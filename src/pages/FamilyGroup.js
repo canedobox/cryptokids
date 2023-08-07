@@ -18,11 +18,15 @@ function FamilyGroup({
   utils
 }) {
   /***** STATES *****/
-  // State variables to control modal.
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [isModalOpened2, setIsModalOpened2] = useState(false);
   // Selected child.
   const [selectedChild, setSelectedChild] = useState(null);
+  // State variables to control modal.
+  const [isAddChildModalOpened, setIsAddChildModalOpened] = useState(false);
+  const [isRemoveChildModalOpened, setIsRemoveChildModalOpened] =
+    useState(false);
+  // State variables to control loading indicator.
+  const [isAddPending, setIsAddPending] = useState(false);
+  const [isRemovePending, setIsRemovePending] = useState(false);
 
   /***** METHODS *****/
   /**
@@ -33,25 +37,20 @@ function FamilyGroup({
     // Set selected child.
     setSelectedChild(child);
     // Open modal.
-    utils.openModal(setIsModalOpened2);
+    utils.openModal(setIsRemoveChildModalOpened);
   };
 
   /**
    * Deselect a child.
    */
-  const deselectChild = (formRef_ = null) => {
+  const deselectChild = (formRef = null) => {
     // Deselect child.
     setSelectedChild(null);
     // Close modal.
-    if (formRef_) {
-      utils.closeModal(setIsModalOpened);
+    if (formRef) {
+      utils.closeModal(setIsAddChildModalOpened, formRef);
     } else {
-      utils.closeModal(setIsModalOpened2);
-    }
-    // Check if form exists.
-    if (formRef_) {
-      // Reset form.
-      formRef_.current.reset();
+      utils.closeModal(setIsRemoveChildModalOpened);
     }
   };
 
@@ -61,8 +60,12 @@ function FamilyGroup({
    * @param formRef - Form reference.
    */
   const addChild = (event, formRef) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsAddPending(true);
 
     // Call the `addChild` function on the contract.
     contract
@@ -72,10 +75,16 @@ function FamilyGroup({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectChild(formRef);
+          // Stop loading indicator.
+          setIsAddPending(false);
         });
       })
       .catch((error) => {
         setErrorMessage(error);
+        // Set error message.
+        setErrorMessage(error);
+        // Stop loading indicator.
+        setIsAddPending(false);
       });
   };
 
@@ -84,7 +93,10 @@ function FamilyGroup({
    * @param child - Child to be removed (child.childAddress).
    */
   const removeChild = (child) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsRemovePending(true);
 
     // Call the `removeChild` function on the contract.
     contract
@@ -94,10 +106,15 @@ function FamilyGroup({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectChild();
+          // Stop loading indicator.
+          setIsRemovePending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsRemovePending(false);
       });
   };
 
@@ -109,8 +126,9 @@ function FamilyGroup({
         selectedChild={selectedChild}
         deselectChild={deselectChild}
         addChild={addChild}
-        isModalOpened={isModalOpened}
-        setIsModalOpened={setIsModalOpened}
+        isModalOpened={isAddChildModalOpened}
+        setIsModalOpened={setIsAddChildModalOpened}
+        isAddPending={isAddPending}
         utils={utils}
       />
       {/* Remove child modal */}
@@ -118,8 +136,9 @@ function FamilyGroup({
         selectedChild={selectedChild}
         deselectChild={deselectChild}
         removeChild={removeChild}
-        isModalOpened={isModalOpened2}
-        setIsModalOpened={setIsModalOpened2}
+        isModalOpened={isRemoveChildModalOpened}
+        setIsModalOpened={setIsRemoveChildModalOpened}
+        isRemovePending={isRemovePending}
         utils={utils}
       />
       {/* Page header */}
@@ -128,7 +147,7 @@ function FamilyGroup({
         cta={{
           label: "Add Child",
           onClick: () => {
-            utils.openModal(setIsModalOpened);
+            utils.openModal(setIsAddChildModalOpened);
           }
         }}
       />
@@ -139,7 +158,7 @@ function FamilyGroup({
       ) : (
         <div
           className={twMerge(
-            "box-border flex h-full w-full flex-wrap justify-center gap-4 p-4 md:justify-start",
+            "box-border flex w-full flex-wrap justify-center gap-4 p-4 md:justify-start",
             familyGroup && familyGroup.length > 1 && "md:justify-center"
           )}
         >

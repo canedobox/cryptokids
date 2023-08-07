@@ -14,6 +14,7 @@ function AddEditTask({
   editTask,
   isModalOpened,
   setIsModalOpened,
+  isAddEditPending,
   utils
 }) {
   /***** STATES *****/
@@ -127,7 +128,7 @@ function AddEditTask({
           />
         </label>
         {/* Submit button */}
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" inProgress={isAddEditPending}>
           {editTask ? <IconSave /> : <IconAdd />}
           {`${editTask ? "Save" : "Add"} Task`}
         </Button>

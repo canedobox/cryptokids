@@ -11,6 +11,7 @@ function Modal({
   setIsModalOpened,
   closeModal,
   cta,
+  isPopup = false,
   closeWithBackdrop = true,
   utils,
   children
@@ -32,7 +33,7 @@ function Modal({
         className={twMerge(
           "fixed inset-0 z-40 transition-all duration-300 ease-in-out",
           "flex min-w-[theme(width.80)] items-center justify-center xs:p-4",
-          cta && "p-4",
+          (cta || isPopup) && "p-4",
           isModalOpened ? "visible bg-black/60" : "invisible"
         )}
       >
@@ -45,7 +46,7 @@ function Modal({
             "z-50 transition-all duration-200 ease-in-out",
             "flex h-full w-full flex-col items-center justify-start",
             "overflow-hidden bg-white shadow-md",
-            cta
+            cta || isPopup
               ? "h-fit w-fit min-w-[theme(width.80)] max-w-xl rounded-xl"
               : "xs:h-fit xs:w-fit xs:min-w-[theme(width.80)] xs:max-w-xl xs:rounded-xl",
             isModalOpened ? "scale-100 opacity-100" : "scale-90 opacity-0"
@@ -97,7 +98,12 @@ function Modal({
               )}
               {/* Confirm */}
               {cta.confirm && (
-                <Button onClick={cta.confirm.onClick}>
+                <Button
+                  onClick={cta.confirm.onClick}
+                  inProgress={
+                    cta.confirm.inProgress ? cta.confirm.inProgress : false
+                  }
+                >
                   {cta.confirm.label}
                 </Button>
               )}

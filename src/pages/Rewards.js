@@ -9,6 +9,7 @@ import Loading from "./Loading";
 // Modals
 import AddEditReward from "./modals/AddEditReward";
 import DeleteReward from "./modals/DeleteReward";
+import WaitingForTransaction from "./modals/WaitingForTransaction";
 // Icons
 import { ReactComponent as IconFilter } from "../assets/icons/filter.svg";
 import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
@@ -31,8 +32,17 @@ function Rewards({
   // Filter by child address.
   const [filterByChild, setFilterByChild] = useState(null);
   // State variables to control modal.
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [isModalOpened2, setIsModalOpened2] = useState(false);
+  const [isAddEditRewardModalOpened, setIsAddEditRewardModalOpened] =
+    useState(false);
+  const [isDeleteRewardModalOpened, setIsDeleteRewardModalOpened] =
+    useState(false);
+  const [
+    isWaitingForTransactionModalOpened,
+    setIsWaitingForTransactionModalOpened
+  ] = useState(false);
+  // State variables to control loading indicator.
+  const [isAddEditPending, setIsAddEditPending] = useState(false);
+  const [isDeletePending, setIsDeletePending] = useState(false);
 
   /***** METHODS *****/
   /**
@@ -111,10 +121,10 @@ function Rewards({
     // Set selected reward.
     setSelectedReward(reward);
     // Open modal.
-    if (!isDelete) {
-      utils.openModal(setIsModalOpened);
+    if (isDelete) {
+      utils.openModal(setIsDeleteRewardModalOpened);
     } else {
-      utils.openModal(setIsModalOpened2);
+      utils.openModal(setIsAddEditRewardModalOpened);
     }
   };
 
@@ -126,14 +136,9 @@ function Rewards({
     setSelectedReward(null);
     // Close modal.
     if (formRef) {
-      utils.closeModal(setIsModalOpened);
+      utils.closeModal(setIsAddEditRewardModalOpened, formRef);
     } else {
-      utils.closeModal(setIsModalOpened2);
-    }
-    // Check if form exists.
-    if (formRef) {
-      // Reset form.
-      formRef.current.reset();
+      utils.closeModal(setIsDeleteRewardModalOpened);
     }
   };
 
@@ -143,8 +148,12 @@ function Rewards({
    * @param formRef - Form reference.
    */
   const addReward = (event, formRef) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsAddEditPending(true);
 
     // Get the reward price.
     const rewardPrice = utils.numberToEther(event.target.rewardPrice.value);
@@ -161,10 +170,15 @@ function Rewards({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectReward(formRef);
+          // Stop loading indicator.
+          setIsAddEditPending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsAddEditPending(false);
       });
   };
 
@@ -174,8 +188,12 @@ function Rewards({
    * @param formRef - Form reference.
    */
   const editReward = (event, formRef) => {
+    // Prevent default form submission.
     event.preventDefault();
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsAddEditPending(true);
 
     // Get the reward price.
     const rewardPrice = utils.numberToEther(event.target.rewardPrice.value);
@@ -192,10 +210,15 @@ function Rewards({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectReward(formRef);
+          // Stop loading indicator.
+          setIsAddEditPending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsAddEditPending(false);
       });
   };
 
@@ -204,7 +227,10 @@ function Rewards({
    * @param reward - Reward to be deleted (reward.rewardId).
    */
   const deleteReward = (reward) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Start loading indicator.
+    setIsDeletePending(true);
 
     // Call the `deleteReward` function on the contract.
     contract
@@ -214,10 +240,15 @@ function Rewards({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectReward();
+          // Stop loading indicator.
+          setIsDeletePending(false);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Stop loading indicator.
+        setIsDeletePending(false);
       });
   };
 
@@ -226,7 +257,10 @@ function Rewards({
    * @param reward - Reward to be redeemed (reward.rewardId).
    */
   const redeemReward = (reward) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `redeemReward` function on the contract.
     contract
@@ -236,10 +270,15 @@ function Rewards({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectReward();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -248,7 +287,10 @@ function Rewards({
    * @param reward - Reward to be cancelled (reward.rewardId).
    */
   const cancelRewardRedemption = (reward) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `cancelRewardRedemption` function on the contract.
     contract
@@ -258,10 +300,15 @@ function Rewards({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectReward();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -270,7 +317,10 @@ function Rewards({
    * @param reward - Reward to be approved (reward.rewardId).
    */
   const approveRewardRedemption = (reward) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `approveRewardRedemption` function on the contract.
     contract
@@ -280,10 +330,15 @@ function Rewards({
         receipt.wait().then(() => {
           utils.fetchData();
           deselectReward();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -359,8 +414,9 @@ function Rewards({
             filterByChild={filterByChild}
             addReward={addReward}
             editReward={selectedReward && editReward}
-            isModalOpened={isModalOpened}
-            setIsModalOpened={setIsModalOpened}
+            isModalOpened={isAddEditRewardModalOpened}
+            setIsModalOpened={setIsAddEditRewardModalOpened}
+            isAddEditPending={isAddEditPending}
             utils={utils}
           />
           {/* Delete reward modal */}
@@ -368,12 +424,19 @@ function Rewards({
             selectedReward={selectedReward}
             deselectReward={deselectReward}
             deleteReward={deleteReward}
-            isModalOpened={isModalOpened2}
-            setIsModalOpened={setIsModalOpened2}
+            isModalOpened={isDeleteRewardModalOpened}
+            setIsModalOpened={setIsDeleteRewardModalOpened}
+            isDeletePending={isDeletePending}
             utils={utils}
           />
         </>
       )}
+      {/* Waiting for transaction modal */}
+      <WaitingForTransaction
+        isModalOpened={isWaitingForTransactionModalOpened}
+        setIsModalOpened={setIsWaitingForTransactionModalOpened}
+        utils={utils}
+      />
 
       {/* Page header */}
       {accountType === "parent" ? (
@@ -382,7 +445,7 @@ function Rewards({
           cta={{
             label: "Add Reward",
             onClick: () => {
-              utils.openModal(setIsModalOpened);
+              utils.openModal(setIsAddEditRewardModalOpened);
             }
           }}
         />
@@ -395,7 +458,7 @@ function Rewards({
       )}
 
       {/* Filter by child, parent only */}
-      {accountType === "parent" && (
+      {accountType === "parent" && rewardsCounter > 0 && (
         <div className="flex w-full flex-row items-center justify-end border-b border-gray-200 px-4">
           <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
             <IconFilter />

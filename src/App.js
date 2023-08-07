@@ -285,7 +285,7 @@ function App() {
     // Close modal.
     setIsModalOpened(false);
     // Check if form exists.
-    if (formRef) {
+    if (formRef && formRef.current) {
       // Reset form.
       formRef.current.reset();
     }
@@ -657,6 +657,8 @@ function App() {
                   isDataLoading={isDataLoading}
                   setErrorMessage={setErrorMessage}
                   utils={{
+                    openModal,
+                    closeModal,
                     fetchData,
                     etherToNumber,
                     addTokenSymbol

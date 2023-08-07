@@ -6,7 +6,7 @@ function LoadingDashboard() {
   return (
     <main className="flex h-screen w-screen min-w-[theme(width.80)] flex-col items-center justify-center gap-4">
       <IconLoading className="animate-spin text-gray-400" />
-      <h1 className="text-3xl font-bold">Loading dashboard...</h1>
+      <h1 className="text-3xl font-bold text-gray-600">Loading dashboard...</h1>
     </main>
   );
 }

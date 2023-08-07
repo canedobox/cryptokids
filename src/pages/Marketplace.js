@@ -5,6 +5,8 @@ import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 // Pages
 import Loading from "./Loading";
+// Modals
+import WaitingForTransaction from "./modals/WaitingForTransaction";
 
 function Marketplace({
   contract,
@@ -18,6 +20,11 @@ function Marketplace({
   // Rewards
   const [rewardsCounter, setRewardsCounter] = useState(0);
   const [openRewards, setOpenRewards] = useState([]);
+  // State variables to control modal.
+  const [
+    isWaitingForTransactionModalOpened,
+    setIsWaitingForTransactionModalOpened
+  ] = useState(false);
 
   /***** METHODS *****/
   /**
@@ -59,7 +66,10 @@ function Marketplace({
    * @param reward - Reward to be purchased (reward.rewardId).
    */
   const purchaseReward = (reward) => {
+    // Reset error message.
     setErrorMessage(null);
+    // Open the modal.
+    utils.openModal(setIsWaitingForTransactionModalOpened);
 
     // Call the `purchaseReward` function on the contract.
     contract
@@ -68,10 +78,15 @@ function Marketplace({
         // Wait for the transaction to be mined.
         receipt.wait().then(() => {
           utils.fetchData();
+          // Close the modal.
+          utils.closeModal(setIsWaitingForTransactionModalOpened);
         });
       })
       .catch((error) => {
+        // Set error message.
         setErrorMessage(error);
+        // Close the modal.
+        utils.closeModal(setIsWaitingForTransactionModalOpened);
       });
   };
 
@@ -94,6 +109,13 @@ function Marketplace({
   // Return Marketplace component.
   return (
     <>
+      {/* Waiting for transaction modal */}
+      <WaitingForTransaction
+        isModalOpened={isWaitingForTransactionModalOpened}
+        setIsModalOpened={setIsWaitingForTransactionModalOpened}
+        utils={utils}
+      />
+
       {/* Page header */}
       <PageHeader
         title="Rewards"

@@ -7,6 +7,7 @@ function DeleteTask({
   deleteTask,
   isModalOpened,
   setIsModalOpened,
+  isDeletePending,
   utils
 }) {
   // Return DeleteTask component.
@@ -21,7 +22,11 @@ function DeleteTask({
           label: "Cancel",
           onClick: () => deselectTask()
         },
-        confirm: { label: "Delete", onClick: () => deleteTask(selectedTask) }
+        confirm: {
+          label: "Delete",
+          onClick: () => deleteTask(selectedTask),
+          inProgress: isDeletePending
+        }
       }}
       utils={utils}
     >

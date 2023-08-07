@@ -14,6 +14,7 @@ function AddEditReward({
   editReward,
   isModalOpened,
   setIsModalOpened,
+  isAddEditPending,
   utils
 }) {
   /***** STATES *****/
@@ -111,7 +112,7 @@ function AddEditReward({
           />
         </label>
         {/* Submit button */}
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" inProgress={isAddEditPending}>
           {editReward ? <IconSave /> : <IconAdd />}
           {`${editReward ? "Save" : "Add"} Reward`}
         </Button>

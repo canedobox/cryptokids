@@ -7,6 +7,7 @@ function DeleteReward({
   deleteReward,
   isModalOpened,
   setIsModalOpened,
+  isDeletePending,
   utils
 }) {
   // Return DeleteReward component.
@@ -23,7 +24,8 @@ function DeleteReward({
         },
         confirm: {
           label: "Delete",
-          onClick: () => deleteReward(selectedReward)
+          onClick: () => deleteReward(selectedReward),
+          inProgress: isDeletePending
         }
       }}
       utils={utils}

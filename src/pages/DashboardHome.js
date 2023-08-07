@@ -20,7 +20,7 @@ function DashboardHome({ accountType }) {
   });
 
   // Return DashboardHome component.
-  return <h1 className="text-3xl font-bold">Redirecting...</h1>;
+  return <h1 className="text-3xl font-bold text-gray-600">Redirecting...</h1>;
 }
 
 export default DashboardHome;

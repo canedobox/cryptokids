@@ -8,6 +8,7 @@ function Stats({ stats, isModalOpened, setIsModalOpened, utils }) {
       title="CryptoKids Dapp Statistics"
       isModalOpened={isModalOpened}
       setIsModalOpened={setIsModalOpened}
+      isPopup={true}
       utils={utils}
     >
       {/* Content */}

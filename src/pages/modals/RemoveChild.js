@@ -7,6 +7,7 @@ function RemoveChild({
   removeChild,
   isModalOpened,
   setIsModalOpened,
+  isRemovePending,
   utils
 }) {
   // Return RemoveChild component.
@@ -21,7 +22,11 @@ function RemoveChild({
           label: "Cancel",
           onClick: () => deselectChild()
         },
-        confirm: { label: "Remove", onClick: () => removeChild(selectedChild) }
+        confirm: {
+          label: "Remove",
+          onClick: () => removeChild(selectedChild),
+          inProgress: isRemovePending
+        }
       }}
       utils={utils}
     >
