@@ -374,7 +374,10 @@ function App() {
   const numberToEther = (value) => {
     if (tokenDecimals) {
       return ethers.utils
-        .parseUnits(value.toString(), tokenDecimals)
+        .parseUnits(
+          value.toLocaleString("fullwide", { useGrouping: false }),
+          tokenDecimals
+        )
         .toString();
     }
   };
@@ -388,7 +391,12 @@ function App() {
   const etherToNumber = (value) => {
     if (tokenDecimals) {
       return parseFloat(
-        ethers.utils.formatUnits(value.toString(), tokenDecimals).toString()
+        ethers.utils
+          .formatUnits(
+            value.toLocaleString("fullwide", { useGrouping: false }),
+            tokenDecimals
+          )
+          .toString()
       );
     }
   };
@@ -398,7 +406,7 @@ function App() {
    * Example: 1 to 1 CK
    */
   const addTokenSymbol = (value) => {
-    return `${etherToNumber(value.toString())} ${tokenSymbol}`;
+    return `${etherToNumber(value)} ${tokenSymbol}`;
   };
 
   /**
