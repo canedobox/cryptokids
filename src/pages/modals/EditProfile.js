@@ -51,7 +51,7 @@ function EditProfile({
         onSubmit={(event) => editProfile(event, formRef)}
         className="flex w-full flex-col gap-4"
       >
-        {/* Profile picture preview */}
+        {/* Profile avatar preview */}
         <div
           className={twMerge(
             "flex flex-row items-center justify-center gap-4 pb-4",
@@ -64,8 +64,8 @@ function EditProfile({
             className="h-16 w-16"
           />
           <div className="flex flex-col items-start justify-center gap-2 text-gray-600">
-            <p className="font-medium ">New name, new profile picture!</p>
-            <p className="text-sm">&lt;&lt;&lt; Check the preview.</p>
+            <p className="font-medium ">New name, new avatar!</p>
+            <p className="text-sm">&lt;&lt;&lt; Check the preview</p>
           </div>
         </div>
         {/* Profile name */}

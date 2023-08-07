@@ -193,13 +193,16 @@ function App() {
       const familyGroup_ = await contract.getFamilyGroup().catch((error) => {
         setErrorMessage(error);
       });
+      // Store family group.
       setFamilyGroup(familyGroup_);
+
       // Get user's family group tasks.
       const tasks_ = await contract.getFamilyGroupTasks().catch((error) => {
         setErrorMessage(error);
       });
       // Store all tasks.
       setAllTasks(tasks_);
+
       // Get user's family group rewards.
       const rewards_ = await contract.getFamilyGroupRewards().catch((error) => {
         setErrorMessage(error);
@@ -215,12 +218,14 @@ function App() {
       });
       // Store all tasks.
       setAllTasks(tasks_);
+
       // Get user's rewards.
       const rewards_ = await contract.getChildRewards().catch((error) => {
         setErrorMessage(error);
       });
       // Store all rewards.
       setAllRewards(rewards_);
+
       // Get user's accountBalance.
       const accountBalance_ = await contract
         .balanceOf(account)
@@ -296,7 +301,7 @@ function App() {
    * Example: 0x1234...5678
    */
   const getShortAddress = (address) => {
-    return `${address.substring(0, 4)}...${address.substring(
+    return `${address.substring(0, 6)}...${address.substring(
       address.length - 4,
       address.length
     )}`;
@@ -350,8 +355,8 @@ function App() {
           familyGroup.map((option, index) => {
             return (
               <option key={index} value={option.child.childAddress}>
-                {/* Get only first name */}
-                {`${option.child.name.split(" ")[0]} 
+                {/* Get child's name */}
+                {`${option.child.name} 
                 ${
                   // Get short address
                   withAddress

@@ -43,8 +43,27 @@ function Marketplace({
     // Reward lists.
     const openRewards_ = [];
 
+    // Sort rewards by description in ascending order.
+    const allRewardsSorted = [...allRewards];
+    allRewardsSorted.sort((a, b) => {
+      // Get reward description in uppercase.
+      const rewardA = a.description.toUpperCase();
+      const rewardB = b.description.toUpperCase();
+      // Compare reward descriptions.
+      // If rewardA comes before rewardB.
+      if (rewardA < rewardB) {
+        return -1;
+      }
+      // If rewardA comes after rewardB.
+      else if (rewardA > rewardB) {
+        return 1;
+      }
+      // Reward descriptions are equal.
+      return 0;
+    });
+
     // Loop through rewards.
-    allRewards.map((reward) => {
+    allRewardsSorted.map((reward) => {
       // Check if reward is opened.
       if (!reward.approved && !reward.redeemed && !reward.purchased) {
         // Increment rewards counter.
@@ -103,6 +122,10 @@ function Marketplace({
   useEffect(() => {
     if (allRewards.length > 0) {
       getOpenRewards();
+    } else {
+      // Reset states.
+      setRewardsCounter(0);
+      setOpenRewards([]);
     }
   }, [allRewards]);
 
@@ -128,11 +151,12 @@ function Marketplace({
         <Loading />
       ) : (
         <div className="flex h-full w-full flex-col gap-4 p-4">
-          {rewardsCounter === 0 ? (
+          {allRewards.length === 0 ? (
             <div className="flex flex-1 items-center justify-center py-4">
               {noRewardsMessage}
             </div>
           ) : (
+            openRewards &&
             openRewards.length > 0 && (
               <div className="box-border flex flex-col">
                 {/* Status */}

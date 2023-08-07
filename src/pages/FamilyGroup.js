@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 // Components
 import ChildCard from "../components/ChildCard";
@@ -18,6 +18,8 @@ function FamilyGroup({
   utils
 }) {
   /***** STATES *****/
+  // Sorted family group.
+  const [familyGroupSorted, setFamilyGroupSorted] = useState([]);
   // Selected child.
   const [selectedChild, setSelectedChild] = useState(null);
   // State variables to control modal.
@@ -29,6 +31,38 @@ function FamilyGroup({
   const [isRemovePending, setIsRemovePending] = useState(false);
 
   /***** METHODS *****/
+  /**
+   * Sort family group by child's name in ascending order.
+   */
+  const sortFamilyGroup = () => {
+    // Check if family group exist.
+    if (!familyGroup) {
+      return false;
+    }
+
+    // Sort family group by child's name in ascending order.
+    const familyGroupSorted = [...familyGroup];
+    familyGroupSorted.sort((a, b) => {
+      // Get children names in uppercase.
+      const childA = a.child.name.toUpperCase();
+      const childB = b.child.name.toUpperCase();
+      // Compare children names.
+      // If childA comes before childB.
+      if (childA < childB) {
+        return -1;
+      }
+      // If childA comes after childB.
+      else if (childA > childB) {
+        return 1;
+      }
+      // Children names are equal.
+      return 0;
+    });
+
+    // Set sorted family group.
+    setFamilyGroupSorted(familyGroupSorted);
+  };
+
   /**
    * Select a child.
    * @param child - Child to be selected.
@@ -118,6 +152,19 @@ function FamilyGroup({
       });
   };
 
+  /***** REACT HOOKS *****/
+  /**
+   * Listen for changes to `familyGroup`.
+   */
+  useEffect(() => {
+    if (familyGroup.length > 0) {
+      sortFamilyGroup();
+    } else {
+      // Reset state.
+      setFamilyGroupSorted([]);
+    }
+  }, [familyGroup]);
+
   // Return FamilyGroup component.
   return (
     <>
@@ -159,16 +206,18 @@ function FamilyGroup({
         <div
           className={twMerge(
             "box-border flex w-full flex-wrap justify-center gap-4 p-4 md:justify-start",
-            familyGroup && familyGroup.length > 1 && "md:justify-center"
+            familyGroupSorted && familyGroupSorted.length > 1
+              ? "md:justify-center"
+              : "h-full"
           )}
         >
-          {familyGroup && familyGroup.length === 0 ? (
+          {familyGroupSorted && familyGroupSorted.length === 0 ? (
             <div className="flex flex-1 items-center justify-center py-4">
               No children in your family group.
             </div>
           ) : (
             // Loop through family group and render child cards.
-            familyGroup.map((child, index) => (
+            familyGroupSorted.map((child, index) => (
               <ChildCard
                 key={index}
                 contract={contract}

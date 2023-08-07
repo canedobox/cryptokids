@@ -65,8 +65,27 @@ function Rewards({
     const redeemedRewards = [];
     const approvedRewards = [];
 
+    // Sort rewards by description in ascending order.
+    const allRewardsSorted = [...allRewards];
+    allRewardsSorted.sort((a, b) => {
+      // Get reward description in uppercase.
+      const rewardA = a.description.toUpperCase();
+      const rewardB = b.description.toUpperCase();
+      // Compare reward descriptions.
+      // If rewardA comes before rewardB.
+      if (rewardA < rewardB) {
+        return -1;
+      }
+      // If rewardA comes after rewardB.
+      else if (rewardA > rewardB) {
+        return 1;
+      }
+      // Reward descriptions are equal.
+      return 0;
+    });
+
     // Loop through rewards.
-    allRewards.map((reward) => {
+    allRewardsSorted.map((reward) => {
       // If filter by child is enabled, check if reward belongs to child.
       if (filterByChild && reward.assignedTo !== filterByChild) {
         // Decrement rewards counter.
@@ -398,6 +417,10 @@ function Rewards({
   useEffect(() => {
     if (allRewards.length > 0) {
       organizeRewards();
+    } else {
+      // Reset states.
+      setRewardsCounter(0);
+      setRewardLists([]);
     }
   }, [allRewards, filterByChild]);
 
@@ -458,7 +481,7 @@ function Rewards({
       )}
 
       {/* Filter by child, parent only */}
-      {accountType === "parent" && rewardsCounter > 0 && (
+      {accountType === "parent" && allRewards.length > 0 && (
         <div className="flex w-full flex-row items-center justify-end border-b border-gray-200 px-4">
           <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
             <IconFilter />

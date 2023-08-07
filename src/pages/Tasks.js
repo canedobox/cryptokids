@@ -64,8 +64,27 @@ function Tasks({
     const approvedTasks = [];
     const expiredTasks = [];
 
+    // Sort tasks by description in ascending order.
+    const allTasksSorted = [...allTasks];
+    allTasksSorted.sort((a, b) => {
+      // Get task description in uppercase.
+      const taskA = a.description.toUpperCase();
+      const taskB = b.description.toUpperCase();
+      // Compare task descriptions.
+      // If taskA comes before taskB.
+      if (taskA < taskB) {
+        return -1;
+      }
+      // If taskA comes after taskB.
+      else if (taskA > taskB) {
+        return 1;
+      }
+      // Task descriptions are equal.
+      return 0;
+    });
+
     // Loop through tasks.
-    allTasks.map((task) => {
+    allTasksSorted.map((task) => {
       // If filter by child is enabled, check if task belongs to child.
       if (filterByChild && task.assignedTo !== filterByChild) {
         // Decrement tasks counter.
@@ -437,6 +456,10 @@ function Tasks({
   useEffect(() => {
     if (allTasks.length > 0) {
       organizeTasks();
+    } else {
+      // Reset states.
+      setTasksCounter(0);
+      setTaskLists([]);
     }
   }, [allTasks, filterByChild]);
 
@@ -497,7 +520,7 @@ function Tasks({
       )}
 
       {/* Filter by child, parent only */}
-      {accountType === "parent" && tasksCounter > 0 && (
+      {accountType === "parent" && allTasks.length > 0 && (
         <div className="flex w-full flex-row items-center justify-end border-b border-gray-200 px-4">
           <label className="flex w-fit flex-row items-center gap-1 whitespace-nowrap text-gray-600">
             <IconFilter />
