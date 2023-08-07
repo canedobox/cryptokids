@@ -372,14 +372,12 @@ function App() {
    * @param value - Number to be converted.
    */
   const numberToEther = (value) => {
-    if (tokenDecimals) {
-      return ethers.utils
-        .parseUnits(
-          value.toLocaleString("fullwide", { useGrouping: false }),
-          tokenDecimals
-        )
-        .toString();
-    }
+    return ethers.utils
+      .parseUnits(
+        value.toLocaleString("fullwide", { useGrouping: false }),
+        tokenDecimals ? tokenDecimals : 18 // Default to 18 decimals.
+      )
+      .toString();
   };
 
   /**
@@ -389,16 +387,14 @@ function App() {
    * @param value - Ether value to be converted.
    */
   const etherToNumber = (value) => {
-    if (tokenDecimals) {
-      return parseFloat(
-        ethers.utils
-          .formatUnits(
-            value.toLocaleString("fullwide", { useGrouping: false }),
-            tokenDecimals
-          )
-          .toString()
-      );
-    }
+    return parseFloat(
+      ethers.utils
+        .formatUnits(
+          value.toLocaleString("fullwide", { useGrouping: false }),
+          tokenDecimals ? tokenDecimals : 18 // Default to 18 decimals.
+        )
+        .toString()
+    );
   };
 
   /**
@@ -406,7 +402,7 @@ function App() {
    * Example: 1 to 1 CK
    */
   const addTokenSymbol = (value) => {
-    return `${etherToNumber(value)} ${tokenSymbol}`;
+    return `${etherToNumber(value)} ${tokenSymbol ? tokenSymbol : "CK"}`; // Default to CK.
   };
 
   /**
@@ -521,7 +517,17 @@ function App() {
           {/* Homepage */}
           <Route
             index
-            element={<Home connectionHandler={connectionHandler} />}
+            element={
+              <Home
+                connectionHandler={connectionHandler}
+                setErrorMessage={setErrorMessage}
+                utils={{
+                  openModal,
+                  closeModal,
+                  addTokenSymbol
+                }}
+              />
+            }
           />
         </Route>
 

@@ -24,6 +24,7 @@ contract CryptoKids is ERC20 {
     uint256 expired;
     uint256 completed;
     uint256 approved;
+    uint256 tokensEarned;
   }
 
   struct ChildRewardsCounter {
@@ -31,6 +32,7 @@ contract CryptoKids is ERC20 {
     uint256 purchased;
     uint256 redeemed;
     uint256 approved;
+    uint256 tokensSpent;
   }
 
   struct AccountsCounter {
@@ -70,6 +72,7 @@ contract CryptoKids is ERC20 {
     uint256 deleted;
     uint256 completed;
     uint256 approved;
+    uint256 tokensEarned;
   }
 
   struct Reward {
@@ -92,6 +95,7 @@ contract CryptoKids is ERC20 {
     uint256 purchased;
     uint256 redeemed;
     uint256 approved;
+    uint256 tokensSpent;
   }
 
   /***** MAPPINGS *****/
@@ -584,6 +588,8 @@ contract CryptoKids is ERC20 {
 
     // Send token reward to the child.
     _mint(_tasks[taskId_].assignedTo, _tasks[taskId_].reward);
+    // Increment tokens earned counter.
+    tasksCounter.tokensEarned += _tasks[taskId_].reward;
 
     // Increment tasks approved counter.
     tasksCounter.approved++;
@@ -625,6 +631,7 @@ contract CryptoKids is ERC20 {
     uint256 expiredTasksCounter = 0;
     uint256 completedTasksCounter = 0;
     uint256 approvedTasksCounter = 0;
+    uint256 tokensEarned = 0;
 
     // Create an array for the child's tasks.
     Task[] memory childTasks = new Task[](_childTasks[child_].length);
@@ -641,6 +648,7 @@ contract CryptoKids is ERC20 {
       // If task has been approved.
       if (childTasks[i].approved) {
         approvedTasksCounter++;
+        tokensEarned += childTasks[i].reward;
       }
       // If task has been completed.
       else if (childTasks[i].completed) {
@@ -660,7 +668,8 @@ contract CryptoKids is ERC20 {
         childTasks.length,
         expiredTasksCounter,
         completedTasksCounter,
-        approvedTasksCounter
+        approvedTasksCounter,
+        tokensEarned
       );
   }
 
@@ -845,6 +854,8 @@ contract CryptoKids is ERC20 {
 
     // Burn tokens.
     _burn(msg.sender, _rewards[rewardId_].price);
+    // Increment tokens spent counter.
+    rewardsCounter.tokensSpent += _rewards[rewardId_].price;
 
     // Purchase reward.
     _rewards[rewardId_].purchased = true;
@@ -995,6 +1006,7 @@ contract CryptoKids is ERC20 {
     uint256 purchasedRewardsCounter = 0;
     uint256 redeemedRewardsCounter = 0;
     uint256 approvedRewardsCounter = 0;
+    uint256 tokensSpent = 0;
 
     // Create an array for the child's rewards.
     Reward[] memory childRewards = new Reward[](_childRewards[child_].length);
@@ -1011,14 +1023,17 @@ contract CryptoKids is ERC20 {
       // If reward has been approved.
       if (childRewards[i].approved) {
         approvedRewardsCounter++;
+        tokensSpent += childRewards[i].price;
       }
       // If reward has been redeemed.
       else if (childRewards[i].redeemed) {
         redeemedRewardsCounter++;
+        tokensSpent += childRewards[i].price;
       }
       // If reward has been purchased.
       else if (childRewards[i].purchased) {
         purchasedRewardsCounter++;
+        tokensSpent += childRewards[i].price;
       }
     }
 
@@ -1028,7 +1043,8 @@ contract CryptoKids is ERC20 {
         childRewards.length,
         purchasedRewardsCounter,
         redeemedRewardsCounter,
-        approvedRewardsCounter
+        approvedRewardsCounter,
+        tokensSpent
       );
   }
 

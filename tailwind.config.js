@@ -20,7 +20,9 @@ module.exports = {
         128: "25rem"
       },
       maxWidth: {
-        "3xs": "11rem"
+        "2xs": "18rem",
+        "3xs": "11rem",
+        "4xs": "8rem"
       }
     },
     colors: {

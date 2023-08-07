@@ -9,12 +9,12 @@ function Logo({
   iconHeight = "32",
   logoWidth = "100",
   logoHeight = "24",
-  variant = "default"
+  variant = "darkBg"
 }) {
   // Logo variants.
   const variants = {
-    default: { iconColor: "text-primary-700", logoColor: "text-gray-900" },
-    sidebar: { iconColor: "text-accent-400", logoColor: "text-white" },
+    darkBg: { iconColor: "text-accent-400", logoColor: "text-white" },
+    lightBg: { iconColor: "text-primary-700", logoColor: "text-gray-900" },
     white: { iconColor: "text-white", logoColor: "text-white" },
     black: { iconColor: "text-black", logoColor: "text-black" }
   };

@@ -9,7 +9,13 @@ function PageNotFound() {
     <main className="flex h-screen w-screen min-w-[theme(width.80)] flex-col items-center justify-center gap-10">
       {/* Logo */}
       <div className="flex flex-row items-center justify-center gap-4">
-        <Logo iconHeight="48" iconWidth="48" logoHeight="38" logoWidth="160" />
+        <Logo
+          iconHeight="48"
+          iconWidth="48"
+          logoHeight="38"
+          logoWidth="160"
+          variant="lightBg"
+        />
       </div>
       {/* Message */}
       <div className="flex flex-col items-center justify-center gap-4">

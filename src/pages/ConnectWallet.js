@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // Components
 import Button from "../components/Button";
 import Logo from "../components/Logo";
@@ -36,6 +36,7 @@ function ConnectWallet({
             iconWidth="48"
             logoHeight="38"
             logoWidth="160"
+            variant="lightBg"
           />
         </div>
         <div className="flex flex-col items-center justify-center gap-4">
@@ -44,9 +45,15 @@ function ConnectWallet({
             Connect your wallet to access the dashboard.
           </h1>
           {/* Button to connect wallet using MetaMask */}
-          <Button onClick={connectionHandler} variant="large">
+          <Button onClick={connectionHandler} variant="large" className="w-60">
             Connect Wallet
           </Button>
+          {/* Link to homepage */}
+          <Link to="/">
+            <Button variant="outlineGray" className="w-60">
+              GO TO HOMEPAGE
+            </Button>
+          </Link>
         </div>
       </main>
       {/* Error message */}

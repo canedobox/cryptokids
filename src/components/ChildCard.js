@@ -5,14 +5,7 @@ import Avatar from "./Avatar";
 // Icons
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
-function ChildCard({
-  contract,
-  child,
-  selectChild,
-  setErrorMessage,
-  utils,
-  className
-}) {
+function ChildCard({ child, selectChild, utils, className }) {
   // Return ChildCard component.
   return (
     <div
@@ -112,6 +105,15 @@ function ChildCard({
                 {child.tasksCounter.assigned.toString()}
               </td>
             </tr>
+            {/* Tokens earned */}
+            <tr className="bg-gray-100">
+              <td className="border border-gray-200 p-1 px-2 font-semibold">
+                Tokens earned
+              </td>
+              <td className="border border-gray-200 p-1 px-2 text-center ">
+                {utils.addTokenSymbol(child.tasksCounter.tokensEarned)}
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -175,6 +177,15 @@ function ChildCard({
               </td>
               <td className="border border-gray-200 p-1 px-2 text-center ">
                 {child.rewardsCounter.assigned.toString()}
+              </td>
+            </tr>
+            {/* Tokens spent */}
+            <tr className="bg-gray-100">
+              <td className="border border-gray-200 p-1 px-2 font-semibold">
+                Tokens spent
+              </td>
+              <td className="border border-gray-200 p-1 px-2 text-center ">
+                {utils.addTokenSymbol(child.rewardsCounter.tokensSpent)}
               </td>
             </tr>
           </tbody>

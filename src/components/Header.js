@@ -37,7 +37,7 @@ function Header({ account, connectionHandler, utils }) {
           className="flex h-full items-center justify-center gap-2 px-2"
         >
           <Logo
-            variant={useLocation().pathname === "/" ? "white" : "default"}
+            variant={useLocation().pathname === "/" ? "darkBg" : "lightBg"}
           />
         </Link>
 

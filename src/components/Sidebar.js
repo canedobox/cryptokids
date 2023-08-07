@@ -169,7 +169,7 @@ function Sidebar({
           to="/dashboard"
           className="flex h-full items-center justify-center gap-2 px-2"
         >
-          <Logo variant="sidebar" />
+          <Logo />
         </Link>
       </header>
 
@@ -192,7 +192,7 @@ function Sidebar({
               onClick={closeSidebar}
               className="flex h-full items-center justify-center gap-3 px-3"
             >
-              <Logo variant="sidebar" />
+              <Logo />
             </Link>
 
             {/* Button to close sidebar */}

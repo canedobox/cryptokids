@@ -1019,6 +1019,11 @@
                 "internalType": "uint256",
                 "name": "approved",
                 "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "tokensEarned",
+                "type": "uint256"
               }
             ],
             "internalType": "struct CryptoKids.ChildTasksCounter",
@@ -1045,6 +1050,11 @@
               {
                 "internalType": "uint256",
                 "name": "approved",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "tokensSpent",
                 "type": "uint256"
               }
             ],
@@ -1338,6 +1348,11 @@
         "internalType": "uint256",
         "name": "approved",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokensSpent",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1378,6 +1393,11 @@
       {
         "internalType": "uint256",
         "name": "approved",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokensEarned",
         "type": "uint256"
       }
     ],
