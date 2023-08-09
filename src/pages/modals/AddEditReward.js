@@ -6,6 +6,18 @@ import Button from "../../components/Button";
 import { ReactComponent as IconAdd } from "../../assets/icons/add.svg";
 import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 
+/**
+ * Add or edit reward modal.
+ * @param {object} selectedReward - Selected reward object.
+ * @param {function} deselectReward - Function to deselect reward.
+ * @param {string} filterByChild - Filter by child address.
+ * @param {function} addReward - Function to add reward.
+ * @param {function} editReward - Function to edit reward.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isAddEditPending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function AddEditReward({
   selectedReward,
   deselectReward,

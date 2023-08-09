@@ -2,6 +2,15 @@ import { twMerge } from "tailwind-merge";
 // Icons
 import { ReactComponent as IconProgress } from "../assets/icons/progress.svg";
 
+/**
+ * Button component.
+ * @param {string} variant - Button variant.
+ * @param {string} className - Tailwind classes.
+ * @param {string} children - Button label.
+ * @param {boolean} inProgress - Whether button is in progress.
+ * @param {string} inProgressLabel - Label to show when button is in progress.
+ * @param {object} restProps - Rest of the props.
+ */
 function Button({
   variant = "default",
   className,

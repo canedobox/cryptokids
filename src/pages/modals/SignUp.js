@@ -3,6 +3,14 @@ import { useRef } from "react";
 import Modal from "../../components/Modal";
 import Button from "../../components/Button";
 
+/**
+ * Sign up modal.
+ * @param {function} registerParent - Function to register parent.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isSignUpPending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function SignUp({
   registerParent,
   isModalOpened,

@@ -1,6 +1,9 @@
 // Icons
 import { ReactComponent as IconLoading } from "../assets/icons/loading.svg";
 
+/**
+ * Loading dashboard page.
+ */
 function LoadingDashboard() {
   // Return LoadingDashboard component.
   return (

@@ -8,6 +8,15 @@ import Loading from "./Loading";
 // Modals
 import WaitingForTransaction from "./modals/WaitingForTransaction";
 
+/**
+ * Marketplace page.
+ * @param {object} contract - Contract object.
+ * @param {number} accountBalance - Account balance.
+ * @param {array} allRewards - All rewards array.
+ * @param {boolean} isDataLoading - Is data loading state.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function Marketplace({
   contract,
   accountBalance,
@@ -118,6 +127,8 @@ function Marketplace({
   /***** REACT HOOKS *****/
   /**
    * Listen for changes to `allRewards`.
+   * If `allRewards` is not empty, get open rewards.
+   * If `allRewards` is empty, reset states.
    */
   useEffect(() => {
     if (allRewards.length > 0) {
@@ -151,7 +162,7 @@ function Marketplace({
         <Loading />
       ) : (
         <div className="flex h-full w-full flex-col gap-4 p-4">
-          {allRewards.length === 0 ? (
+          {rewardsCounter === 0 ? (
             <div className="flex flex-1 items-center justify-center py-4">
               {noRewardsMessage}
             </div>

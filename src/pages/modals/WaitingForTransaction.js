@@ -3,6 +3,12 @@ import Modal from "../../components/Modal";
 // Icons
 import { ReactComponent as IconProgress } from "../../assets/icons/progress.svg";
 
+/**
+ * Waiting for transaction modal.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {object} utils - Utility functions object.
+ */
 function WaitingForTransaction({ isModalOpened, setIsModalOpened, utils }) {
   // Return WaitingForTransaction component.
   return (

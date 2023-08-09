@@ -8,10 +8,20 @@ import ErrorMessage from "../components/ErrorMessage";
 // Modals
 import SignUp from "../pages/modals/SignUp";
 
+/**
+ * Website layout.
+ * @param {object} contract - Contract object.
+ * @param {string} account - Account address.
+ * @param {string} accountType - Account type.
+ * @param {function} connectionHandler - Function to handle connection.
+ * @param {string} errorMessage - Error message object.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function WebsiteLayout({
+  contract,
   account,
   accountType,
-  contract,
   connectionHandler,
   errorMessage,
   setErrorMessage,

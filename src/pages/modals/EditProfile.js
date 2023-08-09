@@ -7,6 +7,16 @@ import Avatar from "../../components/Avatar";
 // Icons
 import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 
+/**
+ * Edit profile modal.
+ * @param {object} account - Account address.
+ * @param {string} accountName - Account name.
+ * @param {function} editProfile - Function to edit profile.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isEditPending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function EditProfile({
   account,
   accountName,

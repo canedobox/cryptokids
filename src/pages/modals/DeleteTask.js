@@ -1,6 +1,16 @@
 // Components
 import Modal from "../../components/Modal";
 
+/**
+ * Delete task modal.
+ * @param {object} selectedTask - Selected task object.
+ * @param {function} deselectTask - Function to deselect task.
+ * @param {function} deleteTask - Function to delete task.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isDeletePending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function DeleteTask({
   selectedTask,
   deselectTask,

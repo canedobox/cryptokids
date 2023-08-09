@@ -1,6 +1,16 @@
 // Components
 import Modal from "../../components/Modal";
 
+/**
+ * Remove child modal.
+ * @param {object} selectedChild - Selected child object.
+ * @param {function} deselectChild - Function to deselect child.
+ * @param {function} removeChild - Function to remove child.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isRemovePending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function RemoveChild({
   selectedChild,
   deselectChild,

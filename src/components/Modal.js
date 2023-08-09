@@ -4,6 +4,24 @@ import Button from "./Button";
 // Icons
 import { ReactComponent as IconClose } from "../assets/icons/close.svg";
 
+/**
+ * Modal component.
+ * @param {string} title - Modal title.
+ * @param {object} formRef - Form reference.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {function} closeModal - Function to close modal.
+ * @param {boolean} cta - Call to action object.
+ *                  Example: cta={{
+ *                             cancel: {label: "Cancel", onClick: () => {...}},
+ *                             confirm: {label: "Confirm", onClick: () => {...}}
+ *                           }}
+ * @param {boolean} isPopup - If true, modal displays as a popup in smaller screens.
+ *                            If false, modal displays as full screen in smaller screens.
+ * @param {boolean} closeWithBackdrop - Close modal by clicking on the backdrop.
+ * @param {object} utils - Utility functions object.
+ * @param {object} children - Children component.
+ */
 function Modal({
   title,
   formRef,

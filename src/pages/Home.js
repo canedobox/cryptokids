@@ -11,6 +11,12 @@ import Stats from "./modals/Stats";
 import contractAddress from "../contracts/CryptoKids-address.json";
 import contractAbi from "../contracts/CryptoKids-abi.json";
 
+/**
+ * Homepage.
+ * @param {function} connectionHandler - Function to handle connection.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function Home({ connectionHandler, setErrorMessage, utils }) {
   /***** STATES *****/
   // State for stats.
@@ -21,6 +27,9 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
   /***** METHODS *****/
   /**
    * Get dapp statistics from the smart contract.
+   * NOTE: This method is called before the user connects to the dapp,
+   *       for that reason the provider is used to get the contract
+   *       instead of the signer.
    */
   const getStats = async () => {
     // Check if MetaMask is installed.
@@ -42,7 +51,7 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
       const contract_ = new ethers.Contract(
         contractAddress[network.chainId].address,
         contractAbi,
-        provider
+        provider // Use provider to get contract as the user has not connected yet.
       );
 
       // Get accounts counter.

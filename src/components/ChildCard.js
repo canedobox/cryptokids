@@ -5,7 +5,14 @@ import Avatar from "./Avatar";
 // Icons
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
-function ChildCard({ child, selectChild, utils, className }) {
+/**
+ * Child card component.
+ * @param {object} child - Child object.
+ * @param {function} selectChild - Function to select child.
+ * @param {string} className - Tailwind classes.
+ * @param {object} utils - Utility functions object.
+ */
+function ChildCard({ child, selectChild, className, utils }) {
   // Return ChildCard component.
   return (
     <div

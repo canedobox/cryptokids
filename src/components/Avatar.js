@@ -1,5 +1,11 @@
 import { twMerge } from "tailwind-merge";
 
+/**
+ * Avatar component.
+ * @param {string} seed - Seed to generate avatar.
+ * @param {string} className - Tailwind classes.
+ * @param {object} restProps - Rest of the props.
+ */
 function Avatar({ seed, className, ...restProps }) {
   // Create avatar using DiceBear API.
   let avatarURL = `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${seed}`;

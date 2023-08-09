@@ -15,6 +15,16 @@ import { ReactComponent as IconFilter } from "../assets/icons/filter.svg";
 import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
+/**
+ * Rewards page.
+ * @param {object} contract - Contract object.
+ * @param {string} accountType - Account type.
+ * @param {number} accountBalance - Account balance.
+ * @param {array} allRewards - All rewards array.
+ * @param {boolean} isDataLoading - Is data loading state.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function Rewards({
   contract,
   accountType,
@@ -135,6 +145,7 @@ function Rewards({
   /**
    * Select a reward.
    * @param reward - Reward to be selected.
+   * @param isDelete - If true, open delete reward modal.
    */
   const selectReward = (reward, isDelete = false) => {
     // Set selected reward.
@@ -149,6 +160,7 @@ function Rewards({
 
   /**
    * Deselect a reward.
+   * @param formRef - Form reference.
    */
   const deselectReward = (formRef) => {
     // Deselect reward.
@@ -413,6 +425,8 @@ function Rewards({
   /***** REACT HOOKS *****/
   /**
    * Listen for changes to `allRewards` or `filterByChild`.
+   * If `allRewards` is not empty, organize rewards by status.
+   * If `allRewards` is empty, reset states.
    */
   useEffect(() => {
     if (allRewards.length > 0) {

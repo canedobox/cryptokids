@@ -49,7 +49,7 @@ function App() {
    * Connects to MetaMask and get user's account.
    */
   const connectionHandler = async () => {
-    // If account exists.
+    // If user is already connected, logout.
     if (account) {
       logout();
     }
@@ -82,7 +82,7 @@ function App() {
 
   // Check if MetaMask is installed.
   if (window.ethereum && window.ethereum.isMetaMask) {
-    //Set up an event listener for when the account changes on MetaMask.
+    // Set up an event listener for when the account changes on MetaMask.
     window.ethereum.on("accountsChanged", async () => {
       connectionHandler();
     });
@@ -232,6 +232,7 @@ function App() {
         .catch((error) => {
           setErrorMessage(error);
         });
+      // Store accountBalance.
       setAccountBalance(accountBalance_);
     }
 
@@ -273,6 +274,7 @@ function App() {
 
   /**
    * Open modal window.
+   * @param {function} setIsModalOpened - set state function to open modal.
    */
   const openModal = (setIsModalOpened) => {
     // Disable body scrollbars.
@@ -283,6 +285,8 @@ function App() {
 
   /**
    * Close modal.
+   * @param {function} setIsModalOpened - set state function to close modal.
+   * @param {object} formRef - form reference to reset form.
    */
   const closeModal = (setIsModalOpened, formRef = null) => {
     // Enable body scrollbars.
@@ -298,7 +302,9 @@ function App() {
 
   /**
    * Get short address.
-   * Example: 0x1234...5678
+   * @param {string} address - address to be shortened.
+   * @returns {string} - shortened address.
+   * Example: "0x1234...5678"
    */
   const getShortAddress = (address) => {
     return `${address.substring(0, 6)}...${address.substring(
@@ -309,7 +315,11 @@ function App() {
 
   /**
    * Get avatar seed based on the user's account type.
-   * Example: name:Alice+address:0x1234...5678
+   * @param {string} address - address to be used in the seed.
+   * @param {string} newName - new name to be used in the seed,
+   *                           if null use the user current name.
+   * @returns {string} - avatar seed.
+   * Example: "name:Alice_address:0x1234...5678"
    */
   const getAvatarSeed = (address, newName = null) => {
     // If a new name is provided, use it instead.
@@ -344,6 +354,8 @@ function App() {
 
   /**
    * Get family group options for select inputs.
+   * @param {boolean} withAddress - if true, add the child's address to the option.
+   * @returns {object} - family group options.
    * Example: <option value="0x1234...5678">Alice</option>
    */
   const getFamilyGroupOptions = (withAddress = false) => {
@@ -373,8 +385,9 @@ function App() {
   /**
    * Converts a number to its equivalent value in Ether
    * using the contract decimals.
-   * Example: 1 to 1000000000000000000
    * @param value - Number to be converted.
+   * @returns {string} - Ether value.
+   * Example: 1 to 1000000000000000000
    */
   const numberToEther = (value) => {
     return ethers.utils
@@ -388,8 +401,9 @@ function App() {
   /**
    * Converts a Ether value to its equivalent number
    * using the contract decimals.
-   * Example: 1000000000000000000 to 1
    * @param value - Ether value to be converted.
+   * @returns {number} - Number value.
+   * Example: 1000000000000000000 to 1
    */
   const etherToNumber = (value) => {
     return parseFloat(
@@ -404,7 +418,9 @@ function App() {
 
   /**
    * Add token symbol to a value.
-   * Example: 1 to 1 CK
+   * @param value - Value in Ether to be formatted.
+   * @returns {string} - Formatted value.
+   * Example: 1000000000000000000 to "1 CK"
    */
   const addTokenSymbol = (value) => {
     return `${etherToNumber(value)} ${tokenSymbol ? tokenSymbol : "CK"}`; // Default to CK.
@@ -416,6 +432,7 @@ function App() {
    * @param {string} date - Date to be format.
    * @param {string} prefix - Prefix to be added to the date.
    * @returns {string} Formatted date.
+   * Example: 2023-11-31T00:00:00.000Z to "in 30 days, 31/11/2023"
    */
   const formatDate = (date, prefix) => {
     // Get current date.
@@ -484,6 +501,7 @@ function App() {
 
   /**
    * Listen for changes to `account`.
+   * Initialize the application every time the account changes.
    */
   useEffect(() => {
     // Check if MetaMask is installed and account exists.
@@ -495,8 +513,10 @@ function App() {
 
   /**
    * Listen for changes to `accountType`.
+   * Fetch data every time the account type changes.
    */
   useEffect(() => {
+    // Fetch data.
     fetchData();
   }, [accountType]);
 
@@ -509,9 +529,9 @@ function App() {
           path="/"
           element={
             <WebsiteLayout
+              contract={contract}
               account={account}
               accountType={accountType}
-              contract={contract}
               connectionHandler={connectionHandler}
               errorMessage={errorMessage}
               setErrorMessage={setErrorMessage}

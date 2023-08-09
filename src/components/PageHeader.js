@@ -2,7 +2,17 @@ import { twMerge } from "tailwind-merge";
 // Components
 import Button from "./Button";
 
-function PageHeader({ title, accountBalance, filterChild = true, cta, utils }) {
+/**
+ * Page header component.
+ * @param {string} title - Page title.
+ * @param {string} accountBalance - Account balance.
+ * @param {object} cta - Call to action object.
+ *                 Example: cta={{
+ *                            label: "Add", onClick: () => {...}
+ *                          }}
+ * @param {object} utils - Utility functions object.
+ */
+function PageHeader({ title, accountBalance, cta, utils }) {
   // Return PageHeader component.
   return (
     <header

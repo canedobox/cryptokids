@@ -5,6 +5,13 @@ import Button from "../components/Button";
 import Logo from "../components/Logo";
 import ErrorMessage from "../components/ErrorMessage";
 
+/**
+ * Connect wallet page.
+ * @param {string} accountType - Account type.
+ * @param {function} connectionHandler - Function to handle connection.
+ * @param {string} errorMessage - Error message object.
+ * @param {function} setErrorMessage - Function to set error message.
+ */
 function ConnectWallet({
   accountType,
   connectionHandler,
@@ -19,6 +26,7 @@ function ConnectWallet({
    * Listen for changes to `accountType`.
    */
   useEffect(() => {
+    // If user is not registered.
     if (accountType === "not-registered") {
       // Navigate to homepage.
       navigateTo("/");

@@ -20,6 +20,16 @@ import { ReactComponent as IconEdit } from "../assets/icons/edit-20.svg";
 import { ReactComponent as IconSettings } from "../assets/icons/account-settings.svg";
 import { ReactComponent as IconLogout } from "../assets/icons/logout.svg";
 
+/**
+ * Sidebar component.
+ * @param {object} contract - Contract object.
+ * @param {string} account - Account address.
+ * @param {string} accountType - Account type.
+ * @param {string} accountName - Account name.
+ * @param {string} accountBalance - Account balance.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function Sidebar({
   contract,
   account,
@@ -159,7 +169,7 @@ function Sidebar({
           <AccountSettings
             isModalOpened={isAccountSettingsModalOpened}
             setIsModalOpened={setIsAccountSettingsModalOpened}
-            confirmModal={setIsDeleteParentModalOpened}
+            deleteParentModal={setIsDeleteParentModalOpened}
             utils={utils}
           />
           {/* Delete parent nodal */}

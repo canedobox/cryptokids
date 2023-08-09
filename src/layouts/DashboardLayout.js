@@ -3,6 +3,17 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import ErrorMessage from "../components/ErrorMessage";
 
+/**
+ * Dashboard layout.
+ * @param {object} contract - Contract object.
+ * @param {string} account - Account address.
+ * @param {string} accountType - Account type.
+ * @param {string} accountName - Account name.
+ * @param {string} accountBalance - Account balance.
+ * @param {string} errorMessage - Error message object.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function DashboardLayout({
   contract,
   account,

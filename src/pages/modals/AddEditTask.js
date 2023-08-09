@@ -6,6 +6,18 @@ import Button from "../../components/Button";
 import { ReactComponent as IconAdd } from "../../assets/icons/add.svg";
 import { ReactComponent as IconSave } from "../../assets/icons/save.svg";
 
+/**
+ * Add or edit task modal.
+ * @param {object} selectedTask - Selected task object.
+ * @param {function} deselectTask - Function to deselect task.
+ * @param {string} filterByChild - Filter by child address.
+ * @param {function} addTask - Function to add task.
+ * @param {function} editTask - Function to edit task.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isAddEditPending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function AddEditTask({
   selectedTask,
   deselectTask,

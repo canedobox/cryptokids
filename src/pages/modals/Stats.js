@@ -1,6 +1,13 @@
 // Components
 import Modal from "../../components/Modal";
 
+/**
+ * Stats modal.
+ * @param {object} stats - Stats object.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {object} utils - Utility functions object.
+ */
 function Stats({ stats, isModalOpened, setIsModalOpened, utils }) {
   // Return SignUp component.
   return (

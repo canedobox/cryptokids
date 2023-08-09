@@ -1336,7 +1336,7 @@ describe(`${CONTRACT_NAME} Smart Contract Automated Tests`, function () {
         // Try purchasing a reward without enough tokens.
         await expect(
           contract.connect(child1).purchaseReward(openRewardID)
-        ).to.be.revertedWith("You don't have enough tokens (CK).");
+        ).to.be.revertedWith("You don't have enough CK tokens.");
       });
 
       it("Should purchase a reward.", async () => {

@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import Logo from "../components/Logo";
 
+/**
+ * Page not found.
+ */
 function PageNotFound() {
   // Return PageNotFound component.
   return (

@@ -5,6 +5,12 @@ import Button from "./Button";
 import Logo from "./Logo";
 import { useState } from "react";
 
+/**
+ * Header component.
+ * @param {object} account - Account address.
+ * @param {function} connectionHandler - Function to handle connection.
+ * @param {object} utils - Utility functions object.
+ */
 function Header({ account, connectionHandler, utils }) {
   /***** STATES *****/
   // State for scroll position

@@ -1,5 +1,10 @@
 import { Navigate, useLocation } from "react-router-dom";
 
+/**
+ * Protected page component.
+ * @param {string} accountType - Account type.
+ * @param {object} children - Children component.
+ */
 const ProtectedPage = ({ accountType, children }) => {
   // List of pages a parent can access.
   const parentPages = ["family-group", "tasks", "rewards"];

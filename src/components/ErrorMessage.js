@@ -2,6 +2,11 @@ import { twMerge } from "tailwind-merge";
 // Components
 import Button from "./Button";
 
+/**
+ * Error message component.
+ * @param {object} errorMessage - Error message object.
+ * @param {function} setErrorMessage - Function to set error message.
+ */
 function ErrorMessage({ errorMessage, setErrorMessage }) {
   /***** VARIABLES *****/
   let errorMessageReason;

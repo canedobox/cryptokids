@@ -9,9 +9,16 @@ import Loading from "./Loading";
 import AddChild from "./modals/AddChild";
 import RemoveChild from "./modals/RemoveChild";
 
+/**
+ * Family group page.
+ * @param {object} contract - Contract object.
+ * @param {object} familyGroup - Family group object.
+ * @param {boolean} isDataLoading - Is data loading state.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function FamilyGroup({
   contract,
-  tokenSymbol,
   familyGroup,
   isDataLoading,
   setErrorMessage,
@@ -155,6 +162,8 @@ function FamilyGroup({
   /***** REACT HOOKS *****/
   /**
    * Listen for changes to `familyGroup`.
+   * If `familyGroup` is not empty, sort the family group.
+   * If `familyGroup` is empty, reset `familyGroupSorted`.
    */
   useEffect(() => {
     if (familyGroup.length > 0) {
@@ -220,15 +229,12 @@ function FamilyGroup({
             familyGroupSorted.map((child, index) => (
               <ChildCard
                 key={index}
-                contract={contract}
-                tokenSymbol={tokenSymbol}
                 child={child}
                 selectChild={selectChild}
-                setErrorMessage={setErrorMessage}
-                utils={utils}
                 className={twMerge(
                   familyGroup && familyGroup.length > 1 && "md:max-w-full"
                 )}
+                utils={utils}
               />
             ))
           )}

@@ -2,6 +2,16 @@
 import { ReactComponent as LogoText } from "../assets/logo.svg";
 import { ReactComponent as LogoIcon } from "../assets/logo-icon.svg";
 
+/**
+ * Logo component.
+ * @param {boolean} hideIcon - Whether to hide logo icon.
+ * @param {boolean} hideLogo - Whether to hide logo text.
+ * @param {string} iconWidth - Logo icon width.
+ * @param {string} iconHeight - Logo icon height.
+ * @param {string} logoWidth - Logo text width.
+ * @param {string} logoHeight - Logo text height.
+ * @param {string} variant - Logo variant.
+ */
 function Logo({
   hideIcon = false,
   hideLogo = false,

@@ -4,10 +4,17 @@ import Button from "../../components/Button";
 // Icons
 import { ReactComponent as IconDelete } from "../../assets/icons/delete.svg";
 
+/**
+ * Account settings modal.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {function} deleteParentModal - Delete parent modal.
+ * @param {object} utils - Utility functions object.
+ */
 function AccountSettings({
   isModalOpened,
   setIsModalOpened,
-  confirmModal,
+  deleteParentModal,
   utils
 }) {
   // Return AccountSettings component.
@@ -24,7 +31,7 @@ function AccountSettings({
         className="w-full"
         onClick={() => {
           utils.closeModal(setIsModalOpened);
-          utils.openModal(confirmModal);
+          utils.openModal(deleteParentModal);
         }}
       >
         <IconDelete />

@@ -174,6 +174,12 @@ contract CryptoKids is ERC20 {
   );
 
   /***** CONSTRUCTOR *****/
+  /**
+   * CryptoKids smart contract constructor.
+   * @param name_ Token name.
+   * @param symbol_ Token symbol.
+   * NOTE: The token name and symbol are required by the ERC20 standard.
+   */
   constructor(
     string memory name_,
     string memory symbol_
@@ -199,6 +205,10 @@ contract CryptoKids is ERC20 {
 
   /**
    * Register caller as a parent.
+   * @param name_ Parent's name.
+   * Requirements:
+   * - Caller must not be already registered as a parent.
+   * - Caller must not be already registered as a child.
    */
   function registerParent(string memory name_) external {
     // Check if the caller is already registered as a parent.
@@ -224,6 +234,10 @@ contract CryptoKids is ERC20 {
 
   /**
    * Delete caller's parent account and family group.
+   * NOTE: This function will also remove all children
+   *       in the caller's family group.
+   * Requirements:
+   * - The caller must be a parent.
    */
   function deleteParent() external onlyParent {
     // Remove children from the caller's family group.
@@ -249,13 +263,20 @@ contract CryptoKids is ERC20 {
 
   /**
    * Add a child to the caller's family group.
+   * @param child_ Child's address to be added.
+   * @param name_ Child's name.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The child address must not be registered as a parent.
+   * - The child address must not be registered as a child.
    */
   function addChild(address child_, string memory name_) external onlyParent {
-    // Check if the child address is already registered.
+    // Check if the child address is already registered as a parent.
     require(
       !_parents[child_].exists,
       "Address already registered as a parent."
     );
+    // Check if the child address is already registered as a child.
     require(
       !_children[child_].exists,
       "Address already registered as a child."
@@ -275,7 +296,12 @@ contract CryptoKids is ERC20 {
 
   /**
    * Remove a child from the caller's family group.
-   * This function will NOT delete child's tasks, rewards or tokens.
+   * @param child_ Child's address to be removed.
+   * NOTE: This function will NOT delete the child's tasks, rewards or tokens.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The child address must belong to a child.
+   * - The child address must be part of the caller's family group.
    */
   function removeChild(address child_) public onlyParent {
     // Check if the address provided belongs to a child.
@@ -314,6 +340,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get the caller's family group.
+   * @return FamilyGroupChild[] Caller's family group.
+   * Requirements:
+   * - The caller must be a parent.
    */
   function getFamilyGroup()
     external
@@ -345,8 +374,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get the caller's profile.
-   * If caller is not registered, return "not-registered" for account type
-   * and an empty string for name.
+   * @return Profile Caller's profile.
+   * NOTE: If caller is not registered, return "not-registered"
+   *       for account type and an empty string for name.
    */
   function getProfile() external view returns (Profile memory) {
     // Set defaults for not registered.
@@ -370,6 +400,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Edit caller's profile.
+   * @param name_ New name.
+   * Requirements:
+   * - The caller must be registered as either a parent or a child.
    */
   function editProfile(string memory name_) external {
     // Check if caller is registered as either a parent or a child.
@@ -400,6 +433,14 @@ contract CryptoKids is ERC20 {
 
   /**
    * Add a task and assign it to a child.
+   * @param child_ Child's address to assign the task to.
+   * @param description_ Task's description.
+   * @param reward_ Task's reward in CK tokens.
+   * @param dueDate_ Task's due date (unix timestamp), provide 0 for no due date.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The child address must belong to a child.
+   * - The child must be part of the caller's family group.
    */
   function addTask(
     address child_,
@@ -441,6 +482,15 @@ contract CryptoKids is ERC20 {
 
   /**
    * Edit a task.
+   * @param taskId_ Task's ID.
+   * @param description_ Task's description.
+   * @param reward_ Task's reward in CK tokens.
+   * @param dueDate_ Task's due date (unix timestamp), provide 0 for no due date.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The task ID must be valid.
+   * - The child the task is assigned to must be part of the caller's family group.
+   * - The task must not have been completed.
    */
   function editTask(
     uint256 taskId_,
@@ -469,6 +519,12 @@ contract CryptoKids is ERC20 {
 
   /**
    * Delete a task.
+   * @param taskId_ Task's ID.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The task ID must be valid.
+   * - The child the task is assigned to must be part of the caller's family group.
+   * - The task must not have been completed.
    */
   function deleteTask(uint256 taskId_) external onlyParent {
     // Check if the task ID is valid.
@@ -509,6 +565,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Complete a task.
+   * @param taskId_ Task's ID.
+   * Requirements:
+   * - The caller must be a child.
+   * - The task ID must be valid.
+   * - The task must belong to the caller.
+   * - The task must not have been completed.
+   * - The task must not have expired.
    */
   function completeTask(uint256 taskId_) external onlyChild {
     // Check if the task ID is valid.
@@ -538,6 +601,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Cancel task completion.
+   * @param taskId_ Task's ID.
+   * Requirements:
+   * - The caller must be a child.
+   * - The task ID must be valid.
+   * - The task must belong to the caller.
+   * - The task must have been completed.
+   * - The task completion must not have been approved.
    */
   function cancelTaskCompletion(uint256 taskId_) external onlyChild {
     // Check if the task ID is valid.
@@ -565,6 +635,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Approve task completion.
+   * @param taskId_ Task's ID.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The task ID must be valid.
+   * - The child the task is assigned to must be part of the caller's family group.
+   * - The task must have been completed.
+   * - The task completion must not have been approved.
    */
   function approveTaskCompletion(uint256 taskId_) external onlyParent {
     // Check if the task ID is valid.
@@ -604,6 +681,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get child's tasks.
+   * @return ChildTasks Child's tasks.
+   * Requirements:
+   * - The caller must be a child.
    */
   function getChildTasks() external view onlyChild returns (Task[] memory) {
     // Create an array for the child's tasks.
@@ -623,10 +703,14 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get child's tasks counter.
+   * @param child_ Child's address.
+   * @return ChildTasksCounter Child's tasks counter.
+   * Requirements:
+   * - The caller must be a parent.
    */
   function _getChildTasksCounter(
     address child_
-  ) internal view returns (ChildTasksCounter memory) {
+  ) internal view onlyParent returns (ChildTasksCounter memory) {
     // Tasks counters.
     uint256 expiredTasksCounter = 0;
     uint256 completedTasksCounter = 0;
@@ -675,6 +759,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get all the tasks in the caller's family group.
+   * @return FamilyGroupTasks All the tasks in the caller's family group.
+   * Requirements:
+   * - The caller must be a parent.
    */
   function getFamilyGroupTasks()
     external
@@ -717,6 +804,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Add a reward and assign it to a child.
+   * @param child_ Child's address to assign the reward to.
+   * @param description_ Reward's description.
+   * @param price_ Reward's price in CK tokens.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The address provided must belong to a child.
+   * - The child must be part of the caller's family group.
    */
   function addReward(
     address child_,
@@ -758,6 +852,14 @@ contract CryptoKids is ERC20 {
 
   /**
    * Edit a reward.
+   * @param rewardId_ Reward's ID.
+   * @param description_ Reward's description.
+   * @param price_ Reward's price in CK tokens.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The reward ID must be valid.
+   * - The child the reward is assigned to must be part of the caller's family group.
+   * - The reward must not have been purchased.
    */
   function editReward(
     uint256 rewardId_,
@@ -787,6 +889,12 @@ contract CryptoKids is ERC20 {
 
   /**
    * Delete a reward.
+   * @param rewardId_ Reward's ID.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The reward ID must be valid.
+   * - The child the reward is assigned to must be part of the caller's family group.
+   * - The reward must not have been purchased.
    */
   function deleteReward(uint256 rewardId_) external onlyParent {
     // Check if the reward ID is valid.
@@ -832,6 +940,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Purchase a reward.
+   * @param rewardId_ Reward's ID.
+   * Requirements:
+   * - The caller must be a child.
+   * - The reward ID must be valid.
+   * - The reward must belong to the caller.
+   * - The reward must not have been purchased.
+   * - The child must have enough CK tokens.
    */
   function purchaseReward(uint256 rewardId_) external onlyChild {
     // Check if the reward ID is valid.
@@ -849,7 +964,7 @@ contract CryptoKids is ERC20 {
     // Check if child has enough tokens.
     require(
       balanceOf(msg.sender) >= _rewards[rewardId_].price,
-      "You don't have enough tokens (CK)."
+      "You don't have enough CK tokens."
     );
 
     // Burn tokens.
@@ -875,6 +990,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Redeem a reward.
+   * @param rewardId_ Reward's ID.
+   * Requirements:
+   * - The caller must be a child.
+   * - The reward ID must be valid.
+   * - The reward must belong to the caller.
+   * - The reward must have been purchased.
+   * - The reward must not have been redeemed.
    */
   function redeemReward(uint256 rewardId_) external onlyChild {
     // Check if the reward ID is valid.
@@ -909,6 +1031,13 @@ contract CryptoKids is ERC20 {
 
   /**
    * Cancel reward redemption.
+   * @param rewardId_ Reward's ID.
+   * Requirements:
+   * - The caller must be a child.
+   * - The reward ID must be valid.
+   * - The reward must belong to the caller.
+   * - The reward must have been redeemed.
+   * - The reward redemption must not have been approved.
    */
   function cancelRewardRedemption(uint256 rewardId_) external onlyChild {
     // Check if the reward ID is valid.
@@ -942,6 +1071,12 @@ contract CryptoKids is ERC20 {
 
   /**
    * Approve reward redemption.
+   * @param rewardId_ Reward's ID.
+   * Requirements:
+   * - The caller must be a parent.
+   * - The reward ID must be valid.
+   * - The reward must have been redeemed.
+   * - The reward redemption must not have been approved.
    */
   function approveRewardRedemption(uint256 rewardId_) external onlyParent {
     // Check if the reward ID is valid.
@@ -977,6 +1112,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get child's rewards.
+   * @return childRewards_ Child's rewards.
+   * Requirements:
+   * - The caller must be a child.
    */
   function getChildRewards() external view onlyChild returns (Reward[] memory) {
     // Create an array for the child's rewards.
@@ -998,10 +1136,14 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get child's rewards counter.
+   * @param child_ Child's address.
+   * @return childRewardsCounter_ Child's rewards counter.
+   * Requirements:
+   * - The caller must be a parent.
    */
   function _getChildRewardsCounter(
     address child_
-  ) internal view returns (ChildRewardsCounter memory) {
+  ) internal view onlyParent returns (ChildRewardsCounter memory) {
     // Rewards counters.
     uint256 purchasedRewardsCounter = 0;
     uint256 redeemedRewardsCounter = 0;
@@ -1050,6 +1192,9 @@ contract CryptoKids is ERC20 {
 
   /**
    * Get all the rewards in the caller's family group.
+   * @return familyGroupRewards_ All the rewards in the caller's family group.
+   * Requirements:
+   * - The caller must be a parent.
    */
   function getFamilyGroupRewards()
     external

@@ -1,6 +1,16 @@
 // Components
 import Modal from "../../components/Modal";
 
+/**
+ * Delete reward modal.
+ * @param {object} selectedReward - Selected reward object.
+ * @param {function} deselectReward - Function to deselect reward.
+ * @param {function} deleteReward - Function to delete reward.
+ * @param {boolean} isModalOpened - Is modal opened state.
+ * @param {function} setIsModalOpened - Function to set is modal opened state.
+ * @param {boolean} isDeletePending - If true, display loading indicator.
+ * @param {object} utils - Utility functions object.
+ */
 function DeleteReward({
   selectedReward,
   deselectReward,

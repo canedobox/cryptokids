@@ -15,6 +15,16 @@ import { ReactComponent as IconFilter } from "../assets/icons/filter.svg";
 import { ReactComponent as IconEdit } from "../assets/icons/edit.svg";
 import { ReactComponent as IconDelete } from "../assets/icons/delete.svg";
 
+/**
+ * Tasks page.
+ * @param {object} contract - Contract object.
+ * @param {number} accountType - Account type.
+ * @param {number} accountBalance - Account balance.
+ * @param {array} allTasks - All tasks array.
+ * @param {boolean} isDataLoading - Is data loading state.
+ * @param {function} setErrorMessage - Function to set error message.
+ * @param {object} utils - Utility functions object.
+ */
 function Tasks({
   contract,
   accountType,
@@ -132,6 +142,7 @@ function Tasks({
   /**
    * Select a task.
    * @param task - Task to be selected.
+   * @param isDelete - If true, open delete task modal.
    */
   const selectTask = (task, isDelete = false) => {
     // Set selected task.
@@ -146,6 +157,7 @@ function Tasks({
 
   /**
    * Deselect a task.
+   * @param formRef - Form reference.
    */
   const deselectTask = (formRef) => {
     // Deselect task.
@@ -452,6 +464,8 @@ function Tasks({
   /***** REACT HOOKS *****/
   /**
    * Listen for changes to `allTasks` or `filterByChild`.
+   * If `allTasks` is not empty, organize tasks by status.
+   * If `allTasks` is empty, reset states.
    */
   useEffect(() => {
     if (allTasks.length > 0) {
