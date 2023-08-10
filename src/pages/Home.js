@@ -20,7 +20,29 @@ import contractAbi from "../contracts/CryptoKids-abi.json";
 function Home({ connectionHandler, setErrorMessage, utils }) {
   /***** STATES *****/
   // State for stats.
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState({
+    accountsCounter: {
+      parentsRegistered: 0,
+      parentsDeleted: 0,
+      childrenAdded: 0,
+      childrenRemoved: 0
+    },
+    tasksCounter: {
+      added: 0,
+      deleted: 0,
+      completed: 0,
+      approved: 0,
+      tokensEarned: 0
+    },
+    rewardsCounter: {
+      added: 0,
+      deleted: 0,
+      purchased: 0,
+      redeemed: 0,
+      approved: 0,
+      tokensSpent: 0
+    }
+  });
   // State variables to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
 
@@ -144,8 +166,12 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
             <div className="flex w-full items-center justify-start sm:justify-center">
               <img
                 src={HeroImage}
-                alt="CryptoKids hero"
-                className="h-auto w-fit max-w-xl sm:max-w-2xl md:max-w-3xl"
+                alt="CryptoKids Dapp on small and large screens"
+                className={twMerge(
+                  "h-auto min-h-[346px] w-fit min-w-[theme(maxWidth.xl)] max-w-xl",
+                  "sm:min-h-[404px] md:min-h-[460px]",
+                  "sm:min-w-[theme(maxWidth.2xl)] sm:max-w-2xl md:min-w-[theme(maxWidth.3xl)] md:max-w-3xl"
+                )}
               />
             </div>
           </div>
