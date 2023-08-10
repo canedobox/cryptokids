@@ -82,6 +82,10 @@ function App() {
 
   // Check if MetaMask is installed.
   if (window.ethereum && window.ethereum.isMetaMask) {
+    // Set up an event listener for when the network changes on MetaMask.
+    window.ethereum.on("chainChanged", () => {
+      window.location.reload();
+    });
     // Set up an event listener for when the account changes on MetaMask.
     window.ethereum.on("accountsChanged", async () => {
       connectionHandler();

@@ -41,7 +41,8 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
       redeemed: 0,
       approved: 0,
       tokensSpent: 0
-    }
+    },
+    isLoaded: false
   });
   // State variables to control modal.
   const [isModalOpened, setIsModalOpened] = useState(false);
@@ -94,7 +95,12 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
       });
 
       // Set stats.
-      setStats({ accountsCounter, tasksCounter, rewardsCounter });
+      setStats({
+        accountsCounter,
+        tasksCounter,
+        rewardsCounter,
+        isLoaded: true
+      });
     }
     // If MetaMask is not installed.
     else {
@@ -105,7 +111,7 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
   /***** REACT HOOKS *****/
   useEffect(() => {
     // Get stats only once.
-    if (!stats) {
+    if (stats.isLoaded === false) {
       getStats();
     }
   }, []);
