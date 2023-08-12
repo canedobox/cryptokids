@@ -152,7 +152,7 @@ function Marketplace({
 
       {/* Page header */}
       <PageHeader
-        title="Rewards"
+        title="Marketplace"
         accountBalance={accountBalance}
         utils={utils}
       />

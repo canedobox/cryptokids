@@ -127,7 +127,11 @@ function Rewards({
     });
 
     // Set rewards counter.
-    setRewardsCounter(rewardsCounter_);
+    setRewardsCounter(
+      accountType === "parent"
+        ? rewardsCounter_
+        : rewardsCounter_ - openRewards.length
+    );
 
     // Set reward lists.
     if (accountType === "parent") {
