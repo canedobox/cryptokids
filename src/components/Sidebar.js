@@ -132,7 +132,7 @@ function Sidebar({
 
     // Call the `deleteTask` function on the contract.
     contract
-      .deleteParent()
+      .deleteParent() // Without user input.
       .then(async (receipt) => {
         // Wait for the transaction to be mined.
         receipt.wait().then(() => {

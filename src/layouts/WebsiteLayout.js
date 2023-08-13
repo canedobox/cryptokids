@@ -48,7 +48,7 @@ function WebsiteLayout({
 
     // Call the `registerParent` function on the contract.
     contract
-      .registerParent(event.target.parentName.value)
+      .registerParent(event.target.parentName.value) // User input.
       .then(async (receipt) => {
         // Wait for the transaction to be mined.
         receipt.wait().then(() => {

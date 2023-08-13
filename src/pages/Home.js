@@ -519,13 +519,13 @@ function Home({ connectionHandler, setErrorMessage, utils }) {
                   wallet as a reward for completing the task.
                 </p>
                 <p>
-                  <b>5)</b> With the earned tokens, Bob visits the marketplace
+                  <b>6)</b> With the earned tokens, Bob visits the marketplace
                   in the application and decides to purchase a “Fun Day out at
                   the Zoo” reward (which was created and assigned by Alice), he
                   exchanges 10 tokens for the rewards.
                 </p>
                 <p>
-                  <b>6)</b> Bob redeems the reward and can now talk to Alice to
+                  <b>7)</b> Bob redeems the reward and can now talk to Alice to
                   plan their fun day out.
                 </p>
               </div>

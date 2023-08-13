@@ -49,7 +49,7 @@ function App() {
    * Connects to MetaMask and get user's account.
    */
   const connectionHandler = async () => {
-    // If user is already connected, logout.
+    // If user is already connected, log out of the application.
     if (account) {
       logout();
     }
@@ -60,7 +60,7 @@ function App() {
       await window.ethereum
         .request({ method: "eth_requestAccounts" })
         .then((accounts) => {
-          // Store account.
+          // Store user account.
           setAccount(accounts[0]);
           // Reset some state values.
           setAccountType(null);
@@ -84,16 +84,18 @@ function App() {
   if (window.ethereum && window.ethereum.isMetaMask) {
     // Set up an event listener for when the network changes on MetaMask.
     window.ethereum.on("chainChanged", () => {
+      // Reload the page.
       window.location.reload();
     });
     // Set up an event listener for when the account changes on MetaMask.
     window.ethereum.on("accountsChanged", async () => {
+      // Reconnect to MetaMask and get new user's account.
       connectionHandler();
     });
   }
 
   /**
-   * User logout.
+   * Log out of the application.
    */
   const logout = () => {
     // Reset state values.
@@ -142,6 +144,7 @@ function App() {
       );
       // Stop loading dashboard.
       setIsDashboardLoading(false);
+      // Stop the function.
       return;
     }
 
@@ -151,24 +154,28 @@ function App() {
       contractAbi,
       signer
     );
+    // Store contract.
     setContract(contract_);
 
     // Get token symbol.
     const tokenSymbol_ = await contract_.symbol().catch((error) => {
       setErrorMessage(error);
     });
+    // Store token symbol.
     setTokenSymbol(tokenSymbol_);
 
     // Get token decimals.
     const tokenDecimals_ = await contract_.decimals().catch((error) => {
       setErrorMessage(error);
     });
+    // Store token decimals.
     setTokenDecimals(tokenDecimals_);
 
     // Get profile.
     const profile = await contract_.getProfile().catch((error) => {
       setErrorMessage(error);
     });
+    // Store account type and name.
     setAccountType(profile.accountType);
     setAccountName(profile.name);
 
@@ -431,14 +438,14 @@ function App() {
   };
 
   /**
-   * Format a date to a readable format.
-   * Making it easier for kids to understand.
+   * Format a date to a more readable format, making it easier for children to understand.
    * @param {string} date - Date to be format.
    * @param {string} prefix - Prefix to be added to the date.
    * @returns {string} Formatted date.
-   * Example: 2023-11-31T00:00:00.000Z to "in 30 days, 31/11/2023"
    */
   const formatDate = (date, prefix) => {
+    // Formatted date to be returned.
+    let formattedDate = "";
     // Get current date.
     const startDate = new Date();
     // Get end date.
@@ -450,17 +457,11 @@ function App() {
       differenceInTime / (1000 * 60 * 60 * 24)
     );
 
-    // Formatted date.
-    let formattedDate = "";
-
     // If the date is in the past, return the number of days and date.
     if (differenceInDays < -1) {
-      const options = {
-        day: "2-digit",
-        month: "numeric",
-        year: "numeric"
-      };
+      const options = { day: "2-digit", month: "numeric", year: "numeric" };
       const fullDate = new Date(date).toLocaleDateString("en-GB", options);
+      // Format the date. Example: "30 days ago, 01/07/2023"
       formattedDate = `${Math.abs(differenceInDays)} days ago, ${fullDate}`;
     }
     // If the date is yesterday.
@@ -478,20 +479,16 @@ function App() {
     // If the date is in the next three days, return the day of the week.
     else if (differenceInDays > 1 && differenceInDays <= 3) {
       // return the day of the week
-      const options = {
-        weekday: "long"
-      };
+      const options = { weekday: "long" };
       const fullDate = new Date(date).toLocaleDateString("en-GB", options);
+      // Format the date. Example: "this Monday"
       formattedDate = `this ${fullDate}`;
     }
     // If is more than 3 days away, return the number of days and date.
     else if (differenceInDays > 3) {
-      const options = {
-        day: "2-digit",
-        month: "numeric",
-        year: "numeric"
-      };
+      const options = { day: "2-digit", month: "numeric", year: "numeric" };
       const fullDate = new Date(date).toLocaleDateString("en-GB", options);
+      // Format the date. Example: "in 30 days, 01/09/2023"
       formattedDate = `in ${Math.abs(differenceInDays)} days, ${fullDate}`;
     }
 
